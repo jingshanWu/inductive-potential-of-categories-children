@@ -62,7 +62,8 @@ export const ATTENTION_CHECK = 'attn_check'
 export const TASK_INTRO_VIDEO = 'misc/task_intro.mp4'
 
 export const SOUND_CHECK = {
-  video: 'misc/sound_check.mp4',
+  audio: 'misc/sound_check.m4a', // bird sound, audio form
+  video: 'misc/sound_check.mp4', // bird sound, video form
   options: [
     { id: 'dog', image: 'misc/soundcheck_dog.png' },
     { id: 'pig', image: 'misc/soundcheck_pig.png' },
