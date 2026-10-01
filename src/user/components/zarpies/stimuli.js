@@ -71,9 +71,7 @@ export const SOUND_CHECK = {
     { id: 'horse', image: 'misc/soundcheck_horse.png' },
     { id: 'bird', image: 'misc/soundcheck_bird.png' },
   ],
-  // TODO: set to the id of the animal heard in sound_check.mp4
-  // (the Qualtrics export does not record the correct answer)
-  correct: null,
+  correct: 'bird',
 }
 
 /**
