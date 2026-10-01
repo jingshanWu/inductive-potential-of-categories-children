@@ -24,6 +24,10 @@
  * - options: one entry per picture, in display order.
  *     [{ id: 'dog', image: '/stimuli/dog.png' }, { id: 'cow', image: '/stimuli/cow.png' }]
  *   `id` is the answer that gets reported; `image` is the picture's URL.
+ * - Optional word under a picture: add `label` to its entry, e.g.
+ *     { id: 'dog', image: '/stimuli/dog.png', label: 'Dog' }
+ *   The word sits inside the same square, so clicking the word also picks it.
+ *   Entries without `label` stay picture-only.
  * - @choose: fires once per trial with { id, index, rt }
  *   (rt = ms from when the squares became clickable to the click).
  * - disabled: true while the child should not answer yet (e.g. a video is
@@ -62,6 +66,10 @@ function onImageLoad(id, event) {
   if (naturalWidth && naturalHeight) ratios[id] = naturalWidth / naturalHeight
 }
 
+// px set aside under every picture for its word, if any entry has a label
+const LABEL_HEIGHT = 40
+const labelHeight = computed(() => (props.options.some((o) => o.label) ? LABEL_HEIGHT : 0))
+
 // largest size a picture with the given ratio can take inside a w x h box
 function fit(ratio, w, h) {
   return w / h > ratio ? { w: h * ratio, h } : { w, h: w / ratio }
@@ -79,7 +87,7 @@ const layout = computed(() => {
     const cellW = Math.floor((width.value - props.gap * (cols - 1)) / cols)
     const cellH = Math.floor((height.value - props.gap * (rows - 1)) / rows)
     const innerW = cellW - 2 * props.margin
-    const innerH = cellH - 2 * props.margin
+    const innerH = cellH - 2 * props.margin - labelHeight.value
     if (innerW <= 0 || innerH <= 0) continue
     const smallest = Math.min(
       ...props.options.map((o) => {
@@ -94,12 +102,13 @@ const layout = computed(() => {
 
 const cellStyle = computed(() => ({ width: `${layout.value.cellW}px`, height: `${layout.value.cellH}px` }))
 
-// the invisible square: the scaled picture plus the margin on every side
+// the invisible square: the scaled picture (and its word) plus the margin on
+// every side
 function zoneStyle(option) {
   const size = fit(ratioOf(option.id), layout.value.innerW, layout.value.innerH)
   return {
     width: `${Math.floor(size.w) + 2 * props.margin}px`,
-    height: `${Math.floor(size.h) + 2 * props.margin}px`,
+    height: `${Math.floor(size.h) + labelHeight.value + 2 * props.margin}px`,
     padding: `${props.margin}px`,
   }
 }
@@ -140,7 +149,7 @@ onBeforeUnmount(() => clearTimeout(feedbackTimer))
       >
         <button
           type="button"
-          class="block bg-transparent border-0 transition duration-150"
+          class="flex flex-col bg-transparent border-0 transition duration-150"
           :class="{
             'cursor-pointer': active,
             'scale-105': chosen === option.id,
@@ -155,9 +164,16 @@ onBeforeUnmount(() => clearTimeout(feedbackTimer))
             :src="option.image"
             alt=""
             draggable="false"
-            class="w-full h-full object-contain select-none pointer-events-none"
+            class="w-full flex-1 min-h-0 object-contain select-none pointer-events-none"
             @load="onImageLoad(option.id, $event)"
           />
+          <span
+            v-if="labelHeight"
+            class="flex shrink-0 items-end justify-center w-full text-xl font-medium leading-none whitespace-nowrap select-none"
+            :style="{ height: `${labelHeight}px` }"
+          >
+            {{ option.label }}
+          </span>
         </button>
       </div>
     </template>
