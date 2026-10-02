@@ -15,10 +15,14 @@
  * - ATTENTION_CHECK: the extra trial shuffled in with the 16 induction trials.
  *
  * The induction task is reworded for children: each trial is a spoken premise
- * and question, answered on a 4-point picture scale (SCALE_OPTIONS) instead of
- * the adult 0-100% slider. The adult induction videos (induction/*.mp4) are
- * NOT played; they are kept as the reference for the wording. Differences
- * from the adult wording:
+ * and question, answered on a 5-point picture scale (SCALE_OPTIONS) instead of
+ * the adult 0-100% slider. The premise frame and the scale follow the
+ * within-category homogeneity measure in Benitez, Leshin & Rhodes (2022,
+ * Cognition). The adult induction videos (induction/*.mp4) are NOT played;
+ * they are kept as the reference for the wording. Differences from the adult
+ * wording:
+ *   - all trials:   "Imagine you see a Zarpie [doing X]." ->
+ *                   "Now, look at this Zarpie. This Zarpie [does X]."
  *   - all trials:   "What percentage of Zarpies" -> "How many Zarpies"
  *   - potatoes:     farming / farm -> growing / grow
  *   - maple_syrup:  chugging / chug -> drinking / drink
@@ -58,89 +62,92 @@ export const TRAINING_FEATURES = [
 export const INDUCTION_FEATURES = [
   {
     id: 'cave',
-    premise: 'Imagine you see a Zarpie living in a cave.',
+    premise: 'Now, look at this Zarpie. This Zarpie lives in a cave.',
     question: 'How many Zarpies do you think live in caves?',
   },
   {
     id: 'lion',
-    premise: 'Imagine you see a Zarpie riding a lion.',
+    premise: 'Now, look at this Zarpie. This Zarpie rides a lion.',
     question: 'How many Zarpies do you think ride lions?',
   },
   {
     id: 'potatoes',
-    premise: 'Imagine you see a Zarpie growing potatoes.',
+    premise: 'Now, look at this Zarpie. This Zarpie grows potatoes.',
     question: 'How many Zarpies do you think grow potatoes?',
   },
   {
     id: 'banjo',
-    premise: 'Imagine you see a Zarpie playing the banjo.',
+    premise: 'Now, look at this Zarpie. This Zarpie plays the banjo.',
     question: 'How many Zarpies do you think play banjos?',
   },
   {
     id: 'look_left',
-    premise: 'Imagine you see a Zarpie looking to their left when someone talks to them.',
+    premise: 'Now, look at this Zarpie. This Zarpie looks to their left when someone talks to them.',
     question: 'How many Zarpies do you think look to their left when someone talks to them?',
   },
   {
     id: 'clap',
-    premise: 'Imagine you see a Zarpie clapping three times before going into a room.',
+    premise: 'Now, look at this Zarpie. This Zarpie claps three times before going into a room.',
     question: 'How many Zarpies do you think clap three times before going into a room?',
   },
   {
     id: 'sad',
-    premise: "Imagine you see a Zarpie smiling when they're sad.",
+    premise: "Now, look at this Zarpie. This Zarpie smiles when they're sad.",
     question: 'How many Zarpies do you think smile when they are sad?',
   },
   {
     id: 'maple_syrup',
-    premise: 'Imagine you see a Zarpie drinking maple syrup.',
+    premise: 'Now, look at this Zarpie. This Zarpie drinks maple syrup.',
     question: 'How many Zarpies do you think drink maple syrup?',
   },
   {
     id: 'cats',
-    premise: 'Imagine you see a Zarpie yelling at a cat.',
+    premise: 'Now, look at this Zarpie. This Zarpie yells at a cat.',
     question: 'How many Zarpies do you think yell at cats?',
   },
   {
     id: 'opera',
-    premise: 'Imagine you see a Zarpie going to the opera.',
+    premise: 'Now, look at this Zarpie. This Zarpie goes to the opera.',
     question: 'How many Zarpies do you think go to the opera?',
   },
   {
     id: 'dance',
-    premise: 'Imagine you see a Zarpie dancing around a fire on their 10th birthday.',
+    premise: 'Now, look at this Zarpie. This Zarpie dances around a fire on their 10th birthday.',
     question: 'How many Zarpies do you think dance around a fire on their 10th birthday?',
   },
   {
     id: 'song',
-    premise: 'Imagine you see a Zarpie singing a beautiful song.',
+    premise: 'Now, look at this Zarpie. This Zarpie sings a beautiful song.',
     question: 'How many Zarpies do you think sing beautiful songs?',
   },
   {
     id: 'window',
-    premise: 'Imagine you see a Zarpie screaming out of a window.',
+    premise: 'Now, look at this Zarpie. This Zarpie screams out of a window.',
     question: 'How many Zarpies do you think scream out of windows?',
   },
   {
     id: 'garbage',
-    premise: 'Imagine you see a Zarpie smelling garbage for fun.',
+    premise: 'Now, look at this Zarpie. This Zarpie smells garbage for fun.',
     question: 'How many Zarpies do you think smell garbage for fun?',
   },
   {
     id: 'pond',
-    premise: 'Imagine you see a Zarpie washing their clothes in a pond.',
+    premise: 'Now, look at this Zarpie. This Zarpie washes their clothes in a pond.',
     question: 'How many Zarpies do you think wash their clothes in ponds?',
   },
   {
     id: 'yellow',
-    premise: 'Imagine you see a Zarpie painting their hands yellow.',
+    premise: 'Now, look at this Zarpie. This Zarpie paints their hands yellow.',
     question: 'How many Zarpies do you think paint their hands yellow?',
   },
 ]
 
 // the scale, lowest to highest. On each trial the `spoken` clips are played in
 // this order while the matching picture shakes; `label` is the text shown with
-// the picture. There is no "none": the imagined Zarpie is always at least one.
+// the picture. This is the 5-point within-category homogeneity scale from
+// Benitez, Leshin & Rhodes (2022, Cognition): (1) only one, (2) a few,
+// (3) some, (4) most, (5) all. There is no "none": the Zarpie in the premise
+// is always at least one.
 export const SCALE_OPTIONS = [
   {
     id: 'one',
@@ -151,8 +158,16 @@ export const SCALE_OPTIONS = [
     image: null,
   },
   {
-    id: 'some',
+    id: 'few',
     value: 2,
+    spoken: 'Is it a few Zarpies?',
+    label: 'A few Zarpies',
+    audio: 'audio/scale_few.m4a',
+    image: null,
+  },
+  {
+    id: 'some',
+    value: 3,
     spoken: 'Is it some Zarpies?',
     label: 'Some Zarpies',
     audio: 'audio/scale_some.m4a',
@@ -160,7 +175,7 @@ export const SCALE_OPTIONS = [
   },
   {
     id: 'most',
-    value: 3,
+    value: 4,
     spoken: 'Is it most Zarpies?',
     label: 'Most Zarpies',
     audio: 'audio/scale_most.m4a',
@@ -168,7 +183,7 @@ export const SCALE_OPTIONS = [
   },
   {
     id: 'all',
-    value: 4,
+    value: 5,
     spoken: 'Is it all Zarpies?',
     label: 'All Zarpies',
     audio: 'audio/scale_all.m4a',
