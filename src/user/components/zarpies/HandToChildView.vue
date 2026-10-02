@@ -29,11 +29,22 @@ api.setAutofill(start)
         Please have your child sit in front of the computer, and make sure they are looking at the screen and can hear
         the sound.
       </p>
+      <!-- replaced 2026-10-02 by the lab's standard PANDA wording below
       <p class="text-lg mb-4">
         Please let your child make all the choices on their own. There are no right or wrong answers, so please do not
         help or give hints.
       </p>
-      <p class="text-lg mb-10">
+      -->
+      <!-- the lab's standard PANDA text (the "mouse click info" page), word for word -->
+      <p class="text-lg mb-4">
+        For this activity, we are interested in what your child thinks on their own! If your child knows how to use a
+        mouse to click on the computer, please allow them to do the clicking. If your child is unfamiliar with using a
+        mouse, they can point to the screen to show their response, and you can do the clicking for them.
+      </p>
+      <p class="text-lg mb-4">
+        We ask that you do not provide your child with any feedback, until after the study is complete. Thank you!
+      </p>
+      <p class="text-lg mb-8">
         Once your child is in position, please help them click the Start button below. A video will then play for your
         child automatically.
       </p>
