@@ -9,7 +9,7 @@
  *   - Play: the browser refused to start a video with sound because nobody
  *     has clicked on the page yet (e.g. after a reload). One click starts it.
  *   - Replay: the video file could not be loaded. The click tries again from
- *     the beginning, with a line asking the parent to contact us if it keeps
+ *     the beginning, with a line asking the parent to email the lab if it keeps
  *     happening.
  * - Neither button skips the video. The only way forward is watching it to
  *   the end.
@@ -87,7 +87,9 @@ watch(() => props.src, start)
       <Button variant="default" size="lg" class="text-2xl px-12 py-8" id="autoplayvideo-replay" @click="start()">
         <i-fa6-solid-rotate-right class="mr-2" /> Replay
       </Button>
-      <p class="text-lg mt-6">If this keeps happening, please exit the session and contact us for assistance.</p>
+      <p class="text-lg mt-6">
+        If this keeps happening, please exit the session and email discoveriesinaction@gmail.com for assistance.
+      </p>
     </div>
   </div>
 </template>

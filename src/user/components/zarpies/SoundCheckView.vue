@@ -123,7 +123,7 @@ api.setAutofill(autofill)
         </p>
         <p class="text-lg mb-8">
           Please make sure your sound is turned on and your volume is up, then try the sound check again. If you still
-          cannot hear anything, please exit the session and contact us for assistance.
+          cannot hear anything, please exit the session and email discoveriesinaction@gmail.com for assistance.
         </p>
         <Button variant="default" size="lg" id="soundcheck-retry" @click="play()">
           <i-fa6-solid-rotate-right class="mr-2" /> Play sound again
