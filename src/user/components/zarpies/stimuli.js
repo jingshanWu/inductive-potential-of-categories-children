@@ -210,6 +210,23 @@ export const INDUCTION_END = {
   audio: 'audio/induction_end.m4a',
 }
 
+// child consent (assent) page, rebuilt in code from the slide in the lab's
+// standard PANDA assent video so the wording can be edited. `spoken` is read
+// aloud; the YES / NO pictures are the two answers.
+export const CHILD_ASSENT = {
+  heading: "Perfect — now, let's hear from the kids!",
+  instruction: 'Kids: Please answer the following question by clicking "yes" or "no".',
+  question: 'Would you like to do this online activity with us?',
+  spoken:
+    "Perfect! Now, let's hear from the kids! Kids, please answer the following question by clicking yes or no. Would you like to do this online activity with us?",
+  note: 'Note: If you or your child does not agree to participate, you can opt out of this study by exiting out of your browser. Your webcam will turn off, all video footage recorded up to this point will be deleted, and the file will be destroyed.',
+  audio: 'audio/child_assent.m4a',
+  options: [
+    { id: 'yes', image: 'misc/assent_yes.svg' },
+    { id: 'no', image: 'misc/assent_no.svg' },
+  ],
+}
+
 export const TASK_INTRO_VIDEO = 'misc/task_intro.mp4'
 
 export const SOUND_CHECK = {
