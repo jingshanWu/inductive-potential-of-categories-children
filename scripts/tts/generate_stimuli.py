@@ -1,4 +1,4 @@
-"""Generate the induction task audio with Google Cloud TTS.
+"""Generate the study's spoken audio with Google Cloud TTS.
 
 Reads every spoken text from src/user/components/zarpies/stimuli.js (single
 source of truth) and writes one m4a per clip to the path stimuli.js gives it
@@ -6,6 +6,7 @@ under public/stimuli/ (audio/<id>.m4a):
   - 16 induction trials (premise + question) and the attention check
   - 5 scale options ("Is it only one Zarpie?" ...)
   - the induction intro and end messages
+  - the child consent (assent) question
 
 Voice: Chirp3-HD-Callirrhoe, the voice used in the GRB recognition study. To
 regenerate with a different voice:
@@ -44,6 +45,7 @@ const clips = [
   ...m.SCALE_OPTIONS.map((o) => ({ file: o.audio, text: o.spoken })),
   { file: m.INDUCTION_INTRO.audio, text: m.INDUCTION_INTRO.text },
   { file: m.INDUCTION_END.audio, text: m.INDUCTION_END.text },
+  { file: m.CHILD_ASSENT.audio, text: m.CHILD_ASSENT.spoken },
 ]
 console.log(JSON.stringify(clips))
 """
