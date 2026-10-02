@@ -4,13 +4,11 @@
 // be edited (all text is in CHILD_ASSENT in stimuli.js).
 //
 // The question is read aloud, then the child answers by clicking the big YES
-// or NO (hot spots, see HotSpots.vue). YES moves on to the study. NO stops
-// the study here: a closing screen tells the family they can exit, with a
-// button to answer again in case NO was clicked by mistake. Every answer is
-// recorded.
+// or NO (hot spots, see HotSpots.vue). YES moves on to the study. NO ends
+// the study here, as in the lab's Qualtrics version: a closing screen tells
+// the family they can exit, and there is no way back. The answer is recorded.
 import { ref } from 'vue'
 import useViewAPI from '@/core/composables/useViewAPI'
-import { Button } from '@/uikit/components/ui/button'
 import { ConstrainedTaskWindow } from '@/uikit/layouts'
 import AutoplayAudio from './AutoplayAudio.vue'
 import HotSpots from './HotSpots.vue'
@@ -19,7 +17,7 @@ import { CHILD_ASSENT, stimulusUrl } from './stimuli'
 const api = useViewAPI()
 
 // 'question' (audio, then YES / NO) -> yes -> next view
-//                                   -> no  -> 'declined' -> (answer again) -> 'question'
+//                                   -> no  -> 'declined' (the study ends here)
 const screen = ref('question')
 const spoken = ref(false) // the question has been read aloud to the end
 
@@ -38,11 +36,6 @@ function answer({ id, rt }) {
     api.saveData(true)
     screen.value = 'declined'
   }
-}
-
-function askAgain() {
-  spoken.value = false
-  screen.value = 'question'
 }
 
 function autofill() {
@@ -82,8 +75,6 @@ api.setAutofill(autofill)
         You can now exit out of your browser. Your webcam will turn off, all video footage recorded up to this point
         will be deleted, and the file will be destroyed.
       </p>
-      <p class="text-sm text-muted-foreground mb-3">If "no" was clicked by mistake, you can answer again.</p>
-      <Button variant="outline" size="lg" id="childconsent-again" @click="askAgain()">Answer again</Button>
     </div>
   </ConstrainedTaskWindow>
 </template>
