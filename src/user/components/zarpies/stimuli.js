@@ -210,7 +210,7 @@ export const SCALE_OPTIONS = [
     id: 'all',
     count: 9, // figures shown in the scale panel
     value: 5,
-    spoken: 'Is it all Zarpies?',
+    spoken: 'Or is it all Zarpies?', // "or" marks the last option
     label: 'All Zarpies',
     audio: 'audio/scale_all.m4a',
     image: null,
