@@ -44,13 +44,19 @@ const failed = ref(false) // video file could not be loaded
 
 function play() {
   blocked.value = false
-  video.value.play().catch(() => {
+  video.value.play().catch((err) => {
+    // AbortError: this play() was interrupted by a new load() (the src
+    // changed again); the newer call takes over, so it is not a block
+    if (err.name === 'AbortError') return
     blocked.value = true
   })
 }
 
 // load the current src and play it from the beginning
 function start() {
+  // the <video> element does not exist yet (the component is not mounted) or
+  // is gone (unmounted); onMounted() starts the video once it exists
+  if (!video.value) return
   failed.value = false
   video.value.src = props.src
   video.value.load()
@@ -58,7 +64,12 @@ function start() {
 }
 
 onMounted(start)
-watch(() => props.src, start)
+// flush: 'post' runs the watcher after the DOM has been updated, so the
+// <video> ref is set even when src changes during the parent's first render
+// (the training view re-renders a few times while its steps are being set
+// up; with the default pre-render flush the ref was still null and start()
+// threw, which in dev mode aborted the view's update and the navigation)
+watch(() => props.src, start, { flush: 'post' })
 </script>
 
 <template>
