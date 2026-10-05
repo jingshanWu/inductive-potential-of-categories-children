@@ -3,7 +3,8 @@
 Reads every spoken text from src/user/components/zarpies/stimuli.js (single
 source of truth) and writes one m4a per clip to the path stimuli.js gives it
 under public/stimuli/ (audio/<id>.m4a):
-  - 16 induction trials (premise + question) and the attention check
+  - 16 induction trials (a description clip and a question clip each) and
+    the attention check
   - 5 scale options ("Is it only one Zarpie?" ...)
   - the induction intro and end messages
   - the child consent (assent) question
@@ -42,7 +43,10 @@ import fs from 'fs'
 const src = fs.readFileSync(process.argv[1], 'utf8').replace(/import\\.meta\\.env\\.BASE_URL/g, '"/"')
 const m = await import('data:text/javascript,' + encodeURIComponent(src))
 const clips = [
-  ...m.inductionTrials().map((t) => ({ file: t.audio, text: t.text })),
+  ...m.inductionTrials().flatMap((t) => [
+    ...(t.audio.description ? [{ file: t.audio.description, text: t.premise }] : []),
+    { file: t.audio.question, text: t.attentionCheck ? t.text : t.question },
+  ]),
   ...m.SCALE_OPTIONS.map((o) => ({ file: o.audio, text: o.spoken })),
   { file: m.INDUCTION_INTRO.audio, text: m.INDUCTION_INTRO.text },
   { file: m.INDUCTION_END.audio, text: m.INDUCTION_END.text },

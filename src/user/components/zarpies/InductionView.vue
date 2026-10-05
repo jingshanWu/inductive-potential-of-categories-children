@@ -6,12 +6,16 @@
 //      all 17 shuffled together per participant as in the adult study
 //   3. end: a spoken "all done, get your grown-up", then a Continue button
 //
-// A trial, top to bottom on screen: premise text, the Zarpie picture (a text
-// placeholder until the pictures exist), question text, the 5 scale choices.
-// Its sound: the trial clip (premise + question), then the 5 scale clips
-// ("Is it only one Zarpie?" ...) one by one, each enlarging its choice. The
-// choices only become clickable after the last clip. The attention check
-// plays just its own clip, then the choices become clickable.
+// A trial has two parts:
+//   1. describe: the premise text with a big picture of the Zarpie, while the
+//      description clip plays ("Now, look at this Zarpie. This Zarpie ...").
+//   2. question: the picture shrinks; the question text and the 5 scale
+//      choices (panels of that Zarpie, 1 / 3 / 5 / 7 / 9 times) appear while
+//      the question clip plays, then the 5 scale clips ("Is it only one
+//      Zarpie?" ...) one by one, each enlarging its choice. The choices only
+//      become clickable after the last clip.
+// The attention check skips part 1: its clip plays with the choices showing,
+// then the choices become clickable.
 //
 // All text, audio paths and the scale come from stimuli.js. The choices are
 // hot spots (HotSpots.vue); the sound and its Play / Replay fallbacks are in
@@ -50,9 +54,17 @@ steps[1]
 
 const section = computed(() => api.path[0]) // 'intro' | 'trials' | 'end'
 
-// where we are within a trial: 'question' (trial clip playing) ->
-// 'options' (scale clips playing one by one) -> 'respond' (choices clickable)
-const phase = ref('question')
+// the current trial's picture and clips, looked up from stimuli.js by id
+// rather than read from the saved step data (steps are saved per participant
+// when first built, so anything added to stimuli.js later would not show)
+const TRIALS = Object.fromEntries(inductionTrials().map((trial) => [trial.id, trial]))
+const trial = computed(() => (section.value === 'trials' ? TRIALS[api.stepData.id] : null))
+const trialImage = computed(() => trial.value?.image ?? null)
+
+// where we are within a trial: 'describe' (big picture, description clip) ->
+// 'question' (small picture, question clip, choices showing) -> 'options'
+// (scale clips one by one) -> 'respond' (choices clickable)
+const phase = ref('describe')
 const optionIndex = ref(0)
 const endSpoken = ref(false)
 let gapTimer = null
@@ -62,23 +74,31 @@ watch(
   () => api.stepIndex,
   () => {
     clearTimeout(gapTimer)
-    phase.value = 'question'
+    phase.value = api.stepData?.attentionCheck ? 'question' : 'describe'
     optionIndex.value = 0
-  }
+  },
+  { immediate: true }
 )
 
-const choices = SCALE_OPTIONS.map((option) => ({
-  id: option.id,
-  label: option.label,
-  image: option.image ? stimulusUrl(option.image) : undefined,
-}))
+// the 5 scale choices for the current trial: panels showing the trial's own
+// Zarpie 1 / 3 / 5 / 7 / 9 times (a fixed scale picture, if one is ever
+// listed in SCALE_OPTIONS, takes precedence; text only if there is no picture)
+const choices = computed(() =>
+  SCALE_OPTIONS.map((option) => {
+    const choice = { id: option.id, label: option.label }
+    if (option.image) choice.image = stimulusUrl(option.image)
+    else if (trialImage.value) choice.panel = { image: stimulusUrl(trialImage.value), count: option.count }
+    return choice
+  })
+)
 
 const highlighted = computed(() => (phase.value === 'options' ? SCALE_OPTIONS[optionIndex.value].id : null))
 
 const audioSrc = computed(() => {
   if (section.value === 'intro') return stimulusUrl(INDUCTION_INTRO.audio)
   if (section.value === 'end') return endSpoken.value ? null : stimulusUrl(INDUCTION_END.audio)
-  if (phase.value === 'question') return stimulusUrl(api.stepData.audio)
+  if (phase.value === 'describe') return stimulusUrl(trial.value.audio.description)
+  if (phase.value === 'question') return stimulusUrl(trial.value.audio.question)
   if (phase.value === 'options') return stimulusUrl(SCALE_OPTIONS[optionIndex.value].audio)
   return null
 })
@@ -89,6 +109,8 @@ function nextClip() {
     api.goNextStep()
   } else if (section.value === 'end') {
     endSpoken.value = true
+  } else if (phase.value === 'describe') {
+    phase.value = 'question'
   } else if (phase.value === 'question') {
     phase.value = api.stepData.attentionCheck ? 'respond' : 'options'
   } else if (phase.value === 'options') {
@@ -145,17 +167,21 @@ api.setAutofill(autofill)
 
     <!-- 2. trials -->
     <template v-else-if="section === 'trials'">
-      <!-- attention check: just its instruction -->
+      <!-- attention check: just its instruction (its panels use a neutral Zarpie) -->
       <p v-if="api.stepData.attentionCheck" class="text-2xl font-medium my-6">{{ api.stepData.text }}</p>
 
       <template v-else>
         <p class="text-2xl font-medium mb-3">{{ api.stepData.premise }}</p>
 
-        <!-- the Zarpie for this trial (text placeholder until the pictures exist) -->
-        <div class="w-full h-[28vh] mb-3 flex items-center justify-center">
+        <!-- the Zarpie for this trial: big while described, then shrinks for the
+             question (a dashed text box if no picture is listed) -->
+        <div
+          class="w-full mb-3 flex items-center justify-center transition-[height] duration-700"
+          :class="phase === 'describe' ? 'h-[60vh]' : 'h-[28vh]'"
+        >
           <img
-            v-if="api.stepData.image"
-            :src="stimulusUrl(api.stepData.image)"
+            v-if="trialImage"
+            :src="stimulusUrl(trialImage)"
             alt=""
             draggable="false"
             class="max-w-full max-h-full object-contain select-none"
@@ -168,11 +194,11 @@ api.setAutofill(autofill)
           </div>
         </div>
 
-        <p class="text-2xl font-medium mb-3">{{ api.stepData.question }}</p>
+        <p v-if="phase !== 'describe'" class="text-2xl font-medium mb-3">{{ api.stepData.question }}</p>
       </template>
 
-      <!-- the scale, lowest to highest, in one row -->
-      <div class="w-full flex-1 min-h-0">
+      <!-- the scale, lowest to highest, in one row (from the question part on) -->
+      <div v-if="phase !== 'describe'" class="w-full flex-1 min-h-0">
         <HotSpots
           :key="api.stepIndex"
           :options="choices"

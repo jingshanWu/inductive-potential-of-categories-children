@@ -18,8 +18,8 @@
  * and question, answered on a 5-point picture scale (SCALE_OPTIONS) instead of
  * the adult 0-100% slider. The premise frame and the scale follow the
  * within-category homogeneity measure in Benitez, Leshin & Rhodes (2022,
- * Cognition). The adult induction videos (induction/*.mp4) are NOT played;
- * they are kept as the reference for the wording. Differences from the adult
+ * Cognition). The adult induction videos were text slides; they were deleted
+ * on 2026-10-05 once the wording was confirmed. Differences from the adult
  * wording:
  *   - all trials:   "Imagine you see a Zarpie [doing X]." ->
  *                   "Now, look at this Zarpie. This Zarpie [does X]."
@@ -30,9 +30,13 @@
  *   - clap:         entering a room -> going into a room
  *   - look_left:    when spoken to -> when someone talks to them
  *   - attn_check:   "move the slider to 100%" -> "click on the very last picture"
+ *   - opera:        replaced by `music` ("likes to listen to music"): the opera
+ *                   item is too hard to picture for children (2026-10-05)
  *
- * Audio files (audio/*.m4a) and scale pictures are still to be made; the
- * paths below are the names the files will have.
+ * Test pictures (images/*.png) were generated with OpenAI image generation
+ * from reference Zarpies (see zarpie-stimuli/tools/imagegen). The 5 scale
+ * choices are panels built from the trial's own picture, repeated 1 / 3 / 5 /
+ * 7 / 9 times (SCALE_OPTIONS.count), as in Benitez, Leshin & Rhodes (2022).
  *
  * Asset paths are relative to public/stimuli/.
  */
@@ -62,81 +66,97 @@ export const TRAINING_FEATURES = [
 export const INDUCTION_FEATURES = [
   {
     id: 'cave',
+    image: 'images/cave.png',
     premise: 'Now, look at this Zarpie. This Zarpie lives in a cave.',
     question: 'How many Zarpies do you think live in caves?',
   },
   {
     id: 'lion',
+    image: 'images/lion.png',
     premise: 'Now, look at this Zarpie. This Zarpie rides a lion.',
     question: 'How many Zarpies do you think ride lions?',
   },
   {
     id: 'potatoes',
+    image: 'images/potatoes.png',
     premise: 'Now, look at this Zarpie. This Zarpie grows potatoes.',
     question: 'How many Zarpies do you think grow potatoes?',
   },
   {
     id: 'banjo',
+    image: 'images/banjo.png',
     premise: 'Now, look at this Zarpie. This Zarpie plays the banjo.',
     question: 'How many Zarpies do you think play banjos?',
   },
   {
     id: 'look_left',
+    image: 'images/look_left.png',
     premise: 'Now, look at this Zarpie. This Zarpie looks to their left when someone talks to them.',
     question: 'How many Zarpies do you think look to their left when someone talks to them?',
   },
   {
     id: 'clap',
+    image: 'images/clap.png',
     premise: 'Now, look at this Zarpie. This Zarpie claps three times before going into a room.',
     question: 'How many Zarpies do you think clap three times before going into a room?',
   },
   {
     id: 'sad',
+    image: 'images/sad.png',
     premise: "Now, look at this Zarpie. This Zarpie smiles when they're sad.",
     question: 'How many Zarpies do you think smile when they are sad?',
   },
   {
     id: 'maple_syrup',
+    image: 'images/maple_syrup.png',
     premise: 'Now, look at this Zarpie. This Zarpie drinks maple syrup.',
     question: 'How many Zarpies do you think drink maple syrup?',
   },
   {
     id: 'cats',
+    image: 'images/cats.png',
     premise: 'Now, look at this Zarpie. This Zarpie yells at a cat.',
     question: 'How many Zarpies do you think yell at cats?',
   },
   {
-    id: 'opera',
-    premise: 'Now, look at this Zarpie. This Zarpie goes to the opera.',
-    question: 'How many Zarpies do you think go to the opera?',
+    id: 'music', // replaces the adult study's `opera` item (too hard to picture for children)
+    image: 'images/music.png',
+    premise: 'Now, look at this Zarpie. This Zarpie likes to listen to music.',
+    question: 'How many Zarpies do you think like to listen to music?',
   },
   {
     id: 'dance',
+    image: 'images/dance.png',
     premise: 'Now, look at this Zarpie. This Zarpie dances around a fire on their 10th birthday.',
     question: 'How many Zarpies do you think dance around a fire on their 10th birthday?',
   },
   {
     id: 'song',
+    image: 'images/song.png',
     premise: 'Now, look at this Zarpie. This Zarpie sings a beautiful song.',
     question: 'How many Zarpies do you think sing beautiful songs?',
   },
   {
     id: 'window',
+    image: 'images/window.png',
     premise: 'Now, look at this Zarpie. This Zarpie screams out of a window.',
     question: 'How many Zarpies do you think scream out of windows?',
   },
   {
     id: 'garbage',
+    image: 'images/garbage.png',
     premise: 'Now, look at this Zarpie. This Zarpie smells garbage for fun.',
     question: 'How many Zarpies do you think smell garbage for fun?',
   },
   {
     id: 'pond',
+    image: 'images/pond.png',
     premise: 'Now, look at this Zarpie. This Zarpie washes their clothes in a pond.',
     question: 'How many Zarpies do you think wash their clothes in ponds?',
   },
   {
     id: 'yellow',
+    image: 'images/yellow.png',
     premise: 'Now, look at this Zarpie. This Zarpie paints their hands yellow.',
     question: 'How many Zarpies do you think paint their hands yellow?',
   },
@@ -144,13 +164,15 @@ export const INDUCTION_FEATURES = [
 
 // the scale, lowest to highest. On each trial the `spoken` clips are played in
 // this order while the matching picture shakes; `label` is the text shown with
-// the picture. This is the 5-point within-category homogeneity scale from
+// the picture; `count` is how many copies of the trial's Zarpie the panel
+// shows. This is the 5-point within-category homogeneity scale from
 // Benitez, Leshin & Rhodes (2022, Cognition): (1) only one, (2) a few,
 // (3) some, (4) most, (5) all. There is no "none": the Zarpie in the premise
 // is always at least one.
 export const SCALE_OPTIONS = [
   {
     id: 'one',
+    count: 1, // figures shown in the scale panel
     value: 1,
     spoken: 'Is it only one Zarpie?',
     label: 'Only one Zarpie',
@@ -159,6 +181,7 @@ export const SCALE_OPTIONS = [
   },
   {
     id: 'few',
+    count: 3, // figures shown in the scale panel
     value: 2,
     spoken: 'Is it a few Zarpies?',
     label: 'A few Zarpies',
@@ -167,6 +190,7 @@ export const SCALE_OPTIONS = [
   },
   {
     id: 'some',
+    count: 5, // figures shown in the scale panel
     value: 3,
     spoken: 'Is it some Zarpies?',
     label: 'Some Zarpies',
@@ -175,6 +199,7 @@ export const SCALE_OPTIONS = [
   },
   {
     id: 'most',
+    count: 7, // figures shown in the scale panel
     value: 4,
     spoken: 'Is it most Zarpies?',
     label: 'Most Zarpies',
@@ -183,6 +208,7 @@ export const SCALE_OPTIONS = [
   },
   {
     id: 'all',
+    count: 9, // figures shown in the scale panel
     value: 5,
     spoken: 'Is it all Zarpies?',
     label: 'All Zarpies',
@@ -195,6 +221,8 @@ export const ATTENTION_CHECK = {
   id: 'attn_check',
   text: 'This is an attention check, kid. Please click on the very last picture.',
   audio: 'audio/attn_check.m4a',
+  // TODO: a neutral Zarpie of its own; for now one of the test pictures
+  image: 'images/yellow.png',
   correct: 'all', // the very last picture
 }
 
@@ -244,8 +272,7 @@ export const TASK_INTRO = {
 }
 
 export const SOUND_CHECK = {
-  audio: 'misc/sound_check.m4a', // bird sound, audio form
-  video: 'misc/sound_check.mp4', // bird sound, video form
+  audio: 'misc/sound_check.m4a', // bird sound (the adult study's video form was deleted 2026-10-05)
   options: [
     { id: 'dog', image: 'misc/soundcheck_dog.png' },
     { id: 'pig', image: 'misc/soundcheck_pig.png' },
@@ -268,21 +295,24 @@ export function trainingTrials(condition) {
 
 /**
  * Induction task trials (16 features + attention check), in Qualtrics order.
- * `video` is the adult study's video for the trial (wording reference only,
- * not played); `audio` is the child version's spoken clip.
- * @returns {Array<{id: string, text: string, premise?: string, question?: string, audio: string, video: string, attentionCheck: boolean}>}
+ * @returns {Array<{id: string, text: string, premise?: string, question?: string, audio: {description: string|null, question: string}, image: string, attentionCheck: boolean}>}
  */
 export function inductionTrials() {
   const features = INDUCTION_FEATURES.map((feature) => ({
     ...feature,
     text: `${feature.premise} ${feature.question}`,
-    audio: `audio/${feature.id}.m4a`,
-    video: `induction/${feature.id}.mp4`,
+    // two clips per trial: the description (premise) plays with the big
+    // picture, then the question plays as the picture shrinks and the scale
+    // appears.
+    audio: {
+      description: `audio/${feature.id}_description.m4a`,
+      question: `audio/${feature.id}_question.m4a`,
+    },
     attentionCheck: false,
   }))
   const attentionCheck = {
     ...ATTENTION_CHECK,
-    video: `induction/${ATTENTION_CHECK.id}.mp4`,
+    audio: { description: null, question: ATTENTION_CHECK.audio }, // one clip, no description part
     attentionCheck: true,
   }
   return [...features, attentionCheck]
