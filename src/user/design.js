@@ -5,7 +5,7 @@
  * This file configures which phases occur in what order.
  *
  * Inductive potential of categories, child version (run on PANDA):
- *   welcome -> parent consent -> window size -> sound check -> child consent
+ *   welcome -> parent consent -> child consent -> window size -> sound check
  *   -> hand over to child -> task intro video -> training videos (generic or
  *   specific condition; baseline skips) -> induction test -> parent form
  *   -> thanks
@@ -182,6 +182,13 @@ timeline.pushSeqView({
   },
 })
 
+// child consent (assent), right after the parent's consent: a "no" ends the
+// study on that page
+timeline.pushSeqView({
+  name: 'childconsent',
+  component: ChildConsentView,
+})
+
 // // demographic survey
 // timeline.pushSeqView({
 //   name: 'demograph',
@@ -198,12 +205,6 @@ timeline.pushSeqView({
 timeline.pushSeqView({
   name: 'soundcheck',
   component: SoundCheckView,
-})
-
-// child consent (assent): a "no" ends the study on that page
-timeline.pushSeqView({
-  name: 'childconsent',
-  component: ChildConsentView,
 })
 
 // hand the laptop over to the child
