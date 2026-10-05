@@ -229,6 +229,20 @@ export const CHILD_ASSENT = {
 
 export const TASK_INTRO_VIDEO = 'misc/task_intro.mp4'
 
+// task intro text, in two versions. `adult` is the narration of the adult
+// study's intro video (task_intro.mp4), word for word; `child` is the same
+// content reworded for a child. Audio paths are where generated clips go.
+export const TASK_INTRO = {
+  adult: {
+    text: 'Imagine there is a group of people called Zarpies. You will be told some information about Zarpies and be asked to make some guesses about them.',
+    audio: 'audio/task_intro_adult.m4a',
+  },
+  child: {
+    text: "Imagine there is a group of people called Zarpies. I'm going to tell you some things about Zarpies, and then ask you some questions about them.",
+    audio: 'audio/task_intro_child.m4a',
+  },
+}
+
 export const SOUND_CHECK = {
   audio: 'misc/sound_check.m4a', // bird sound, audio form
   video: 'misc/sound_check.mp4', // bird sound, video form
