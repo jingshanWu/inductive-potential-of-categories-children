@@ -1,6 +1,6 @@
 <script setup>
 /**
- * ParentFormView Component
+ * ParentFormView Component (CDSC default)
  *
  * End-of-study parent form for PANDA studies, adapted from the smile template
  * to match the lab's standard child-study questions (the "panda demographics"
@@ -147,6 +147,9 @@ function finish() {
 
       <template #right>
         <div class="border border-border text-left bg-muted p-6 rounded-lg">
+          <!-- this page is longer than the window: say so before the first question -->
+          <p class="text-md font-semibold text-muted-foreground mb-4">* Scroll down for more</p>
+
           <!-- Video privacy settings -->
           <div class="mb-6">
             <label class="block text-md font-semibold text-foreground mb-3">
