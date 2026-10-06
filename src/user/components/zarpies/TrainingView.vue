@@ -12,8 +12,8 @@
 // is no way to continue without watching each video to the end.
 import { computed, onMounted } from 'vue'
 import useViewAPI from '@/core/composables/useViewAPI'
-import AutoplayVideo from './AutoplayVideo.vue'
-import ChildStage from './ChildStage.vue'
+import AutoplayVideo from '@/builtins/cdsc_default/AutoplayVideo.vue'
+import ChildStage from '@/builtins/cdsc_default/ChildStage.vue'
 import { stimulusUrl, trainingTrials } from './stimuli'
 
 const api = useViewAPI()

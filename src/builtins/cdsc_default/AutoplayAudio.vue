@@ -23,6 +23,9 @@
  *
  * - src: the clip's URL. It starts playing as soon as the component appears.
  * - @ended: fires when the clip has played to the end. Move on from there.
+ * - @time (optional): fires a few times a second while the clip plays, with
+ *   how many seconds of it have played, e.g. to show things on the page as
+ *   the voice gets to them.
  * - To play several clips in a row, keep the component on the page and just
  *   change src when @ended fires: the new clip starts by itself. (Reusing the
  *   same player is what lets the browser keep autoplaying.)
@@ -36,7 +39,7 @@ const props = defineProps({
   src: { type: String, default: null },
 })
 
-const emit = defineEmits(['ended'])
+const emit = defineEmits(['ended', 'time'])
 
 const audio = ref(null)
 const blocked = ref(false) // browser refused to autoplay
@@ -88,7 +91,13 @@ watch(() => props.src, start)
 
 <template>
   <div>
-    <audio ref="audio" preload="auto" @ended="emit('ended')" @error="failed = !!src"></audio>
+    <audio
+      ref="audio"
+      preload="auto"
+      @ended="emit('ended')"
+      @timeupdate="emit('time', audio.currentTime)"
+      @error="failed = !!src"
+    ></audio>
 
     <!-- autoplay was blocked: one click starts the clip -->
     <div v-if="blocked && !failed" class="fixed inset-0 z-50 flex items-center justify-center bg-background/80">
