@@ -37,7 +37,7 @@ STIMULI = os.path.join(os.path.dirname(os.path.dirname(HERE)), "public", "stimul
 BIRD = "misc/sound_check.m4a"
 BIRD_RATIO = 2 / 3  # bird amplitude / training video amplitude
 CEILING_DB = -1.0  # peaks are held under this
-TOLERANCE_DB = 0.3
+TOLERANCE_DB = 0.5
 FRAME_S = 0.05
 GATE_DB = -50.0
 
