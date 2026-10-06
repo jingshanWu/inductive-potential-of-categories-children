@@ -249,13 +249,25 @@ export const INDUCTION_INTRO = {
   audio: 'audio/induction_intro.m4a',
 }
 
-// the lab's standard PANDA videos (narrated slides), taken from the Qualtrics
-// survey "Speaker Generics Pt 3" (question tags mouse, started, pre_parent).
-// Only their sound level was changed, to match the training videos.
+// the lab's standard PANDA materials, taken from the Qualtrics survey
+// "Speaker Generics Pt 3" (question tags mouse, started, pre_parent, click,
+// upload). Only the sound level was changed, to match the training videos.
+
+// the "mouse click info" page for the parent, before the child starts. The
+// page is rebuilt in code (logo, text, mascot) so it can be edited; `audio`
+// is the narration of the lab's video of that page (27 s), which reads
+// `paragraphs` word for word.
+export const PANDA_MOUSE_INFO = {
+  logo: 'misc/panda_logo.png', // "WELCOME to panda, The Princeton And NYU Discoveries in Action Lab"
+  mascot: 'misc/panda_mascot.png',
+  paragraphs: [
+    'For this activity, we are interested in what your child thinks on their own! If your child knows how to use a mouse to click on the computer, please allow them to do the clicking. If your child is unfamiliar with using a mouse, they can point to the screen to show their response, and you can do the clicking for them.',
+    'We ask that you do not provide your child with any feedback, until after the study is complete. Thank you!',
+  ],
+  audio: 'misc/panda_mouse_info.m4a',
+}
+
 export const PANDA_VIDEOS = {
-  // for the parent, before the child starts: let your child do the clicking,
-  // give no feedback (27 s)
-  mouseInfo: 'misc/panda_mouse_info.mp4',
   // "Let's get started!" (3 s)
   getStarted: 'misc/panda_get_started.mp4',
   // after the test: "GREAT job! Now, we have just a few questions for
