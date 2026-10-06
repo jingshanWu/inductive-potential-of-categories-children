@@ -5,7 +5,8 @@ the adult study and are the reference: their loudness is measured and nothing
 in them is changed. Every other clip is then turned up or down to it:
   - all spoken clips in public/stimuli/audio/ (task intro, test trials, scale,
     child assent, ...): same loudness as the training videos
-  - the sound check bird clip (misc/sound_check.m4a): BIRD_RATIO (2/3) of the
+  - the sound check bird clip (the lab's default sound check,
+    src/builtins/cdsc_default/assets/sound_check.m4a): BIRD_RATIO (2/3) of the
     training videos' amplitude, i.e. about 3.5 dB quieter, so a parent who
     sets the volume by the bird does not end up with the study too quiet
 
@@ -32,9 +33,10 @@ import wave
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-STIMULI = os.path.join(os.path.dirname(os.path.dirname(HERE)), "public", "stimuli")
+REPO = os.path.dirname(os.path.dirname(HERE))
+STIMULI = os.path.join(REPO, "public", "stimuli")
 
-BIRD = "misc/sound_check.m4a"
+BIRD = os.path.join(REPO, "src", "builtins", "cdsc_default", "assets", "sound_check.m4a")
 BIRD_RATIO = 2 / 3  # bird amplitude / training video amplitude
 CEILING_DB = -1.0  # peaks are held under this
 TOLERANCE_DB = 0.5
@@ -125,13 +127,13 @@ def main():
     print(f"  median {reference:.1f} dB (range {min(levels):.1f} to {max(levels):.1f})\n")
 
     clips = [(p, reference) for p in sorted(glob.glob(os.path.join(STIMULI, "audio", "*.m4a")))]
-    clips.append((os.path.join(STIMULI, BIRD), reference + db(BIRD_RATIO)))
+    clips.append((BIRD, reference + db(BIRD_RATIO)))
 
     print("clips")
     for path, target in clips:
         x, rate = read_audio(path)
         before = loudness(x, rate)
-        name = os.path.relpath(path, STIMULI)
+        name = os.path.relpath(path, STIMULI if path.startswith(STIMULI) else REPO)[-38:]
         if abs(before - target) <= TOLERANCE_DB:
             print(f"  {name:38s} {before:6.1f} dB  ok")
         elif args.dry_run:
