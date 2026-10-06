@@ -17,8 +17,11 @@ regenerate with a different voice:
 Skips files that already exist unless --force (so after changing a sentence
 in stimuli.js, delete its m4a or use --force). Writes a summary CSV next to
 this script. Freshly generated clips are much quieter than the training
-videos: run match_loudness.py (this folder) afterwards to bring them to the
-same loudness. Requires gcloud application-default credentials, node, the
+videos, and the 5 scale clips come out with different lengths: run
+match_loudness.py (this folder) afterwards to bring every clip to the same
+loudness and the scale clips to the same length. The voice says a sentence a
+little differently every time, so listen to a regenerated clip before keeping
+it. Requires gcloud application-default credentials, node, the
 google-cloud-texttospeech package, and macOS afconvert. Adapted from
 scripts/tts/generate_stimuli.py in the GRB recognition study repo.
 """
@@ -49,7 +52,7 @@ const clips = [
     ...(t.audio.description ? [{ file: t.audio.description, text: t.premise }] : []),
     { file: t.audio.question, text: t.attentionCheck ? t.text : t.question },
   ]),
-  ...m.SCALE_OPTIONS.map((o) => ({ file: o.audio, text: o.spoken })),
+  ...m.SCALE_OPTIONS.map((o) => ({ file: o.audio, text: o.spoken, rate: o.speakingRate })),
   { file: m.INDUCTION_INTRO.audio, text: m.INDUCTION_INTRO.text },
   { file: m.INDUCTION_END.audio, text: m.INDUCTION_END.text },
   { file: m.CHILD_ASSENT.audio, text: m.CHILD_ASSENT.spoken },
@@ -92,7 +95,10 @@ def main():
         resp = client.synthesize_speech(
             input=texttospeech.SynthesisInput(text=clip["text"]),
             voice=texttospeech.VoiceSelectionParams(language_code="en-US", name=args.voice),
-            audio_config=texttospeech.AudioConfig(audio_encoding=texttospeech.AudioEncoding.LINEAR16),
+            audio_config=texttospeech.AudioConfig(
+                audio_encoding=texttospeech.AudioEncoding.LINEAR16,
+                speaking_rate=clip.get("rate"),  # None = the voice's normal rate
+            ),
             timeout=30,
         )
         with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
