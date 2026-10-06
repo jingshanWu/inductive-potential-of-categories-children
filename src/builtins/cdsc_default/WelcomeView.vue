@@ -86,7 +86,12 @@ onBeforeUnmount(() => {
             <li>2. Enlarge your window to <b>full screen.</b></li>
             <li>3. <b>Scroll up</b> so that your webcam image is not in view.</li>
           </ol>
-          <img src="./assets/panda_mascot.png" alt="" draggable="false" class="w-[130px] shrink-0 select-none" />
+          <img
+            src="@/assets/cdsc_default/panda_mascot.png"
+            alt=""
+            draggable="false"
+            class="w-[130px] shrink-0 select-none"
+          />
         </div>
 
         <!-- Call-to-action button (the padding under it is room for its wiggle) -->

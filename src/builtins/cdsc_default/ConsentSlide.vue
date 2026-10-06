@@ -2,7 +2,7 @@
 // The frame of one of the lab's consent slides: a white card with the NYU
 // torch in the corner, the "CONSENT" badge and, if given, the underlined
 // title. The slide's content goes inside.
-import torch from './assets/consent/nyu_torch.png'
+import torch from '@/assets/cdsc_default/consent/nyu_torch.png'
 
 defineProps({
   title: { type: String, default: null },

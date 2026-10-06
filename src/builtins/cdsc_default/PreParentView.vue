@@ -18,9 +18,9 @@ import useViewAPI from '@/core/composables/useViewAPI'
 import { Button } from '@/uikit/components/ui/button'
 import AutoplayAudio from './AutoplayAudio.vue'
 import ChildStage from './ChildStage.vue'
-import narration from './assets/panda_pre_parent.m4a'
-import mascot from './assets/panda_mascot.png'
-import webcam from './assets/panda_webcam.png'
+import narration from '@/assets/cdsc_default/panda_pre_parent.m4a'
+import mascot from '@/assets/cdsc_default/panda_mascot.png'
+import webcam from '@/assets/cdsc_default/panda_webcam.png'
 
 // the red of the lab's slide
 const HEADING_RED = '#de373f'

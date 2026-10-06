@@ -9,17 +9,17 @@
 // The few parts that differ from study to study come from
 // src/user/components/consentStudyInfo.js.
 import study from '@/user/components/consentStudyInfo'
-import piPhoto from './assets/consent/pi_photo.jpg'
-import nyuLogo from './assets/consent/nyu_logo.png'
-import kidsReading from './assets/consent/kids_reading.png'
-import parentChildLaptop from './assets/consent/parent_child_laptop.jpg'
-import keyboardHands from './assets/consent/keyboard_hands.png'
-import handsSky from './assets/consent/hands_sky.jpg'
-import handsSilhouette from './assets/consent/hands_silhouette.jpg'
-import lock from './assets/consent/lock.png'
-import privateSign from './assets/consent/private.png'
-import kidsGroup from './assets/consent/kids_group.jpg'
-import brain from './assets/consent/brain.jpg'
+import piPhoto from '@/assets/cdsc_default/consent/pi_photo.jpg'
+import nyuLogo from '@/assets/cdsc_default/consent/nyu_logo.png'
+import kidsReading from '@/assets/cdsc_default/consent/kids_reading.png'
+import parentChildLaptop from '@/assets/cdsc_default/consent/parent_child_laptop.jpg'
+import keyboardHands from '@/assets/cdsc_default/consent/keyboard_hands.png'
+import handsSky from '@/assets/cdsc_default/consent/hands_sky.jpg'
+import handsSilhouette from '@/assets/cdsc_default/consent/hands_silhouette.jpg'
+import lock from '@/assets/cdsc_default/consent/lock.png'
+import privateSign from '@/assets/cdsc_default/consent/private.png'
+import kidsGroup from '@/assets/cdsc_default/consent/kids_group.jpg'
+import brain from '@/assets/cdsc_default/consent/brain.jpg'
 
 defineProps({
   section: { type: Number, required: true }, // 1-6

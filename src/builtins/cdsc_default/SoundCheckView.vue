@@ -21,12 +21,12 @@ import { shuffle } from '@/core/utils/randomization'
 import ChildStage from './ChildStage.vue'
 import HotSpots from './HotSpots.vue'
 import ScaleToFit from './ScaleToFit.vue'
-import birdSound from './assets/sound_check.m4a'
-import birdImage from './assets/soundcheck_bird.png'
-import cowImage from './assets/soundcheck_cow.png'
-import dogImage from './assets/soundcheck_dog.png'
-import horseImage from './assets/soundcheck_horse.png'
-import pigImage from './assets/soundcheck_pig.png'
+import birdSound from '@/assets/cdsc_default/sound_check.m4a'
+import birdImage from '@/assets/cdsc_default/soundcheck_bird.png'
+import cowImage from '@/assets/cdsc_default/soundcheck_cow.png'
+import dogImage from '@/assets/cdsc_default/soundcheck_dog.png'
+import horseImage from '@/assets/cdsc_default/soundcheck_horse.png'
+import pigImage from '@/assets/cdsc_default/soundcheck_pig.png'
 
 const SOUND_CHECK = {
   audio: birdSound, // a bird sound

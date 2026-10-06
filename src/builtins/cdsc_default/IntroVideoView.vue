@@ -20,9 +20,9 @@ import { Button } from '@/uikit/components/ui/button'
 import AutoplayAudio from './AutoplayAudio.vue'
 import ChildStage from './ChildStage.vue'
 import ScaleToFit from './ScaleToFit.vue'
-import narration from './assets/panda_intro.m4a'
-import photo from './assets/panda_intro_photo.jpg'
-import wordmark from './assets/panda_wordmark_mascot.png'
+import narration from '@/assets/cdsc_default/panda_intro.m4a'
+import photo from '@/assets/cdsc_default/panda_intro_photo.jpg'
+import wordmark from '@/assets/cdsc_default/panda_wordmark_mascot.png'
 
 // the lab's name, in the colours of the PANDA letters (null = the page's text colour)
 const LAB_NAME = [

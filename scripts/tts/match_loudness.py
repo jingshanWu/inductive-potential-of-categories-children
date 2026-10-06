@@ -6,7 +6,7 @@ in them is changed. Every other clip is then turned up or down to it:
   - all spoken clips in public/stimuli/audio/ (task intro, test trials, scale,
     child assent, ...): same loudness as the training videos
   - the sound check bird clip (the lab's default sound check,
-    src/builtins/cdsc_default/assets/sound_check.m4a): BIRD_RATIO (2/3) of the
+    src/assets/cdsc_default/sound_check.m4a): BIRD_RATIO (2/3) of the
     training videos' amplitude, i.e. about 3.5 dB quieter, so a parent who
     sets the volume by the bird does not end up with the study too quiet
 
@@ -36,7 +36,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
 STIMULI = os.path.join(REPO, "public", "stimuli")
 
-BIRD = os.path.join(REPO, "src", "builtins", "cdsc_default", "assets", "sound_check.m4a")
+BIRD = os.path.join(REPO, "src", "assets", "cdsc_default", "sound_check.m4a")
 BIRD_RATIO = 2 / 3  # bird amplitude / training video amplitude
 CEILING_DB = -1.0  # peaks are held under this
 TOLERANCE_DB = 0.5

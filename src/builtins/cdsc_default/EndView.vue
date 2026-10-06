@@ -23,10 +23,10 @@ import useAPI from '@/core/composables/useAPI'
 import { Progress } from '@/uikit/components/ui/progress'
 import AutoplayAudio from './AutoplayAudio.vue'
 import ChildStage from './ChildStage.vue'
-import narration from './assets/panda_end.m4a'
-import mascot from './assets/panda_mascot.png'
-import webcam from './assets/panda_webcam.png'
-import wordmark from './assets/panda_wordmark.png'
+import narration from '@/assets/cdsc_default/panda_end.m4a'
+import mascot from '@/assets/cdsc_default/panda_mascot.png'
+import webcam from '@/assets/cdsc_default/panda_webcam.png'
+import wordmark from '@/assets/cdsc_default/panda_wordmark.png'
 
 // how long the progress bar runs while the data are saved (as on Smile's thanks page)
 const UPLOAD_MS = 20000

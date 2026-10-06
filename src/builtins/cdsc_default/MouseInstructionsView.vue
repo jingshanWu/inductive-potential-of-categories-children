@@ -24,10 +24,10 @@ import { Button } from '@/uikit/components/ui/button'
 import AutoplayAudio from './AutoplayAudio.vue'
 import ChildStage from './ChildStage.vue'
 import ScaleToFit from './ScaleToFit.vue'
-import narration from './assets/panda_mouse_info.m4a'
-import getStartedVoice from './assets/panda_get_started.m4a'
-import logo from './assets/panda_logo.png'
-import mascot from './assets/panda_mascot.png'
+import narration from '@/assets/cdsc_default/panda_mouse_info.m4a'
+import getStartedVoice from '@/assets/cdsc_default/panda_get_started.m4a'
+import logo from '@/assets/cdsc_default/panda_logo.png'
+import mascot from '@/assets/cdsc_default/panda_mascot.png'
 
 // the lab's standard text, word for word (the narration reads it)
 const PARAGRAPHS = [

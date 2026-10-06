@@ -19,11 +19,11 @@ import ChildStage from './ChildStage.vue'
 import ScaleToFit from './ScaleToFit.vue'
 import ConsentSlide from './ConsentSlide.vue'
 import HotSpots from './HotSpots.vue'
-import narration from './assets/consent/consent_child.m4a'
-import kidsRaisingHands from './assets/consent/kids_raising_hands.png'
-import questionMark from './assets/consent/question_mark.jpg'
-import yesImage from './assets/consent/assent_yes.svg'
-import noImage from './assets/consent/assent_no.svg'
+import narration from '@/assets/cdsc_default/consent/consent_child.m4a'
+import kidsRaisingHands from '@/assets/cdsc_default/consent/kids_raising_hands.png'
+import questionMark from '@/assets/cdsc_default/consent/question_mark.jpg'
+import yesImage from '@/assets/cdsc_default/consent/assent_yes.svg'
+import noImage from '@/assets/cdsc_default/consent/assent_no.svg'
 
 const api = useViewAPI()
 

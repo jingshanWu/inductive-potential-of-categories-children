@@ -29,7 +29,7 @@ import ScaleToFit from './ScaleToFit.vue'
 import SignatureBox from './SignatureBox.vue'
 import ConsentSections, { SECTION_TITLES } from './ConsentSections.vue'
 import ConsentSlide from './ConsentSlide.vue'
-import narration from './assets/consent/consent_parent.m4a'
+import narration from '@/assets/cdsc_default/consent/consent_parent.m4a'
 
 const api = useViewAPI()
 
