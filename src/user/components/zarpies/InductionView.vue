@@ -27,9 +27,9 @@
 // everything fits on screen at once and the page cannot be scrolled.
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import useViewAPI from '@/core/composables/useViewAPI'
-import AutoplayAudio from '@/builtins/cdsc_default/AutoplayAudio.vue'
-import ChildStage from '@/builtins/cdsc_default/ChildStage.vue'
-import HotSpots from '@/builtins/cdsc_default/HotSpots.vue'
+import AutoplayAudio from '@/uikit/components/cdsc/AutoplayAudio.vue'
+import ChildStage from '@/uikit/layouts/ChildStage.vue'
+import HotSpots from '@/uikit/components/cdsc/HotSpots.vue'
 import { ATTENTION_CHECK, INDUCTION_INTRO, SCALE_OPTIONS, inductionTrials, stimulusUrl } from './stimuli'
 
 // silence between two clips of a trial

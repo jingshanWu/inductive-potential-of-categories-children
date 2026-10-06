@@ -8,8 +8,8 @@
 // is no way to continue without hearing the clip to the end.
 import { onBeforeUnmount } from 'vue'
 import useViewAPI from '@/core/composables/useViewAPI'
-import AutoplayAudio from '@/builtins/cdsc_default/AutoplayAudio.vue'
-import ChildStage from '@/builtins/cdsc_default/ChildStage.vue'
+import AutoplayAudio from '@/uikit/components/cdsc/AutoplayAudio.vue'
+import ChildStage from '@/uikit/layouts/ChildStage.vue'
 import { TASK_INTRO, stimulusUrl } from './stimuli'
 
 // which wording is shown and read: 'child' or 'adult'

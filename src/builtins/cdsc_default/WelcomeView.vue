@@ -21,8 +21,8 @@ const api = useViewAPI()
 
 // import UIkit components
 import { Button } from '@/uikit/components/ui/button'
-import ChildStage from './ChildStage.vue'
-import ScaleToFit from './ScaleToFit.vue'
+import ChildStage from '@/uikit/layouts/ChildStage.vue'
+import ScaleToFit from '@/uikit/layouts/ScaleToFit.vue'
 
 // animation library
 import { animate } from 'motion'

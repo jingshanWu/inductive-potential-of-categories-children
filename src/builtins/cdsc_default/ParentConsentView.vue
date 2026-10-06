@@ -23,12 +23,12 @@
 import { computed, ref } from 'vue'
 import useViewAPI from '@/core/composables/useViewAPI'
 import { Button } from '@/uikit/components/ui/button'
-import AutoplayAudio from './AutoplayAudio.vue'
-import ChildStage from './ChildStage.vue'
-import ScaleToFit from './ScaleToFit.vue'
-import SignatureBox from './SignatureBox.vue'
-import ConsentSections, { SECTION_TITLES } from './ConsentSections.vue'
-import ConsentSlide from './ConsentSlide.vue'
+import AutoplayAudio from '@/uikit/components/cdsc/AutoplayAudio.vue'
+import ChildStage from '@/uikit/layouts/ChildStage.vue'
+import ScaleToFit from '@/uikit/layouts/ScaleToFit.vue'
+import SignatureBox from '@/uikit/components/cdsc/SignatureBox.vue'
+import ConsentSections, { SECTION_TITLES } from '@/uikit/components/cdsc/ConsentSections.vue'
+import ConsentSlide from '@/uikit/components/cdsc/ConsentSlide.vue'
 import narration from '@/assets/cdsc_default/consent/consent_parent.m4a'
 
 const api = useViewAPI()

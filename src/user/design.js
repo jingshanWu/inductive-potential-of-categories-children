@@ -98,7 +98,7 @@ api.setRuntimeConfig('payrate', 'See PANDA study listing for compensation detail
 // the text behind the "View consent" button in the top bar: the lab's consent
 // (Smile's template text is still in ./components/InformedConsentText.vue, unused)
 // import InformedConsentText from './components/InformedConsentText.vue'
-import ConsentText from '@/builtins/cdsc_default/ConsentText.vue'
+import ConsentText from '@/uikit/components/cdsc/ConsentText.vue'
 api.setAppComponent('informed_consent_text', ConsentText)
 
 // #5. Add between-subjects condition assignment
