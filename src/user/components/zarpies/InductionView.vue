@@ -13,7 +13,7 @@
 //   2. question: the picture disappears; the question text appears right
 //      below the premise and the 5 scale choices (panels of that Zarpie, 1 /
 //      3 / 5 / 7 / 9 times) fill the rest of the page while the question clip
-//      plays, then the 5 scale clips ("Only one Zarpie?" ...) one by
+//      plays, then the 5 scale clips ("Only one Zarpie." ...) one by
 //      one, each enlarging its choice. The choices only become clickable
 //      after the last clip.
 // The attention check skips part 1: its clip plays with the choices showing,

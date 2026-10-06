@@ -172,7 +172,8 @@ export const INDUCTION_FEATURES = [
 ]
 
 // the scale, lowest to highest. On each trial the `spoken` clips are played in
-// this order while the matching picture shakes; `label` is the text shown with
+// this order while the matching picture shakes (written with a period, not a
+// question mark, so the voice does not rise at the end); `label` is the text shown with
 // the picture; `count` is how many copies of the trial's Zarpie the panel
 // shows. This is the 5-point within-category homogeneity scale from
 // Benitez, Leshin & Rhodes (2022, Cognition): (1) only one, (2) a few,
@@ -183,7 +184,7 @@ export const SCALE_OPTIONS = [
     id: 'one',
     count: 1, // figures shown in the scale panel
     value: 1,
-    spoken: 'Only one Zarpie?',
+    spoken: 'Only one Zarpie.',
     label: 'Only one Zarpie',
     audio: 'audio/scale_one.m4a',
     image: null,
@@ -192,7 +193,7 @@ export const SCALE_OPTIONS = [
     id: 'few',
     count: 3, // figures shown in the scale panel
     value: 2,
-    spoken: 'A few Zarpies?',
+    spoken: 'A few Zarpies.',
     label: 'A few Zarpies',
     audio: 'audio/scale_few.m4a',
     image: null,
@@ -201,7 +202,7 @@ export const SCALE_OPTIONS = [
     id: 'some',
     count: 5, // figures shown in the scale panel
     value: 3,
-    spoken: 'Some Zarpies?',
+    spoken: 'Some Zarpies.',
     label: 'Some Zarpies',
     audio: 'audio/scale_some.m4a',
     image: null,
@@ -210,7 +211,7 @@ export const SCALE_OPTIONS = [
     id: 'most',
     count: 7, // figures shown in the scale panel
     value: 4,
-    spoken: 'Most Zarpies?',
+    spoken: 'Most Zarpies.',
     label: 'Most Zarpies',
     audio: 'audio/scale_most.m4a',
     image: null,
@@ -219,7 +220,7 @@ export const SCALE_OPTIONS = [
     id: 'all',
     count: 9, // figures shown in the scale panel
     value: 5,
-    spoken: 'Or all Zarpies?', // "or" marks the last option
+    spoken: 'Or all Zarpies.', // "or" marks the last option
     label: 'All Zarpies',
     audio: 'audio/scale_all.m4a',
     image: null,
