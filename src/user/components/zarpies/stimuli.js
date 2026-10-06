@@ -265,7 +265,7 @@ export const CHILD_ASSENT = {
 
 // the adult study's intro video; no longer shown (TaskIntroView shows the
 // text below and plays its clip instead, 2026-10-06)
-export const TASK_INTRO_VIDEO = 'misc/task_intro.mp4'
+// export const TASK_INTRO_VIDEO = 'misc/task_intro.mp4'
 
 // task intro text, in two versions. `adult` is the narration of the adult
 // study's intro video (task_intro.mp4), word for word; `child` is the same
