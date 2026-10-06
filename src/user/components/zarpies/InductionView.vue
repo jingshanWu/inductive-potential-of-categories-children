@@ -30,6 +30,7 @@ import useViewAPI from '@/core/composables/useViewAPI'
 import AutoplayAudio from '@/uikit/components/cdsc/AutoplayAudio.vue'
 import ChildStage from '@/uikit/layouts/ChildStage.vue'
 import HotSpots from '@/uikit/components/cdsc/HotSpots.vue'
+import { isFastForward } from '@/uikit/components/cdsc/fastForward'
 import { ATTENTION_CHECK, INDUCTION_INTRO, SCALE_OPTIONS, inductionTrials, stimulusUrl } from './stimuli'
 
 // silence between two clips of a trial
@@ -44,6 +45,7 @@ const INTRO_END_PAUSE_MS = 1000
 const SCALE_SLOT_MS = 2300
 
 const api = useViewAPI()
+const fastForward = isFastForward() // development only: no pauses, no scale slots
 
 const steps = api.steps.append([{ id: 'intro' }, { id: 'trials' }])
 steps[1]
@@ -141,7 +143,7 @@ watch(
     clearTimeout(leadTimer)
     if (phase.value !== 'options') return
     optionStart = performance.now()
-    const leadMs = SCALE_OPTIONS[optionIndex.value].leadMs ?? 0
+    const leadMs = fastForward ? 0 : (SCALE_OPTIONS[optionIndex.value].leadMs ?? 0)
     optionSpeaking.value = leadMs === 0
     if (leadMs > 0) leadTimer = setTimeout(() => (optionSpeaking.value = true), leadMs)
   },
@@ -152,6 +154,7 @@ watch(
 // its SCALE_SLOT_MS, the intro is followed by its own pause, any other clip
 // by the usual gap
 function gapAfterClip() {
+  if (fastForward) return 0
   if (section.value === 'intro') return INTRO_END_PAUSE_MS
   if (section.value === 'trials' && phase.value === 'options') {
     return Math.max(0, SCALE_SLOT_MS - (performance.now() - optionStart))

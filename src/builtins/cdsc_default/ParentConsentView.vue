@@ -27,6 +27,7 @@ import AutoplayAudio from '@/uikit/components/cdsc/AutoplayAudio.vue'
 import ChildStage from '@/uikit/layouts/ChildStage.vue'
 import ScaleToFit from '@/uikit/layouts/ScaleToFit.vue'
 import SignatureBox from '@/uikit/components/cdsc/SignatureBox.vue'
+import { isFastForward } from '@/uikit/components/cdsc/fastForward'
 import ConsentSections, { SECTION_TITLES } from '@/uikit/components/cdsc/ConsentSections.vue'
 import ConsentSlide from '@/uikit/components/cdsc/ConsentSlide.vue'
 import narration from '@/assets/cdsc_default/consent/consent_parent.m4a'
@@ -39,14 +40,19 @@ const heard = ref(false) // the narration on the permission slide has played to 
 const signed = ref(false) // something has been drawn in the signature box
 const signature = ref(null)
 // the parent may sign and go on without waiting for the narration to finish
-const canContinue = computed(() => signed.value)
+const fastForward = isFastForward() // development only: no need to sign
+const canContinue = computed(() => signed.value || fastForward)
 
 // keep the drawn signature with the data (a PNG of a few kB), or only that they signed
 const SAVE_SIGNATURE = true
 
 function consent() {
   if (!canContinue.value) return
-  api.recordPageData({ consent: true, signed: true, signature: SAVE_SIGNATURE ? signature.value.image() : null })
+  api.recordPageData({
+    consent: true,
+    signed: signed.value,
+    signature: SAVE_SIGNATURE && signed.value ? signature.value.image() : null,
+  })
   api.goNextView()
 }
 

@@ -75,12 +75,18 @@ api.setRuntimeConfig('allowRepeats', false)
 api.setRuntimeConfig('colorMode', 'light')
 api.setRuntimeConfig('responsiveUI', true)
 
-api.setRuntimeConfig('windowsizerRequest', { width: 800, height: 600 })
+api.setRuntimeConfig('windowsizerRequest', { width: 1000, height: 600 })
 api.setRuntimeConfig('windowsizerAggressive', true)
 
 api.setRuntimeConfig('anonymousMode', false)
 api.setRuntimeConfig('labURL', 'https://gureckislab.org')
 api.setRuntimeConfig('brandLogoFn', 'universitylogo.png')
+
+// Fast forward, for developing and testing (development mode only): every
+// clip and video counts as played at once, so every page can be clicked
+// through without waiting. Uncomment to switch on; comment out (or delete)
+// for the normal study. See src/uikit/components/cdsc/fastForward.js.
+// api.setRuntimeConfig('fastForward', true)
 
 api.setRuntimeConfig('maxWrites', 1000)
 api.setRuntimeConfig('minWriteInterval', 2000)

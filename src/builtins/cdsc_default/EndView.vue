@@ -23,13 +23,15 @@ import useAPI from '@/core/composables/useAPI'
 import { Progress } from '@/uikit/components/ui/progress'
 import AutoplayAudio from '@/uikit/components/cdsc/AutoplayAudio.vue'
 import ChildStage from '@/uikit/layouts/ChildStage.vue'
+import { isFastForward } from '@/uikit/components/cdsc/fastForward'
 import narration from '@/assets/cdsc_default/panda_end.m4a'
 import mascot from '@/assets/cdsc_default/panda_mascot.png'
 import webcam from '@/assets/cdsc_default/panda_webcam.png'
 import wordmark from '@/assets/cdsc_default/panda_wordmark.png'
 
-// how long the progress bar runs while the data are saved (as on Smile's thanks page)
-const UPLOAD_MS = 20000
+// how long the progress bar runs while the data are saved (as on Smile's thanks
+// page); a moment only with fast forward on (development)
+const UPLOAD_MS = isFastForward() ? 500 : 20000
 // the save is delayed a little so it is not refused for coming too soon after the last one
 const SAVE_DELAY_MS = 4000
 

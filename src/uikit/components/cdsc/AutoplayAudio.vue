@@ -30,10 +30,13 @@
  *   change src when @ended fires: the new clip starts by itself. (Reusing the
  *   same player is what lets the browser keep autoplaying.)
  * - Set src to null for silence (e.g. after the last clip).
+ * - With fast forward on (fastForward.js, development only) the clip is not
+ *   played: @ended fires at once.
  */
 
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Button } from '@/uikit/components/ui/button'
+import { isFastForward } from './fastForward'
 
 const props = defineProps({
   src: { type: String, default: null },
@@ -42,6 +45,7 @@ const props = defineProps({
 const emit = defineEmits(['ended', 'time'])
 
 const audio = ref(null)
+const fastForward = isFastForward() // development only: clips count as played at once
 const blocked = ref(false) // browser refused to autoplay
 const failed = ref(false) // audio file could not be loaded
 
@@ -78,6 +82,10 @@ function start() {
   clearTimeout(stallTimer)
   if (!props.src) {
     audio.value.pause()
+    return
+  }
+  if (fastForward) {
+    setTimeout(() => emit('ended'), 0) // as if the clip had just finished
     return
   }
   audio.value.src = props.src

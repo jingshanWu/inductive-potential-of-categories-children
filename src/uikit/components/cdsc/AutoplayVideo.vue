@@ -27,10 +27,13 @@
  * - To play several videos in a row, keep the component on the page and just
  *   change src: the new video starts by itself. (Reusing the same player is
  *   what lets the browser keep autoplaying with sound.)
+ * - With fast forward on (fastForward.js, development only) the video is not
+ *   played: @ended fires at once.
  */
 
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Button } from '@/uikit/components/ui/button'
+import { isFastForward } from './fastForward'
 
 const props = defineProps({
   src: { type: String, required: true },
@@ -39,6 +42,7 @@ const props = defineProps({
 const emit = defineEmits(['ended'])
 
 const video = ref(null)
+const fastForward = isFastForward() // development only: videos count as played at once
 const blocked = ref(false) // browser refused to autoplay
 const failed = ref(false) // video file could not be loaded
 const failure = ref('') // what went wrong, shown on the Replay screen for support
@@ -97,6 +101,10 @@ function start() {
   if (!video.value) return
   failed.value = false
   loads += 1
+  if (fastForward) {
+    setTimeout(() => emit('ended'), 0) // as if the video had just finished
+    return
+  }
   video.value.src = props.src
   video.value.load()
   play()
