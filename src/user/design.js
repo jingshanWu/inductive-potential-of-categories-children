@@ -5,10 +5,10 @@
  * This file configures which phases occur in what order.
  *
  * Inductive potential of categories, child version (run on PANDA):
- *   welcome -> sound check -> parent consent -> child consent -> window size
- *   -> hand over to child -> task intro (spoken) -> training videos (generic
- *   or specific condition; baseline skips) -> induction test -> parent form
- *   -> thanks
+ *   welcome -> sound check -> window size -> intro -> parent consent
+ *   -> child consent -> hand over to child -> task intro (spoken) -> training
+ *   videos (generic or specific condition; baseline skips) -> induction test
+ *   -> "GREAT job!" hand-back page -> parent form -> data upload and the lab's closing page
  *
  * The smile template's demo experiment (demographic survey, instructions quiz,
  * Stroop, favorite number/color, MTurk page, device survey, debrief) is
@@ -26,16 +26,22 @@ import { markRaw } from 'vue'
 import { processQuery, initService } from '@/core/utils/utils'
 
 // 1. Import main built-in View components
-import AdvertisementView from '@/builtins/advertisement/AdvertisementView.vue'
+// Smile's default welcome page; this study uses the lab's (CDSC) default instead
+// import AdvertisementView from '@/builtins/advertisement/AdvertisementView.vue'
+import WelcomeView from '@/builtins/cdsc_default/WelcomeView.vue'
 // import MTurkRecruitView from '@/builtins/mturk/MTurkRecruitView.vue'
-import InformedConsentView from '@/builtins/informedConsent/InformedConsentView.vue'
+// Smile's default consent page; this study uses the lab's (CDSC) consent slides instead
+// import InformedConsentView from '@/builtins/informedConsent/InformedConsentView.vue'
+import ParentConsentView from '@/builtins/cdsc_default/ParentConsentView.vue'
 // import DemographicSurveyView from '@/builtins/demographicSurvey/DemographicSurveyView.vue'
 // import DeviceSurveyView from '@/builtins/deviceSurvey/DeviceSurveyView.vue'
 // import InstructionsView from '@/builtins/instructions/InstructionsView.vue'
 // import InstructionsQuizView from '@/builtins/instructionsQuiz/InstructionsQuiz.vue'
 // import DebriefView from '@/builtins/debrief/DebriefView.vue'
 // import TaskFeedbackSurveyView from '@/builtins/taskFeedbackSurvey/TaskFeedbackSurveyView.vue'
-import ThanksView from '@/builtins/thanks/ThanksView.vue'
+// Smile's default thanks page; this study uses the lab's (CDSC) last page instead
+// import ThanksView from '@/builtins/thanks/ThanksView.vue'
+import EndView from '@/builtins/cdsc_default/EndView.vue'
 import WithdrawView from '@/builtins/withdraw/WithdrawView.vue'
 import WindowSizerView from '@/builtins/windowSizer/WindowSizerView.vue'
 
@@ -44,13 +50,15 @@ import WindowSizerView from '@/builtins/windowSizer/WindowSizerView.vue'
 // import FavoriteNumber from '@/builtins/demoTasks/FavoriteNumber.vue'
 // import FavoriteColor from '@/builtins/demoTasks/FavoriteColor.vue'
 // import StroopExpView from '@/user/components/stroop_exp/StroopExpView.vue'
-import SoundCheckView from '@/user/components/zarpies/SoundCheckView.vue'
-import ChildConsentView from '@/user/components/zarpies/ChildConsentView.vue'
-import HandToChildView from '@/user/components/zarpies/HandToChildView.vue'
+import SoundCheckView from '@/builtins/cdsc_default/SoundCheckView.vue'
+import IntroVideoView from '@/builtins/cdsc_default/IntroVideoView.vue'
+import ChildConsentView from '@/builtins/cdsc_default/ChildConsentView.vue'
+import MouseInstructionsView from '@/builtins/cdsc_default/MouseInstructionsView.vue'
+import PreParentView from '@/builtins/cdsc_default/PreParentView.vue'
 import TaskIntroView from '@/user/components/zarpies/TaskIntroView.vue'
 import TrainingView from '@/user/components/zarpies/TrainingView.vue'
 import InductionView from '@/user/components/zarpies/InductionView.vue'
-import ParentFormView from '@/user/components/panda/ParentFormView.vue'
+import ParentFormView from '@/builtins/cdsc_default/ParentFormView.vue'
 import { CONDITIONS } from '@/user/components/zarpies/stimuli'
 
 // #3. Import smile API and timeline
@@ -87,8 +95,11 @@ api.setRuntimeConfig('estimated_time', '15-20 minutes')
 api.setRuntimeConfig('payrate', 'See PANDA study listing for compensation details')
 
 // set the informed consent text on the menu bar
-import InformedConsentText from './components/InformedConsentText.vue'
-api.setAppComponent('informed_consent_text', InformedConsentText)
+// the text behind the "View consent" button in the top bar: the lab's consent
+// (Smile's template text is still in ./components/InformedConsentText.vue, unused)
+// import InformedConsentText from './components/InformedConsentText.vue'
+import ConsentText from '@/builtins/cdsc_default/ConsentText.vue'
+api.setAppComponent('informed_consent_text', ConsentText)
 
 // #5. Add between-subjects condition assignment
 // Each child is randomly assigned to one of the three conditions of the adult
@@ -121,7 +132,7 @@ api.randomAssignCondition({
 timeline.pushSeqView({
   path: '/welcome',
   name: 'welcome_anonymous',
-  component: AdvertisementView,
+  component: WelcomeView,
   meta: {
     prev: undefined,
     next: 'soundcheck',
@@ -138,7 +149,7 @@ timeline.pushSeqView({
 timeline.pushSeqView({
   path: '/welcome/:service',
   name: 'welcome_referred',
-  component: AdvertisementView,
+  component: WelcomeView,
   meta: {
     prev: undefined,
     next: 'soundcheck',
@@ -181,13 +192,30 @@ timeline.pushSeqView({
   },
 })
 
-// parent consent (smile's built-in consent page; text in InformedConsentText.vue)
+// window size check, right after the sound check (before consent, so it
+// does not require consent)
+timeline.pushSeqView({
+  name: 'windowsizer',
+  component: WindowSizerView,
+  meta: {
+    requiresConsent: false,
+  },
+})
+
+// the lab's PANDA intro (parent), between the window size check and consent
+timeline.pushSeqView({
+  name: 'introvideo',
+  component: IntroVideoView,
+  meta: {
+    requiresConsent: false,
+  },
+})
+
+// parent consent: the lab's consent slides, one per page, ending with the
+// "I consent" button (study-specific wording in components/consentStudyInfo.js)
 timeline.pushSeqView({
   name: 'consent',
-  component: InformedConsentView,
-  props: {
-    informedConsentText: markRaw(InformedConsentText), // provide the informed consent text
-  },
+  component: ParentConsentView,
   meta: {
     requiresConsent: false,
     setConsented: true,
@@ -207,16 +235,10 @@ timeline.pushSeqView({
 //   component: DemographicSurveyView,
 // })
 
-// windowsizer
-timeline.pushSeqView({
-  name: 'windowsizer',
-  component: WindowSizerView,
-})
-
 // hand the laptop over to the child
 timeline.pushSeqView({
   name: 'handtochild',
-  component: HandToChildView,
+  component: MouseInstructionsView,
 })
 
 // task intro video (child)
@@ -244,6 +266,13 @@ timeline.pushConditionalNode({
 timeline.pushSeqView({
   name: 'induction',
   component: InductionView,
+})
+
+// the lab's "GREAT job!" page, shown as soon as the child answers the last
+// test trial: hands the laptop back to the parent
+timeline.pushSeqView({
+  name: 'preparent',
+  component: PreParentView,
 })
 
 // // instructions
@@ -340,10 +369,11 @@ timeline.pushSeqView({
 //   meta: { resetApp: true },
 // })
 
-// thanks/submit page (saves the data; shows the PANDA completion message)
+// last page (saves the data, then the lab's "HANG ON! ... upload the video"
+// and thank-you message)
 timeline.pushSeqView({
   name: 'thanks',
-  component: ThanksView,
+  component: EndView,
   meta: {
     requiresDone: true,
     resetApp: api.getConfig('allowRepeats'),

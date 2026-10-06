@@ -44,8 +44,8 @@
  * 7 / 9 times (SCALE_OPTIONS.count), as in Benitez, Leshin & Rhodes (2022).
  *
  * Loudness: the training videos are the reference. scripts/tts/match_loudness.py
- * brings every spoken clip to their level and the sound check bird clip to
- * 2/3 of it; run it after regenerating any clip.
+ * brings every spoken clip to their level and the sound check bird clip (in
+ * src/builtins/cdsc_default/assets) to 2/3 of it; run it after regenerating any clip.
  *
  * Asset paths are relative to public/stimuli/.
  */
@@ -249,54 +249,15 @@ export const INDUCTION_INTRO = {
   audio: 'audio/induction_intro.m4a',
 }
 
-// the lab's standard PANDA materials, taken from the Qualtrics survey
-// "Speaker Generics Pt 3" (question tags mouse, started, pre_parent, click,
-// upload). Only the sound level was changed, to match the training videos.
-
-// the "mouse click info" page for the parent, before the child starts. The
-// page is rebuilt in code (logo, text, mascot) so it can be edited; `audio`
-// is the narration of the lab's video of that page (27 s), which reads
-// `paragraphs` word for word.
-export const PANDA_MOUSE_INFO = {
-  logo: 'misc/panda_logo.png', // "WELCOME to panda, The Princeton And NYU Discoveries in Action Lab"
-  mascot: 'misc/panda_mascot.png',
-  paragraphs: [
-    'For this activity, we are interested in what your child thinks on their own! If your child knows how to use a mouse to click on the computer, please allow them to do the clicking. If your child is unfamiliar with using a mouse, they can point to the screen to show their response, and you can do the clicking for them.',
-    'We ask that you do not provide your child with any feedback, until after the study is complete. Thank you!',
-  ],
-  audio: 'misc/panda_mouse_info.m4a',
-}
-
-export const PANDA_VIDEOS = {
-  // "Let's get started!" (3 s)
-  getStarted: 'misc/panda_get_started.mp4',
-  // after the test: "GREAT job! Now, we have just a few questions for
-  // parents. Then, you'll upload your video and be all done!" (9 s)
-  preParent: 'misc/panda_pre_parent.mp4',
-}
+// the lab's standard pages (welcome, sound check, intro, mouse instructions,
+// the "GREAT job!" page after the test) are in src/builtins/cdsc_default
 
 // spoken after the last induction trial, handing the laptop back to the parent
-// (not used now: the PANDA video preParent plays there instead, 2026-10-06)
+// (not used now: the lab's "GREAT job!" page, cdsc_default/PreParentView.vue,
+// is shown there instead, 2026-10-06)
 export const INDUCTION_END = {
   text: 'Great job! Kid, you are all done! Please go get your grown-up.',
   audio: 'audio/induction_end.m4a',
-}
-
-// child consent (assent) page, rebuilt in code from the slide in the lab's
-// standard PANDA assent video so the wording can be edited. `spoken` is read
-// aloud; the YES / NO pictures are the two answers.
-export const CHILD_ASSENT = {
-  heading: "Perfect — now, let's hear from the kids!",
-  instruction: 'Kids: Please answer the following question by clicking "yes" or "no".',
-  question: 'Would you like to do this online activity with us?',
-  spoken:
-    "Perfect! Now, let's hear from the kids! Kids, please answer the following question by clicking yes or no. Would you like to do this online activity with us?",
-  note: 'Note: If you or your child does not agree to participate, you can opt out of this study by exiting out of your browser. Your webcam will turn off, all video footage recorded up to this point will be deleted, and the file will be destroyed.',
-  audio: 'audio/child_assent.m4a',
-  options: [
-    { id: 'yes', image: 'misc/assent_yes.svg' },
-    { id: 'no', image: 'misc/assent_no.svg' },
-  ],
 }
 
 // the adult study's intro video; no longer shown (TaskIntroView shows the
@@ -318,17 +279,8 @@ export const TASK_INTRO = {
   },
 }
 
-export const SOUND_CHECK = {
-  audio: 'misc/sound_check.m4a', // bird sound (the adult study's video form was deleted 2026-10-05)
-  options: [
-    { id: 'dog', image: 'misc/soundcheck_dog.png' },
-    { id: 'pig', image: 'misc/soundcheck_pig.png' },
-    { id: 'cow', image: 'misc/soundcheck_cow.png' },
-    { id: 'horse', image: 'misc/soundcheck_horse.png' },
-    { id: 'bird', image: 'misc/soundcheck_bird.png' },
-  ],
-  correct: 'bird',
-}
+// the sound check (bird clip and animal pictures) is the lab's default:
+// src/builtins/cdsc_default/SoundCheckView.vue
 
 /**
  * Training videos for a condition, in Qualtrics order.
