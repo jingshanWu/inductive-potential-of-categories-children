@@ -1,5 +1,5 @@
 """Match the loudness of the study's audio clips to the training videos, and
-give the 5 scale clips the same length.
+trim the 5 scale clips.
 
 The training videos (public/stimuli/generic/*.mp4, specific/*.mp4) come from
 the adult study and are the reference: their loudness is measured and nothing
@@ -15,11 +15,11 @@ above -50 dBFS; silence is not counted), in dBFS. The reference is the median
 over the training videos. Turning speech up this far would clip its peaks, so
 a limiter holds them under CEILING_DB.
 
-The 5 scale clips (audio/scale_*.m4a, "Only one Zarpie." ...) are first made
-equally long: the silence before the speech is cut (and any breath in it),
-then every clip gets SCALE_LEAD_S of silence before the speech and enough
-after it to be as long as the longest one. Each choice is then enlarged on screen for the same time and
-the voice starts the same moment after it enlarges.
+The 5 scale clips (audio/scale_*.m4a, "Only one Zarpie." ...) are first
+trimmed: the silence around the speech is cut (the model that makes them
+leaves up to a few seconds of it) and every clip gets SCALE_LEAD_S of silence
+before the speech. Each should then be about 2 s long (SCALE_MIN_S to
+SCALE_MAX_S); one that is not is reported, to be regenerated.
 
 Run it after generate_stimuli.py whenever clips are (re)generated:
     python scripts/tts/match_loudness.py            # measure, then adjust
@@ -48,7 +48,7 @@ TOLERANCE_DB = 0.3
 FRAME_S = 0.05
 GATE_DB = -50.0
 SCALE_LEAD_S = 0.15  # silence before the speech in every scale clip
-SCALE_TAIL_S = 0.10  # silence after the speech in the longest scale clip
+SCALE_MIN_S, SCALE_MAX_S = 1.8, 2.2  # wanted length of a scale clip
 SPEECH_DB = -30.0  # below this (relative to the clip's peak) counts as silence
 
 
@@ -130,31 +130,21 @@ def speech_span(x, rate):
     return start, end
 
 
-def even_scale_clips(dry_run):
-    """Pad the scale clips to one length, with the same silence before the speech."""
-    paths = sorted(glob.glob(os.path.join(STIMULI, "audio", "scale_*.m4a")))
-    clips = []
-    for path in paths:
+def trim_scale_clips(dry_run):
+    """Cut the silence around the scale clips and check their length."""
+    print(f"scale clips (wanted: {SCALE_MIN_S} to {SCALE_MAX_S} s)")
+    for path in sorted(glob.glob(os.path.join(STIMULI, "audio", "scale_*.m4a"))):
         x, rate = read_audio(path)
         start, end = speech_span(x, rate)
-        clips.append(dict(path=path, x=x, rate=rate, start=start, end=end))
-    # already evened (same length, same silence before the speech): leave them
-    lengths = [len(c["x"]) / c["rate"] for c in clips]
-    leads = [c["start"] / c["rate"] for c in clips]
-    evened = max(lengths) - min(lengths) < 0.06 and all(abs(lead - SCALE_LEAD_S) < 0.06 for lead in leads)
-    longest = max((c["end"] - c["start"]) / c["rate"] for c in clips)
-    total = float(np.mean(lengths)) if evened else SCALE_LEAD_S + longest + SCALE_TAIL_S
-    print(f"scale clips (each {total:.2f} s: {SCALE_LEAD_S} s silence, speech, silence to the end)")
-    for c in clips:
-        rate, name = c["rate"], os.path.relpath(c["path"], STIMULI)
-        length, lead, speech = len(c["x"]) / rate, c["start"] / rate, (c["end"] - c["start"]) / rate
-        note = "ok" if evened else ("to do" if dry_run else "evened")
-        print(f"  {name:38s} {length:.2f} s, speech {speech:.2f} s after {lead:.2f} s  {note}")
-        if evened or dry_run:
-            continue
-        silence = lambda seconds: np.zeros((int(round(seconds * rate)), c["x"].shape[1]))
-        padded = np.concatenate([silence(SCALE_LEAD_S), c["x"][c["start"] : c["end"]], silence(total - SCALE_LEAD_S - speech)])
-        write_m4a(padded, rate, c["path"])
+        lead, tail = start / rate, (len(x) - end) / rate
+        trimmed = abs(lead - SCALE_LEAD_S) < 0.06 and tail < 0.06
+        if not trimmed and not dry_run:
+            silence = np.zeros((int(SCALE_LEAD_S * rate), x.shape[1]))
+            x = np.concatenate([silence, x[start:end]])
+            write_m4a(x, rate, path)
+        length = len(x) / rate if trimmed or not dry_run else SCALE_LEAD_S + (end - start) / rate
+        note = "ok" if SCALE_MIN_S <= length <= SCALE_MAX_S else "NOT IN RANGE: regenerate this clip"
+        print(f"  {os.path.relpath(path, STIMULI):38s} {length:.2f} s  {'' if trimmed else 'trimmed, '}{note}")
     print()
 
 
@@ -163,7 +153,7 @@ def main():
     ap.add_argument("--dry-run", action="store_true", help="measure only, change nothing")
     args = ap.parse_args()
 
-    even_scale_clips(args.dry_run)
+    trim_scale_clips(args.dry_run)
 
     videos = sorted(glob.glob(os.path.join(STIMULI, "generic", "*.mp4")) + glob.glob(os.path.join(STIMULI, "specific", "*.mp4")))
     levels = []
