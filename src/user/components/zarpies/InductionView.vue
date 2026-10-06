@@ -123,9 +123,19 @@ function nextClip() {
   }
 }
 
+// extra silence a scale clip asks for before it starts (pauseBeforeMs in
+// stimuli.js), if the next clip is a scale clip
+function pauseBeforeNextClip() {
+  if (section.value !== 'trials') return 0
+  let next = null
+  if (phase.value === 'question' && !api.stepData.attentionCheck) next = SCALE_OPTIONS[0]
+  else if (phase.value === 'options') next = SCALE_OPTIONS[optionIndex.value + 1]
+  return next?.pauseBeforeMs ?? 0
+}
+
 function onAudioEnded() {
   clearTimeout(gapTimer)
-  gapTimer = setTimeout(nextClip, CLIP_GAP_MS)
+  gapTimer = setTimeout(nextClip, CLIP_GAP_MS + pauseBeforeNextClip())
 }
 
 onBeforeUnmount(() => clearTimeout(gapTimer))

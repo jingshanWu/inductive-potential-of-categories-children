@@ -174,7 +174,8 @@ export const INDUCTION_FEATURES = [
 // the scale, lowest to highest. On each trial the `spoken` clips are played in
 // this order while the matching picture shakes (written with a period, not a
 // question mark, so the voice does not rise at the end); `label` is the text shown with
-// the picture; `count` is how many copies of the trial's Zarpie the panel
+// the picture; `pauseBeforeMs` (optional) is extra silence before the clip, on
+// top of the usual gap between clips; `count` is how many copies of the trial's Zarpie the panel
 // shows. This is the 5-point within-category homogeneity scale from
 // Benitez, Leshin & Rhodes (2022, Cognition): (1) only one, (2) a few,
 // (3) some, (4) most, (5) all. There is no "none": the Zarpie in the premise
@@ -205,6 +206,7 @@ export const SCALE_OPTIONS = [
     spoken: 'Some Zarpies.',
     label: 'Some Zarpies',
     audio: 'audio/scale_some.m4a',
+    pauseBeforeMs: 500, // extra silence before this clip: it starts abruptly
     image: null,
   },
   {
@@ -214,6 +216,7 @@ export const SCALE_OPTIONS = [
     spoken: 'Most Zarpies.',
     label: 'Most Zarpies',
     audio: 'audio/scale_most.m4a',
+    pauseBeforeMs: 500, // extra silence before this clip: it starts abruptly
     image: null,
   },
   {
