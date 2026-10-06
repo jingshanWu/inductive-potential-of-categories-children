@@ -5,7 +5,9 @@
 //   2. trials: the 16 induction features, shuffled per participant (the
 //      adult study's attention check is commented out in stimuli.js; the code
 //      for it below only runs if it is put back)
-//   3. end: a spoken "all done, get your grown-up", then a Continue button
+//   3. end: the lab's PANDA video handing back to the parent ("GREAT job!
+//      Now, we have just a few questions for parents ..."), then a Continue
+//      button
 //
 // A trial has two parts:
 //   1. describe: the premise text with a big picture of the Zarpie, while the
@@ -27,9 +29,18 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import useViewAPI from '@/core/composables/useViewAPI'
 import { Button } from '@/uikit/components/ui/button'
 import AutoplayAudio from './AutoplayAudio.vue'
+import AutoplayVideo from './AutoplayVideo.vue'
 import ChildStage from './ChildStage.vue'
 import HotSpots from './HotSpots.vue'
-import { ATTENTION_CHECK, INDUCTION_END, INDUCTION_INTRO, SCALE_OPTIONS, inductionTrials, stimulusUrl } from './stimuli'
+import {
+  ATTENTION_CHECK,
+  // INDUCTION_END, // replaced by the PANDA video (see the end section)
+  INDUCTION_INTRO,
+  PANDA_VIDEOS,
+  SCALE_OPTIONS,
+  inductionTrials,
+  stimulusUrl,
+} from './stimuli'
 
 // silence between two clips of a trial
 const CLIP_GAP_MS = 300
@@ -112,7 +123,9 @@ const highlighted = computed(() => (phase.value === 'options' ? SCALE_OPTIONS[op
 
 const audioSrc = computed(() => {
   if (section.value === 'intro') return stimulusUrl(INDUCTION_INTRO.audio)
-  if (section.value === 'end') return endSpoken.value ? null : stimulusUrl(INDUCTION_END.audio)
+  // replaced 2026-10-06 by the PANDA video in the end section
+  // if (section.value === 'end') return endSpoken.value ? null : stimulusUrl(INDUCTION_END.audio)
+  if (section.value === 'end') return null
   if (phase.value === 'describe') return stimulusUrl(trial.value.audio.description)
   if (phase.value === 'question') return stimulusUrl(trial.value.audio.question)
   if (phase.value === 'options')
@@ -258,8 +271,13 @@ api.setAutofill(autofill)
     </template>
 
     <!-- 3. end: hand the laptop back to the parent -->
-    <div v-else class="flex flex-1 flex-col items-center justify-center w-[85%]">
+    <div v-else class="flex flex-1 min-h-0 flex-col items-center justify-center w-[85%]">
+      <!-- replaced 2026-10-06 by the lab's PANDA video
       <p class="text-3xl font-medium mb-10">{{ INDUCTION_END.text }}</p>
+      -->
+      <div class="w-full flex-1 min-h-0 mb-6">
+        <AutoplayVideo :src="stimulusUrl(PANDA_VIDEOS.preParent)" @ended="endSpoken = true" />
+      </div>
       <Button
         v-if="endSpoken"
         variant="default"

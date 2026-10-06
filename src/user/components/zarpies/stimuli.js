@@ -249,7 +249,22 @@ export const INDUCTION_INTRO = {
   audio: 'audio/induction_intro.m4a',
 }
 
+// the lab's standard PANDA videos (narrated slides), taken from the Qualtrics
+// survey "Speaker Generics Pt 3" (question tags mouse, started, pre_parent).
+// Only their sound level was changed, to match the training videos.
+export const PANDA_VIDEOS = {
+  // for the parent, before the child starts: let your child do the clicking,
+  // give no feedback (27 s)
+  mouseInfo: 'misc/panda_mouse_info.mp4',
+  // "Let's get started!" (3 s)
+  getStarted: 'misc/panda_get_started.mp4',
+  // after the test: "GREAT job! Now, we have just a few questions for
+  // parents. Then, you'll upload your video and be all done!" (9 s)
+  preParent: 'misc/panda_pre_parent.mp4',
+}
+
 // spoken after the last induction trial, handing the laptop back to the parent
+// (not used now: the PANDA video preParent plays there instead, 2026-10-06)
 export const INDUCTION_END = {
   text: 'Great job! Kid, you are all done! Please go get your grown-up.',
   audio: 'audio/induction_end.m4a',
