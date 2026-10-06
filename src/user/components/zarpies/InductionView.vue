@@ -5,9 +5,9 @@
 //   2. trials: the 16 induction features, shuffled per participant (the
 //      adult study's attention check is commented out in stimuli.js; the code
 //      for it below only runs if it is put back)
-//   3. end: the lab's PANDA video handing back to the parent ("GREAT job!
-//      Now, we have just a few questions for parents ..."), then a Continue
-//      button
+// After the child's answer on the last trial the study moves to the next
+// view by itself (the lab's "GREAT job!" page for handing back to the parent,
+// cdsc_default/PreParentView.vue).
 //
 // A trial has two parts:
 //   1. describe: the premise text with a big picture of the Zarpie, while the
@@ -27,20 +27,10 @@
 // everything fits on screen at once and the page cannot be scrolled.
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import useViewAPI from '@/core/composables/useViewAPI'
-import { Button } from '@/uikit/components/ui/button'
-import AutoplayAudio from './AutoplayAudio.vue'
-import AutoplayVideo from './AutoplayVideo.vue'
-import ChildStage from './ChildStage.vue'
-import HotSpots from './HotSpots.vue'
-import {
-  ATTENTION_CHECK,
-  // INDUCTION_END, // replaced by the PANDA video (see the end section)
-  INDUCTION_INTRO,
-  PANDA_VIDEOS,
-  SCALE_OPTIONS,
-  inductionTrials,
-  stimulusUrl,
-} from './stimuli'
+import AutoplayAudio from '@/builtins/cdsc_default/AutoplayAudio.vue'
+import ChildStage from '@/builtins/cdsc_default/ChildStage.vue'
+import HotSpots from '@/builtins/cdsc_default/HotSpots.vue'
+import { ATTENTION_CHECK, INDUCTION_INTRO, SCALE_OPTIONS, inductionTrials, stimulusUrl } from './stimuli'
 
 // silence between two clips of a trial
 const CLIP_GAP_MS = 300
@@ -55,7 +45,7 @@ const SCALE_SLOT_MS = 2300
 
 const api = useViewAPI()
 
-const steps = api.steps.append([{ id: 'intro' }, { id: 'trials' }, { id: 'end' }])
+const steps = api.steps.append([{ id: 'intro' }, { id: 'trials' }])
 steps[1]
   .append(
     inductionTrials().map((trial) => ({
@@ -75,7 +65,7 @@ steps[1]
   )
   .shuffle()
 
-const section = computed(() => api.path[0]) // 'intro' | 'trials' | 'end'
+const section = computed(() => api.path[0]) // 'intro' | 'trials'
 
 // the current trial's picture and clips, looked up from stimuli.js by id
 // rather than read from the saved step data (steps are saved per participant
@@ -89,7 +79,6 @@ const trialImage = computed(() => trial.value?.image ?? null)
 // (scale clips one by one) -> 'respond' (choices clickable)
 const phase = ref('describe')
 const optionIndex = ref(0)
-const endSpoken = ref(false)
 let gapTimer = null
 let optionStart = 0 // when the current scale choice was enlarged
 let leadTimer = null
@@ -123,9 +112,6 @@ const highlighted = computed(() => (phase.value === 'options' ? SCALE_OPTIONS[op
 
 const audioSrc = computed(() => {
   if (section.value === 'intro') return stimulusUrl(INDUCTION_INTRO.audio)
-  // replaced 2026-10-06 by the PANDA video in the end section
-  // if (section.value === 'end') return endSpoken.value ? null : stimulusUrl(INDUCTION_END.audio)
-  if (section.value === 'end') return null
   if (phase.value === 'describe') return stimulusUrl(trial.value.audio.description)
   if (phase.value === 'question') return stimulusUrl(trial.value.audio.question)
   if (phase.value === 'options')
@@ -137,8 +123,6 @@ const audioSrc = computed(() => {
 function nextClip() {
   if (section.value === 'intro') {
     api.goNextStep()
-  } else if (section.value === 'end') {
-    endSpoken.value = true
   } else if (phase.value === 'describe') {
     phase.value = 'question'
   } else if (phase.value === 'question') {
@@ -193,7 +177,9 @@ function onChoose({ id, rt }) {
   api.stepData.trialIndex = api.blockIndex + 1
   if (api.stepData.attentionCheck) api.stepData.attentionPassed = id === ATTENTION_CHECK.correct
   api.recordStep()
-  api.goNextStep()
+  // the last trial: on to the next view (the hand-back page) by itself
+  if (api.isLastStep()) finish()
+  else api.goNextStep()
 }
 
 function finish() {
@@ -209,6 +195,11 @@ function autofill() {
       api.recordStep()
     }
     api.goNextStep()
+  }
+  if (section.value === 'trials') {
+    api.stepData.response = 'autofilled'
+    api.stepData.trialIndex = api.blockIndex + 1
+    api.recordStep()
   }
   finish()
 }
@@ -269,25 +260,5 @@ api.setAutofill(autofill)
         />
       </div>
     </template>
-
-    <!-- 3. end: hand the laptop back to the parent -->
-    <div v-else class="flex flex-1 min-h-0 flex-col items-center justify-center w-[85%]">
-      <!-- replaced 2026-10-06 by the lab's PANDA video
-      <p class="text-3xl font-medium mb-10">{{ INDUCTION_END.text }}</p>
-      -->
-      <div class="w-full flex-1 min-h-0 mb-6">
-        <AutoplayVideo :src="stimulusUrl(PANDA_VIDEOS.preParent)" @ended="endSpoken = true" />
-      </div>
-      <Button
-        v-if="endSpoken"
-        variant="default"
-        size="lg"
-        class="text-2xl px-12 py-8"
-        id="induction-continue"
-        @click="finish()"
-      >
-        Continue
-      </Button>
-    </div>
   </ChildStage>
 </template>
