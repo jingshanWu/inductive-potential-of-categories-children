@@ -1,8 +1,8 @@
 <script setup>
 // Hand-over page, shown to the parent after the sound check: asks them to get
 // their child in front of the screen, then help the child click Start. The
-// next view (the task intro video) plays automatically; the Start click is
-// also what lets the browser play the child's videos with sound.
+// next view (the spoken task intro) plays automatically; the Start click is
+// also what lets the browser play the child's audio and videos with sound.
 import useViewAPI from '@/core/composables/useViewAPI'
 import { Button } from '@/uikit/components/ui/button'
 import { ConstrainedTaskWindow } from '@/uikit/layouts'
@@ -45,8 +45,8 @@ api.setAutofill(start)
         We ask that you do not provide your child with any feedback, until after the study is complete. Thank you!
       </p>
       <p class="text-lg mb-8">
-        Once your child is in position, please help them click the Start button below. A video will then play for your
-        child automatically.
+        Once your child is in position, please help them click the Start button below. The activity will then start for
+        your child automatically.
       </p>
       <Button variant="default" size="lg" class="text-2xl px-12 py-8" id="handtochild-start" @click="start()">
         Start

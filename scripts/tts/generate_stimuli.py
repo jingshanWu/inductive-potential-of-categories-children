@@ -16,7 +16,9 @@ regenerate with a different voice:
 
 Skips files that already exist unless --force (so after changing a sentence
 in stimuli.js, delete its m4a or use --force). Writes a summary CSV next to
-this script. Requires gcloud application-default credentials, node, the
+this script. Freshly generated clips are much quieter than the training
+videos: run match_loudness.py (this folder) afterwards to bring them to the
+same loudness. Requires gcloud application-default credentials, node, the
 google-cloud-texttospeech package, and macOS afconvert. Adapted from
 scripts/tts/generate_stimuli.py in the GRB recognition study repo.
 """

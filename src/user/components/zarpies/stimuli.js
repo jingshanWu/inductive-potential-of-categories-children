@@ -29,8 +29,8 @@
  *   - clap:         entering a room -> going into a room
  *   - look_left:    when spoken to -> when someone talks to them
  *   - attn_check:   "move the slider to 100%" -> "click on the very last picture"
- *   - opera:        replaced by `magic` ("watching a magic show" / "like to
- *                   watch magic shows"): the opera item is too hard to picture
+ *   - opera:        replaced by `magic` ("who likes to watch magic shows" / "like
+ *                   to watch magic shows"): the opera item is too hard to picture
  *                   for children (2026-10-06; it was `music`, "likes to listen
  *                   to music", for one day before that)
  *   - yellow:       replaced by `yellow_gloves` ("wearing yellow gloves"), in
@@ -40,6 +40,10 @@
  * from reference Zarpies (see zarpie-stimuli/tools/imagegen). The 5 scale
  * choices are panels built from the trial's own picture, repeated 1 / 3 / 5 /
  * 7 / 9 times (SCALE_OPTIONS.count), as in Benitez, Leshin & Rhodes (2022).
+ *
+ * Loudness: the training videos are the reference. scripts/tts/match_loudness.py
+ * brings every spoken clip to their level and the sound check bird clip to
+ * 2/3 of it; run it after regenerating any clip.
  *
  * Asset paths are relative to public/stimuli/.
  */
@@ -124,7 +128,7 @@ export const INDUCTION_FEATURES = [
   {
     id: 'magic', // replaces the adult study's `opera` item (too hard to picture for children)
     image: 'images/magic.png',
-    premise: 'Imagine you see a Zarpie watching a magic show.',
+    premise: 'Imagine you see a Zarpie who likes to watch magic shows.',
     question: 'How many Zarpies do you think like to watch magic shows?',
   },
   {
@@ -258,11 +262,14 @@ export const CHILD_ASSENT = {
   ],
 }
 
+// the adult study's intro video; no longer shown (TaskIntroView shows the
+// text below and plays its clip instead, 2026-10-06)
 export const TASK_INTRO_VIDEO = 'misc/task_intro.mp4'
 
 // task intro text, in two versions. `adult` is the narration of the adult
 // study's intro video (task_intro.mp4), word for word; `child` is the same
 // content reworded for a child. Audio paths are where generated clips go.
+// TaskIntroView picks which version the child sees and hears.
 export const TASK_INTRO = {
   adult: {
     text: 'Imagine there is a group of people called Zarpies. You will be told some information about Zarpies and be asked to make some guesses about them.',
