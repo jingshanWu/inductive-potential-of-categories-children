@@ -21,11 +21,13 @@
 //
 // All text, audio paths and the scale come from stimuli.js. The choices are
 // hot spots (HotSpots.vue); the sound and its Play / Replay fallbacks are in
-// AutoplayAudio.vue, so no clip can be skipped.
+// AutoplayAudio.vue, so no clip can be skipped. The page is a ChildStage:
+// everything fits on screen at once and the page cannot be scrolled.
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import useViewAPI from '@/core/composables/useViewAPI'
 import { Button } from '@/uikit/components/ui/button'
 import AutoplayAudio from './AutoplayAudio.vue'
+import ChildStage from './ChildStage.vue'
 import HotSpots from './HotSpots.vue'
 import { ATTENTION_CHECK, INDUCTION_END, INDUCTION_INTRO, SCALE_OPTIONS, inductionTrials, stimulusUrl } from './stimuli'
 
@@ -159,7 +161,7 @@ api.setAutofill(autofill)
 </script>
 
 <template>
-  <div class="flex flex-col items-center w-full h-[90vh] p-4 text-center">
+  <ChildStage class="flex flex-col items-center p-4 text-center">
     <AutoplayAudio :src="audioSrc" @ended="onAudioEnded()" />
 
     <!-- 1. intro -->
@@ -177,7 +179,7 @@ api.setAutofill(autofill)
 
         <!-- the Zarpie for this trial, only while it is described (a dashed
              text box if no picture is listed) -->
-        <div v-if="phase === 'describe'" class="w-full h-[60vh] flex items-center justify-center">
+        <div v-if="phase === 'describe'" class="w-full flex-1 min-h-0 pb-4 flex items-center justify-center">
           <img
             v-if="trialImage"
             :src="stimulusUrl(trialImage)"
@@ -196,12 +198,14 @@ api.setAutofill(autofill)
         <p v-if="phase !== 'describe'" class="text-2xl font-medium mb-3">{{ api.stepData.question }}</p>
       </template>
 
-      <!-- the scale, lowest to highest, in one row (from the question part on) -->
-      <div v-if="phase !== 'describe'" class="w-full flex-1 min-h-0">
+      <!-- the scale, lowest to highest: 3 choices on the top row, 2 on the bottom
+           (from the question part on); the padding is room for the choice that
+           is enlarged while it is read -->
+      <div v-if="phase !== 'describe'" class="w-full flex-1 min-h-0 px-4 pt-4 pb-8">
         <HotSpots
           :key="api.stepIndex"
           :options="choices"
-          :columns="choices.length"
+          :columns="3"
           :labelLines="2"
           :margin="12"
           :gap="12"
@@ -226,5 +230,5 @@ api.setAutofill(autofill)
         Continue
       </Button>
     </div>
-  </div>
+  </ChildStage>
 </template>

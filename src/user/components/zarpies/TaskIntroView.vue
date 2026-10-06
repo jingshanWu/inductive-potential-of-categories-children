@@ -9,6 +9,7 @@
 import { onBeforeUnmount } from 'vue'
 import useViewAPI from '@/core/composables/useViewAPI'
 import AutoplayAudio from './AutoplayAudio.vue'
+import ChildStage from './ChildStage.vue'
 import { TASK_INTRO, stimulusUrl } from './stimuli'
 
 // which wording is shown and read: 'child' or 'adult'
@@ -36,10 +37,10 @@ api.setAutofill(() => finish(false))
 </script>
 
 <template>
-  <div class="flex flex-col items-center w-full h-[90vh] p-4 text-center">
+  <ChildStage class="flex flex-col items-center p-4 text-center">
     <AutoplayAudio :src="stimulusUrl(INTRO.audio)" @ended="onAudioEnded()" />
     <div class="flex flex-1 items-center justify-center w-[85%]">
       <p class="text-3xl font-medium">{{ INTRO.text }}</p>
     </div>
-  </div>
+  </ChildStage>
 </template>

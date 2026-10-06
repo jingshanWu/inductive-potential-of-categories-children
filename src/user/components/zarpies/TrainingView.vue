@@ -13,6 +13,7 @@
 import { computed, onMounted } from 'vue'
 import useViewAPI from '@/core/composables/useViewAPI'
 import AutoplayVideo from './AutoplayVideo.vue'
+import ChildStage from './ChildStage.vue'
 import { stimulusUrl, trainingTrials } from './stimuli'
 
 const api = useViewAPI()
@@ -64,7 +65,7 @@ api.setAutofill(autofill)
 </script>
 
 <template>
-  <div v-if="trials.length" class="w-full h-[90vh] p-4">
+  <ChildStage v-if="trials.length" class="p-4">
     <AutoplayVideo v-if="videoSrc" :src="videoSrc" @ended="onEnded()" />
-  </div>
+  </ChildStage>
 </template>
