@@ -24,6 +24,12 @@ const trials = condition === 'generic' || condition === 'specific' ? trainingTri
 if (trials.length) {
   const steps = api.steps.append([{ id: 'training' }])
   steps[0].append(trials.map((trial) => ({ ...trial, condition, completed: false }))).shuffle()
+  // The view only hears about steps added at the top level ('training'), not
+  // about the videos added inside it, so it still believed the current step
+  // was 'training' itself, which has no video. Nothing was then shown: a
+  // blank page on the live site (in dev mode the developer tools happened to
+  // refresh it). Tell it to look at the steps again.
+  api.updateStepper()
 }
 
 // the current video's URL, or null until the stepper is on a video step. On
@@ -48,7 +54,10 @@ function onEnded() {
 }
 
 onMounted(() => {
-  if (trials.length) return
+  if (trials.length) {
+    if (!videoSrc.value) api.updateStepper() // as above, in case the steps were not final yet
+    return
+  }
   api.recordPageData({ condition: condition ?? null, skipped: true })
   finish()
 })
