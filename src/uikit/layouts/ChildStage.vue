@@ -96,7 +96,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="stage" class="w-full overflow-hidden" :style="{ height }">
+  <div ref="stage" class="relative w-full overflow-hidden" :style="{ height }">
     <slot />
   </div>
 </template>

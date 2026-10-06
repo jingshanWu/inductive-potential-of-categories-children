@@ -122,11 +122,12 @@ watch(() => props.src, start)
       @error="failed = !!src"
     ></audio>
 
-    <!-- fast forward (development): cut the clip short -->
+    <!-- fast forward (development): cut the clip short. Sits at the bottom right
+         of the page frame (ChildStage), not of the browser window -->
     <button
       v-if="fastForward && playing"
       type="button"
-      class="fixed bottom-3 right-3 z-[60] rounded-md bg-amber-400 px-3 py-1.5 text-sm font-semibold text-black shadow cursor-pointer"
+      class="absolute bottom-3 right-3 z-[60] rounded-md bg-amber-400 px-3 py-1.5 text-sm font-semibold text-black shadow cursor-pointer"
       id="autoplayaudio-skip"
       @click="skip()"
     >
