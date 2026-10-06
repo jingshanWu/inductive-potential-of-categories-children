@@ -175,9 +175,9 @@ export const INDUCTION_FEATURES = [
 // this order while the matching picture shakes (written with a period, not a
 // question mark, so the voice does not rise at the end); `label` is the text shown with
 // the picture; `speakingRate` (optional) slows the generated voice for that
-// clip (1 = normal); `pauseBeforeMs` (optional) is extra silence before the clip, on
-// top of the usual gap between clips; `count` is how many copies of the trial's Zarpie the panel
-// shows. This is the 5-point within-category homogeneity scale from
+// clip (1 = normal). Each choice stays enlarged for the same time, whatever
+// the length of its clip (SCALE_SLOT_MS in InductionView.vue). `count` is how
+// many copies of the trial's Zarpie the panel shows. This is the 5-point within-category homogeneity scale from
 // Benitez, Leshin & Rhodes (2022, Cognition): (1) only one, (2) a few,
 // (3) some, (4) most, (5) all. There is no "none": the Zarpie in the premise
 // is always at least one.
@@ -208,7 +208,6 @@ export const SCALE_OPTIONS = [
     label: 'Some Zarpies',
     audio: 'audio/scale_some.m4a',
     speakingRate: 0.75, // two short words: at the normal rate it sounds rushed next to the others
-    pauseBeforeMs: 500, // extra silence before this clip: it starts abruptly
     image: null,
   },
   {
@@ -219,7 +218,6 @@ export const SCALE_OPTIONS = [
     label: 'Most Zarpies',
     audio: 'audio/scale_most.m4a',
     speakingRate: 0.75, // two short words: at the normal rate it sounds rushed next to the others
-    pauseBeforeMs: 500, // extra silence before this clip: it starts abruptly
     image: null,
   },
   {

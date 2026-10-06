@@ -34,6 +34,10 @@ import { ATTENTION_CHECK, INDUCTION_END, INDUCTION_INTRO, SCALE_OPTIONS, inducti
 // silence between two clips of a trial
 const CLIP_GAP_MS = 300
 
+// how long each scale choice stays enlarged, whatever the length of its clip:
+// the silence after the clip fills the rest
+const SCALE_SLOT_MS = 2300
+
 const api = useViewAPI()
 
 const steps = api.steps.append([{ id: 'intro' }, { id: 'trials' }, { id: 'end' }])
@@ -72,6 +76,7 @@ const phase = ref('describe')
 const optionIndex = ref(0)
 const endSpoken = ref(false)
 let gapTimer = null
+let optionStart = 0 // when the current scale choice was enlarged
 
 // every new step starts from its first clip (also after a page reload)
 watch(
@@ -123,19 +128,23 @@ function nextClip() {
   }
 }
 
-// extra silence a scale clip asks for before it starts (pauseBeforeMs in
-// stimuli.js), if the next clip is a scale clip
-function pauseBeforeNextClip() {
-  if (section.value !== 'trials') return 0
-  let next = null
-  if (phase.value === 'question' && !api.stepData.attentionCheck) next = SCALE_OPTIONS[0]
-  else if (phase.value === 'options') next = SCALE_OPTIONS[optionIndex.value + 1]
-  return next?.pauseBeforeMs ?? 0
+// a scale choice has just been enlarged: start its clock
+watch([phase, optionIndex], () => {
+  if (phase.value === 'options') optionStart = performance.now()
+})
+
+// silence after the clip that just ended: a scale clip waits out the rest of
+// its SCALE_SLOT_MS, any other clip is followed by the usual gap
+function gapAfterClip() {
+  if (section.value === 'trials' && phase.value === 'options') {
+    return Math.max(0, SCALE_SLOT_MS - (performance.now() - optionStart))
+  }
+  return CLIP_GAP_MS
 }
 
 function onAudioEnded() {
   clearTimeout(gapTimer)
-  gapTimer = setTimeout(nextClip, CLIP_GAP_MS + pauseBeforeNextClip())
+  gapTimer = setTimeout(nextClip, gapAfterClip())
 }
 
 onBeforeUnmount(() => clearTimeout(gapTimer))
