@@ -16,18 +16,9 @@ regenerate with a different voice:
 
 Skips files that already exist unless --force (so after changing a sentence
 in stimuli.js, delete its m4a or use --force). Writes a summary CSV next to
-this script.
-
-The 5 scale clips are generated differently: with the same voice in a model
-that takes a style direction (SCALE_VOICE_STYLE in stimuli.js: warm, friendly,
-a statement). That model says a phrase quite differently every time (pace,
-melody, sometimes long pauses), so regenerate a scale clip until
-match_loudness.py reports it between 1.8 and 2.2 s, and listen to it before
-keeping it.
-
-Freshly generated clips are much quieter than the training videos: run
-match_loudness.py (this folder) afterwards to bring every clip to the same
-loudness. It also trims the silence around the scale clips. Requires gcloud application-default credentials, node, the
+this script. Freshly generated clips are much quieter than the training
+videos: run match_loudness.py (this folder) afterwards to bring them to the
+same loudness. Requires gcloud application-default credentials, node, the
 google-cloud-texttospeech package, and macOS afconvert. Adapted from
 scripts/tts/generate_stimuli.py in the GRB recognition study repo.
 """
@@ -47,7 +38,6 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
 STIMULI_JS = os.path.join(REPO, "src", "user", "components", "zarpies", "stimuli.js")
 AUDIO_ROOT = os.path.join(REPO, "public", "stimuli")
-STYLE_MODEL = "gemini-2.5-flash-tts"  # for clips with a style direction (the scale clips)
 
 # load stimuli.js in node and print [{file, text}] for every spoken clip
 DUMP_CLIPS_JS = """
@@ -59,7 +49,7 @@ const clips = [
     ...(t.audio.description ? [{ file: t.audio.description, text: t.premise }] : []),
     { file: t.audio.question, text: t.attentionCheck ? t.text : t.question },
   ]),
-  ...m.SCALE_OPTIONS.map((o) => ({ file: o.audio, text: o.spoken, style: m.SCALE_VOICE_STYLE })),
+  ...m.SCALE_OPTIONS.map((o) => ({ file: o.audio, text: o.spoken, rate: o.speakingRate })),
   { file: m.INDUCTION_INTRO.audio, text: m.INDUCTION_INTRO.text },
   { file: m.INDUCTION_END.audio, text: m.INDUCTION_END.text },
   { file: m.CHILD_ASSENT.audio, text: m.CHILD_ASSENT.spoken },
@@ -99,20 +89,14 @@ def main():
         if os.path.exists(out) and not args.force:
             print("skip:", clip["file"], flush=True)
             continue
-        if clip.get("style"):
-            # a clip with a style direction: the same voice in the model that takes one
-            speech = texttospeech.SynthesisInput(text=clip["text"], prompt=clip["style"])
-            voice = texttospeech.VoiceSelectionParams(
-                language_code="en-US", name=args.voice.split("-")[-1], model_name=STYLE_MODEL
-            )
-        else:
-            speech = texttospeech.SynthesisInput(text=clip["text"])
-            voice = texttospeech.VoiceSelectionParams(language_code="en-US", name=args.voice)
         resp = client.synthesize_speech(
-            input=speech,
-            voice=voice,
-            audio_config=texttospeech.AudioConfig(audio_encoding=texttospeech.AudioEncoding.LINEAR16),
-            timeout=90,
+            input=texttospeech.SynthesisInput(text=clip["text"]),
+            voice=texttospeech.VoiceSelectionParams(language_code="en-US", name=args.voice),
+            audio_config=texttospeech.AudioConfig(
+                audio_encoding=texttospeech.AudioEncoding.LINEAR16,
+                speaking_rate=clip.get("rate"),  # None = the voice's normal rate
+            ),
+            timeout=30,
         )
         with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
             tmp.write(resp.audio_content)

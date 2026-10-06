@@ -1,5 +1,4 @@
-"""Match the loudness of the study's audio clips to the training videos, and
-trim the 5 scale clips.
+"""Match the loudness of the study's audio clips to the training videos.
 
 The training videos (public/stimuli/generic/*.mp4, specific/*.mp4) come from
 the adult study and are the reference: their loudness is measured and nothing
@@ -14,12 +13,6 @@ Loudness here is the RMS level of the sounding parts of a clip (50 ms frames
 above -50 dBFS; silence is not counted), in dBFS. The reference is the median
 over the training videos. Turning speech up this far would clip its peaks, so
 a limiter holds them under CEILING_DB.
-
-The 5 scale clips (audio/scale_*.m4a, "Only one Zarpie." ...) are first
-trimmed: the silence around the speech is cut (the model that makes them
-leaves up to a few seconds of it) and every clip gets SCALE_LEAD_S of silence
-before the speech. Each should then be about 2 s long (SCALE_MIN_S to
-SCALE_MAX_S); one that is not is reported, to be regenerated.
 
 Run it after generate_stimuli.py whenever clips are (re)generated:
     python scripts/tts/match_loudness.py            # measure, then adjust
@@ -47,9 +40,6 @@ CEILING_DB = -1.0  # peaks are held under this
 TOLERANCE_DB = 0.3
 FRAME_S = 0.05
 GATE_DB = -50.0
-SCALE_LEAD_S = 0.15  # silence before the speech in every scale clip
-SCALE_MIN_S, SCALE_MAX_S = 1.8, 2.2  # wanted length of a scale clip
-SPEECH_DB = -30.0  # below this (relative to the clip's peak) counts as silence
 
 
 def db(x):
@@ -119,41 +109,10 @@ def match(x, rate, target):
     return y
 
 
-def speech_span(x, rate):
-    """(start, end) of the speech in a clip, in samples."""
-    n = int(rate * 0.01)
-    frames = np.abs(x[: len(x) // n * n]).max(axis=1).reshape(-1, n).max(axis=1)
-    sounding = np.where(frames > np.abs(x).max() * 10 ** (SPEECH_DB / 20))[0]
-    # a little extra on both sides, to keep a soft first sound and a quiet final "s"
-    start = max(0, sounding[0] * n - int(rate * 0.03))
-    end = min(len(x), (sounding[-1] + 1) * n + int(rate * 0.15))
-    return start, end
-
-
-def trim_scale_clips(dry_run):
-    """Cut the silence around the scale clips and check their length."""
-    print(f"scale clips (wanted: {SCALE_MIN_S} to {SCALE_MAX_S} s)")
-    for path in sorted(glob.glob(os.path.join(STIMULI, "audio", "scale_*.m4a"))):
-        x, rate = read_audio(path)
-        start, end = speech_span(x, rate)
-        lead, tail = start / rate, (len(x) - end) / rate
-        trimmed = abs(lead - SCALE_LEAD_S) < 0.06 and tail < 0.06
-        if not trimmed and not dry_run:
-            silence = np.zeros((int(SCALE_LEAD_S * rate), x.shape[1]))
-            x = np.concatenate([silence, x[start:end]])
-            write_m4a(x, rate, path)
-        length = len(x) / rate if trimmed or not dry_run else SCALE_LEAD_S + (end - start) / rate
-        note = "ok" if SCALE_MIN_S <= length <= SCALE_MAX_S else "NOT IN RANGE: regenerate this clip"
-        print(f"  {os.path.relpath(path, STIMULI):38s} {length:.2f} s  {'' if trimmed else 'trimmed, '}{note}")
-    print()
-
-
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true", help="measure only, change nothing")
     args = ap.parse_args()
-
-    trim_scale_clips(args.dry_run)
 
     videos = sorted(glob.glob(os.path.join(STIMULI, "generic", "*.mp4")) + glob.glob(os.path.join(STIMULI, "specific", "*.mp4")))
     levels = []

@@ -174,20 +174,13 @@ export const INDUCTION_FEATURES = [
 // the scale, lowest to highest. On each trial the `spoken` clips are played in
 // this order while the matching picture shakes (written with a period, not a
 // question mark, so the voice does not rise at the end); `label` is the text shown with
-// the picture; `pauseBeforeMs` (optional, not used now) is extra silence
-// before the clip, on top of the usual gap between clips. The 5 clips are
-// spoken in the style SCALE_VOICE_STYLE and each is about 2 s long (1.8 to
-// 2.2 s; scripts/tts/match_loudness.py trims and checks them). `count` is how
-// many copies of the trial's Zarpie the panel
+// the picture; `speakingRate` (optional) slows the generated voice for that
+// clip (1 = normal); `pauseBeforeMs` (optional) is extra silence before the clip, on
+// top of the usual gap between clips; `count` is how many copies of the trial's Zarpie the panel
 // shows. This is the 5-point within-category homogeneity scale from
 // Benitez, Leshin & Rhodes (2022, Cognition): (1) only one, (2) a few,
 // (3) some, (4) most, (5) all. There is no "none": the Zarpie in the premise
 // is always at least one.
-// how the voice is asked to say the 5 scale clips (a style direction for the
-// speech model, not spoken itself)
-export const SCALE_VOICE_STYLE =
-  'Say this in a warm, friendly voice, like talking to a young child, at a natural, relaxed pace, without pauses between the words. It is a statement, not a question: the voice falls at the end.'
-
 export const SCALE_OPTIONS = [
   {
     id: 'one',
@@ -214,6 +207,8 @@ export const SCALE_OPTIONS = [
     spoken: 'Some Zarpies.',
     label: 'Some Zarpies',
     audio: 'audio/scale_some.m4a',
+    speakingRate: 0.75, // two short words: at the normal rate it sounds rushed next to the others
+    pauseBeforeMs: 500, // extra silence before this clip: it starts abruptly
     image: null,
   },
   {
@@ -223,6 +218,8 @@ export const SCALE_OPTIONS = [
     spoken: 'Most Zarpies.',
     label: 'Most Zarpies',
     audio: 'audio/scale_most.m4a',
+    speakingRate: 0.75, // two short words: at the normal rate it sounds rushed next to the others
+    pauseBeforeMs: 500, // extra silence before this clip: it starts abruptly
     image: null,
   },
   {
