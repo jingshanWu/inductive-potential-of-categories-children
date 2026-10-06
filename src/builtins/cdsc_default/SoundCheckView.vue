@@ -17,10 +17,9 @@
 import { ref, onUnmounted } from 'vue'
 import useViewAPI from '@/core/composables/useViewAPI'
 import { Button } from '@/uikit/components/ui/button'
+import CdscBox from '@/uikit/layouts/CdscBox.vue'
 import { shuffle } from '@/core/utils/randomization'
-import ChildStage from '@/uikit/layouts/ChildStage.vue'
 import HotSpots from '@/uikit/components/cdsc/HotSpots.vue'
-import ScaleToFit from '@/uikit/layouts/ScaleToFit.vue'
 import birdSound from '@/assets/cdsc_default/sound_check.m4a'
 import birdImage from '@/assets/cdsc_default/soundcheck_bird.png'
 import cowImage from '@/assets/cdsc_default/soundcheck_cow.png'
@@ -100,56 +99,59 @@ api.setAutofill(autofill)
 </script>
 
 <template>
-  <!-- scaled, like a slide, to fit the window: everything on screen at once, no scrolling -->
-  <ChildStage class="p-4">
-    <ScaleToFit :width="900">
-      <div class="text-center px-6 py-4">
-        <h1 class="text-2xl font-bold mb-4">🔊 Sound check</h1>
+  <!-- the lab's constant-size box: everything inside it, no scrolling -->
+  <CdscBox>
+    <div class="text-center px-6 py-2">
+      <h1 class="text-2xl font-bold mb-4">🔊 Sound check</h1>
 
-        <!-- intro -->
-        <template v-if="screen === 'intro'">
-          <p class="text-lg mb-4">
-            This study uses sound, so we first need to check that your audio is working. Please turn your volume up.
-          </p>
-          <p class="text-lg mb-8">When you press the button below, you will hear an animal sound.</p>
-          <Button variant="default" size="lg" id="soundcheck-play" @click="play()">
-            <i-fa6-solid-play class="mr-2" /> Play sound
-          </Button>
-        </template>
+      <!-- intro -->
+      <template v-if="screen === 'intro'">
+        <p class="text-lg mb-4">
+          This study uses sound, so we first need to check that your audio is working. Please turn your volume up.
+        </p>
+        <p class="text-lg">When you press the button below, you will hear an animal sound.</p>
+      </template>
 
-        <!-- identify the animal -->
-        <template v-else-if="screen === 'question'">
-          <p class="text-lg mb-4">Which animal did you hear?</p>
-          <!-- 3 options on the top row, 2 on the bottom -->
-          <div class="w-full h-[400px]">
-            <HotSpots :options="options" :columns="3" :margin="16" :gap="16" @choose="answer" />
-          </div>
-        </template>
+      <!-- identify the animal -->
+      <template v-else-if="screen === 'question'">
+        <p class="text-lg mb-4">Which animal did you hear?</p>
+        <!-- 3 options on the top row, 2 on the bottom -->
+        <div class="w-full h-[380px]">
+          <HotSpots :options="options" :columns="3" :margin="16" :gap="16" @choose="answer" />
+        </div>
+      </template>
 
-        <!-- correct: sound confirmed working -->
-        <template v-else-if="screen === 'success'">
-          <p class="text-4xl mb-4">✅</p>
-          <p class="text-2xl font-semibold mb-8">Sound check successful!</p>
-          <Button variant="default" size="lg" id="soundcheck-continue" @click="proceed()">
-            Continue
-            <i-fa6-solid-arrow-right class="ml-2" />
-          </Button>
-        </template>
+      <!-- correct: sound confirmed working -->
+      <template v-else-if="screen === 'success'">
+        <p class="text-4xl mb-4">✅</p>
+        <p class="text-2xl font-semibold">Sound check successful!</p>
+      </template>
 
-        <!-- wrong answer: sound must be off -->
-        <template v-else>
-          <p class="text-lg mb-4">
-            <b>That wasn't the sound we played.</b>
-          </p>
-          <p class="text-lg mb-8">
-            Please make sure your sound is turned on and your volume is up, then try the sound check again. If you still
-            cannot hear anything, please exit the session and email discoveriesinaction@gmail.com for assistance.
-          </p>
-          <Button variant="default" size="lg" id="soundcheck-retry" @click="play()">
-            <i-fa6-solid-rotate-right class="mr-2" /> Play sound again
-          </Button>
-        </template>
-      </div>
-    </ScaleToFit>
-  </ChildStage>
+      <!-- wrong answer: sound must be off -->
+      <template v-else>
+        <p class="text-lg mb-4">
+          <b>That wasn't the sound we played.</b>
+        </p>
+        <p class="text-lg">
+          Please make sure your sound is turned on and your volume is up, then try the sound check again. If you still
+          cannot hear anything, please exit the session and email discoveriesinaction@gmail.com for assistance.
+        </p>
+      </template>
+    </div>
+
+    <template #footer>
+      <Button v-if="screen === 'intro'" variant="default" size="lg" id="soundcheck-play" @click="play()">
+        <i-fa6-solid-play class="mr-2" /> Play sound
+      </Button>
+      <Button v-else-if="screen === 'success'" variant="default" size="lg" id="soundcheck-continue" @click="proceed()">
+        Continue
+        <i-fa6-solid-arrow-right class="ml-2" />
+      </Button>
+      <Button v-else-if="screen === 'retry'" variant="default" size="lg" id="soundcheck-retry" @click="play()">
+        <i-fa6-solid-rotate-right class="mr-2" /> Play sound again
+      </Button>
+      <!-- 'question': no button, the pictures are the answer -->
+      <span v-else class="h-10"></span>
+    </template>
+  </CdscBox>
 </template>

@@ -39,7 +39,8 @@ export const SECTION_TITLES = [
 </script>
 
 <template>
-  <div class="flex gap-8 items-center text-2xl leading-snug">
+  <!-- the two long slides (Use of Data, Risks & Benefits) use smaller text, so they fit without shrinking -->
+  <div class="flex gap-8 items-center leading-snug" :class="section >= 5 ? 'text-lg' : 'text-2xl'">
     <!-- 1. About the Study -->
     <template v-if="section === 1">
       <ul class="flex-1 list-disc pl-7 space-y-5">
@@ -134,7 +135,7 @@ export const SECTION_TITLES = [
         <li>At the end of your session, you will <b>select a privacy level.</b></li>
         <li>
           <u>Unless otherwise specified</u> in your privacy settings:
-          <ul class="list-disc pl-7 mt-2 space-y-1 text-lg">
+          <ul class="list-disc pl-7 mt-2 space-y-1 text-base">
             <li>
               Information not containing identifiers may be used in future research, shared with other researchers, or
               placed in a data repository without your additional consent
@@ -155,7 +156,7 @@ export const SECTION_TITLES = [
       <ul class="flex-1 list-disc pl-7 space-y-5">
         <li>
           This study includes a <b>minimal risk</b> of a potential breach in confidentiality.
-          <ul class="list-disc pl-7 mt-2 space-y-1 text-lg">
+          <ul class="list-disc pl-7 mt-2 space-y-1 text-base">
             <li>
               Video of your child’s participation will be stored our lab’s servers, accessible only to trained
               researchers in the lab with server login credentials for data analysis. There is a minimal risk of the

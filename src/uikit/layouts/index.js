@@ -1,3 +1,4 @@
+export { default as CdscBox } from './CdscBox.vue' // CDSC: the constant-size box of the lab's parent pages
 export { default as CenteredContent } from './CenteredContent.vue'
 export { default as ChildStage } from './ChildStage.vue' // CDSC: no-scroll full-height page frame
 export { default as ConstrainedPage } from './ConstrainedPage.vue'

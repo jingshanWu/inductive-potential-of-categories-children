@@ -17,9 +17,8 @@
 import { ref } from 'vue'
 import useViewAPI from '@/core/composables/useViewAPI'
 import { Button } from '@/uikit/components/ui/button'
+import CdscBox from '@/uikit/layouts/CdscBox.vue'
 import AutoplayAudio from '@/uikit/components/cdsc/AutoplayAudio.vue'
-import ChildStage from '@/uikit/layouts/ChildStage.vue'
-import ScaleToFit from '@/uikit/layouts/ScaleToFit.vue'
 import narration from '@/assets/cdsc_default/panda_intro.m4a'
 import photo from '@/assets/cdsc_default/panda_intro_photo.jpg'
 import wordmark from '@/assets/cdsc_default/panda_wordmark_mascot.png'
@@ -63,60 +62,57 @@ api.setAutofill(() => api.goNextView())
 </script>
 
 <template>
-  <!-- scaled, like a slide, to fit the window: everything on screen at once, no scrolling -->
-  <ChildStage class="p-4">
-    <!-- the narration (outside the scaled part, for its Play button) -->
-    <AutoplayAudio :src="heard ? null : narration" @time="played = $event" @ended="heard = true" />
+  <!-- the lab's constant-size box: everything inside it, no scrolling -->
+  <CdscBox>
+    <template #outside>
+      <!-- the narration (outside the box, for its Play button) -->
+      <AutoplayAudio :src="heard ? null : narration" @time="played = $event" @ended="heard = true" />
+    </template>
 
-    <ScaleToFit :width="900">
-      <div class="text-center px-6 py-3">
-        <img
-          :src="photo"
-          alt="A researcher from the lab waving hello"
-          draggable="false"
-          class="mx-auto h-[200px] mb-4"
-        />
+    <div class="text-center px-6 py-2">
+      <img :src="photo" alt="A researcher from the lab waving hello" draggable="false" class="mx-auto h-[200px] mb-4" />
 
-        <!-- the parts below keep their place on the page and fade in -->
-        <p
-          class="text-3xl font-semibold mb-3 transition-opacity duration-500"
-          :class="{ 'opacity-0': !shown('labName') }"
-        >
-          <template v-for="(word, i) in LAB_NAME" :key="i">
-            <span :style="word.color ? { color: word.color } : null">{{ word.text }}</span
-            >{{ i < LAB_NAME.length - 1 ? ' ' : '' }}
-          </template>
-        </p>
+      <!-- the parts below keep their place on the page and fade in -->
+      <p
+        class="text-3xl font-semibold mb-3 transition-opacity duration-500"
+        :class="{ 'opacity-0': !shown('labName') }"
+      >
+        <template v-for="(word, i) in LAB_NAME" :key="i">
+          <span :style="word.color ? { color: word.color } : null">{{ word.text }}</span
+          >{{ i < LAB_NAME.length - 1 ? ' ' : '' }}
+        </template>
+      </p>
 
-        <!-- the PANDA letters with the mascot under them -->
-        <img
-          :src="wordmark"
-          alt="PANDA"
-          draggable="false"
-          class="mx-auto h-[150px] mb-4 transition-opacity duration-500"
-          :class="{ 'opacity-0': !shown('wordmark') }"
-        />
+      <!-- the PANDA letters with the mascot under them -->
+      <img
+        :src="wordmark"
+        alt="PANDA"
+        draggable="false"
+        class="mx-auto h-[150px] mb-4 transition-opacity duration-500"
+        :class="{ 'opacity-0': !shown('wordmark') }"
+      />
 
-        <p
-          class="text-xl mb-5 mx-auto max-w-[760px] transition-opacity duration-500"
-          :class="{ 'opacity-0': !shown('closingLine') }"
-        >
-          {{ CLOSING_LINE }}
-        </p>
+      <p
+        class="text-xl mb-5 mx-auto max-w-[760px] transition-opacity duration-500"
+        :class="{ 'opacity-0': !shown('closingLine') }"
+      >
+        {{ CLOSING_LINE }}
+      </p>
+    </div>
 
-        <!-- gray until the narration has finished, then solid and clickable -->
-        <Button
-          :variant="heard ? 'default' : 'secondary'"
-          size="lg"
-          :class="{ 'cursor-not-allowed text-muted-foreground': !heard }"
-          id="introvideo-continue"
-          :disabled="!heard"
-          @click="finish()"
-        >
-          Continue
-          <i-fa6-solid-arrow-right class="ml-2" />
-        </Button>
-      </div>
-    </ScaleToFit>
-  </ChildStage>
+    <template #footer>
+      <!-- gray until the narration has finished, then solid and clickable -->
+      <Button
+        :variant="heard ? 'default' : 'secondary'"
+        size="lg"
+        :class="{ 'cursor-not-allowed text-muted-foreground': !heard }"
+        id="introvideo-continue"
+        :disabled="!heard"
+        @click="finish()"
+      >
+        Continue
+        <i-fa6-solid-arrow-right class="ml-2" />
+      </Button>
+    </template>
+  </CdscBox>
 </template>

@@ -21,8 +21,7 @@ const api = useViewAPI()
 
 // import UIkit components
 import { Button } from '@/uikit/components/ui/button'
-import ChildStage from '@/uikit/layouts/ChildStage.vue'
-import ScaleToFit from '@/uikit/layouts/ScaleToFit.vue'
+import CdscBox from '@/uikit/layouts/CdscBox.vue'
 
 // animation library
 import { animate } from 'motion'
@@ -70,36 +69,36 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <!-- scaled, like a slide, to fit the window: everything on screen at once, no scrolling -->
-  <ChildStage class="p-4">
-    <ScaleToFit :width="900">
-      <!-- The lab's standard PANDA first page ("Thanks for joining us!",
-           Set Up/1-First Block/setupnew.jpeg), rebuilt as text so it can be
-           edited; the mascot is cropped from panda.png in the same folder -->
-      <div class="flex flex-col items-center px-6 pt-4 pb-14">
-        <h1 ref="title" class="text-5xl font-bold text-center mb-3">Thanks for joining us!</h1>
-        <p class="text-2xl text-center mb-12">For the best study experience, please do the following:</p>
+  <!-- the lab's constant-size box: everything inside it, no scrolling -->
+  <CdscBox>
+    <!-- The lab's standard PANDA first page ("Thanks for joining us!",
+         Set Up/1-First Block/setupnew.jpeg), rebuilt as text so it can be
+         edited; the mascot is cropped from panda.png in the same folder -->
+    <div class="flex flex-col items-center px-6 py-2">
+      <h1 ref="title" class="text-5xl font-bold text-center mb-3">Thanks for joining us!</h1>
+      <p class="text-2xl text-center mb-10">For the best study experience, please do the following:</p>
 
-        <div class="w-full flex items-center gap-6 mb-10">
-          <ol class="flex-1 text-left text-3xl space-y-9">
-            <li>1. Make sure your <b>sound is on</b>.</li>
-            <li>2. Enlarge your window to <b>full screen.</b></li>
-            <li>3. <b>Scroll up</b> so that your webcam image is not in view.</li>
-          </ol>
-          <img
-            src="@/assets/cdsc_default/panda_mascot.png"
-            alt=""
-            draggable="false"
-            class="w-[130px] shrink-0 select-none"
-          />
-        </div>
-
-        <!-- Call-to-action button (the padding under it is room for its wiggle) -->
-        <Button ref="button" id="begintask" @click="finish()" size="lg">
-          I'm ready!
-          <i-lucide-arrow-right />
-        </Button>
+      <div class="w-full flex items-center gap-6">
+        <ol class="flex-1 text-left text-3xl space-y-8">
+          <li>1. Make sure your <b>sound is on</b>.</li>
+          <li>2. Enlarge your window to <b>full screen.</b></li>
+          <li>3. <b>Scroll up</b> so that your webcam image is not in view.</li>
+        </ol>
+        <img
+          src="@/assets/cdsc_default/panda_mascot.png"
+          alt=""
+          draggable="false"
+          class="w-[130px] shrink-0 select-none"
+        />
       </div>
-    </ScaleToFit>
-  </ChildStage>
+    </div>
+
+    <template #footer>
+      <!-- Call-to-action button -->
+      <Button ref="button" id="begintask" @click="finish()" size="lg">
+        I'm ready!
+        <i-lucide-arrow-right />
+      </Button>
+    </template>
+  </CdscBox>
 </template>

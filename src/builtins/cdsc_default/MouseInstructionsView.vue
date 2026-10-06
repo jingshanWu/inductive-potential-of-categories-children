@@ -22,8 +22,8 @@ import { animate } from 'motion'
 import useViewAPI from '@/core/composables/useViewAPI'
 import { Button } from '@/uikit/components/ui/button'
 import AutoplayAudio from '@/uikit/components/cdsc/AutoplayAudio.vue'
+import CdscBox from '@/uikit/layouts/CdscBox.vue'
 import ChildStage from '@/uikit/layouts/ChildStage.vue'
-import ScaleToFit from '@/uikit/layouts/ScaleToFit.vue'
 import narration from '@/assets/cdsc_default/panda_mouse_info.m4a'
 import getStartedVoice from '@/assets/cdsc_default/panda_get_started.m4a'
 import logo from '@/assets/cdsc_default/panda_logo.png'
@@ -75,57 +75,58 @@ api.setAutofill(finish)
 </script>
 
 <template>
-  <!-- 1. info for the parent -->
-  <ChildStage v-if="screen === 'info'" class="p-4">
-    <!-- the narration (outside the scaled part, for its Play button) -->
-    <AutoplayAudio :src="infoHeard ? null : narration" @ended="onInfoHeard()" />
+  <!-- 1. info for the parent, in the lab's constant-size box (no scrolling) -->
+  <CdscBox v-if="screen === 'info'">
+    <template #outside>
+      <!-- the narration (outside the box, for its Play button) -->
+      <AutoplayAudio :src="infoHeard ? null : narration" @ended="onInfoHeard()" />
+    </template>
 
-    <!-- scaled, like a slide, to fit the window: no scrolling -->
-    <ScaleToFit :width="900">
-      <div class="text-center px-6 pt-2 pb-12">
-        <img
-          :src="logo"
-          alt="Welcome to PANDA, the Princeton and NYU Discoveries in Action Lab"
-          draggable="false"
-          class="mx-auto h-[140px] mb-5 select-none"
-        />
+    <div class="text-center px-6 py-2">
+      <img
+        :src="logo"
+        alt="Welcome to PANDA, the Princeton and NYU Discoveries in Action Lab"
+        draggable="false"
+        class="mx-auto h-[140px] mb-5 select-none"
+      />
 
-        <div class="mx-auto max-w-[760px] text-left">
-          <p
-            v-for="(paragraph, i) in PARAGRAPHS"
-            :key="i"
-            class="text-lg font-semibold text-justify"
-            :class="{ 'mt-5': i > 0 }"
-          >
-            {{ paragraph }}
-          </p>
-        </div>
-
-        <div class="mx-auto max-w-[760px] mt-4 flex items-center gap-4 text-left">
-          <img :src="mascot" alt="" draggable="false" class="h-[90px] shrink-0 select-none" />
-          <p class="text-lg">
-            Please have your child sit in front of the computer, and make sure they are looking at the screen and can
-            hear the sound. Once your child is in position, please help them click the Start button below. The activity
-            will then start for your child automatically.
-          </p>
-        </div>
-
-        <!-- gray until the narration has finished, then solid and clickable -->
-        <Button
-          ref="startButton"
-          :variant="infoHeard ? 'default' : 'secondary'"
-          size="lg"
-          class="text-2xl px-12 py-8 mt-5"
-          :class="{ 'cursor-not-allowed text-muted-foreground': !infoHeard }"
-          id="handtochild-start"
-          :disabled="!infoHeard"
-          @click="start()"
+      <div class="mx-auto max-w-[760px] text-left">
+        <p
+          v-for="(paragraph, i) in PARAGRAPHS"
+          :key="i"
+          class="text-lg font-semibold text-justify"
+          :class="{ 'mt-5': i > 0 }"
         >
-          Start
-        </Button>
+          {{ paragraph }}
+        </p>
       </div>
-    </ScaleToFit>
-  </ChildStage>
+
+      <div class="mx-auto max-w-[760px] mt-4 flex items-center gap-4 text-left">
+        <img :src="mascot" alt="" draggable="false" class="h-[90px] shrink-0 select-none" />
+        <p class="text-lg">
+          Please have your child sit in front of the computer, and make sure they are looking at the screen and can hear
+          the sound. Once your child is in position, please help them click the Start button below. The activity will
+          then start for your child automatically.
+        </p>
+      </div>
+    </div>
+
+    <template #footer>
+      <!-- gray until the narration has finished, then solid and clickable -->
+      <Button
+        ref="startButton"
+        :variant="infoHeard ? 'default' : 'secondary'"
+        size="lg"
+        class="text-2xl px-12 py-6"
+        :class="{ 'cursor-not-allowed text-muted-foreground': !infoHeard }"
+        id="handtochild-start"
+        :disabled="!infoHeard"
+        @click="start()"
+      >
+        Start
+      </Button>
+    </template>
+  </CdscBox>
 
   <!-- 2. "Let's get started!" -->
   <ChildStage v-else class="flex items-center justify-center p-4 text-center">

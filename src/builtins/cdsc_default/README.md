@@ -8,7 +8,8 @@ kind of thing:
 
 - reusable components (players, picture choices, signature box, consent
   slides): `src/uikit/components/cdsc/`
-- page frames (`ChildStage.vue`, `ScaleToFit.vue`): `src/uikit/layouts/`
+- page frames (`CdscBox.vue`: the constant-size box the parent pages sit in,
+  buttons in its footer; `ChildStage.vue`, `ScaleToFit.vue`): `src/uikit/layouts/`
 - pictures and sounds: `src/assets/cdsc_default/` (the file names below are
   in that folder)
 - the study-specific consent wording: the study's
