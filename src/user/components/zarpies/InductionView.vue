@@ -13,7 +13,7 @@
 //   2. question: the picture disappears; the question text appears right
 //      below the premise and the 5 scale choices (panels of that Zarpie, 1 /
 //      3 / 5 / 7 / 9 times) fill the rest of the page while the question clip
-//      plays, then the 5 scale clips ("Is it only one Zarpie?" ...) one by
+//      plays, then the 5 scale clips ("Only one Zarpie?" ...) one by
 //      one, each enlarging its choice. The choices only become clickable
 //      after the last clip.
 // The attention check skips part 1: its clip plays with the choices showing,
@@ -198,14 +198,13 @@ api.setAutofill(autofill)
         <p v-if="phase !== 'describe'" class="text-2xl font-medium mb-3">{{ api.stepData.question }}</p>
       </template>
 
-      <!-- the scale, lowest to highest: 3 choices on the top row, 2 on the bottom
-           (from the question part on); the padding is room for the choice that
-           is enlarged while it is read -->
+      <!-- the scale, lowest to highest, in one row (from the question part on);
+           the padding is room for the choice that is enlarged while it is read -->
       <div v-if="phase !== 'describe'" class="w-full flex-1 min-h-0 px-4 pt-4 pb-8">
         <HotSpots
           :key="api.stepIndex"
           :options="choices"
-          :columns="3"
+          :columns="choices.length"
           :labelLines="2"
           :margin="12"
           :gap="12"

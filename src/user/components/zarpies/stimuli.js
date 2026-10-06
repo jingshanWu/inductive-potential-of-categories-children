@@ -183,7 +183,7 @@ export const SCALE_OPTIONS = [
     id: 'one',
     count: 1, // figures shown in the scale panel
     value: 1,
-    spoken: 'Is it only one Zarpie?',
+    spoken: 'Only one Zarpie?',
     label: 'Only one Zarpie',
     audio: 'audio/scale_one.m4a',
     image: null,
@@ -192,7 +192,7 @@ export const SCALE_OPTIONS = [
     id: 'few',
     count: 3, // figures shown in the scale panel
     value: 2,
-    spoken: 'Is it a few Zarpies?',
+    spoken: 'A few Zarpies?',
     label: 'A few Zarpies',
     audio: 'audio/scale_few.m4a',
     image: null,
@@ -201,7 +201,7 @@ export const SCALE_OPTIONS = [
     id: 'some',
     count: 5, // figures shown in the scale panel
     value: 3,
-    spoken: 'Is it some Zarpies?',
+    spoken: 'Some Zarpies?',
     label: 'Some Zarpies',
     audio: 'audio/scale_some.m4a',
     image: null,
@@ -210,7 +210,7 @@ export const SCALE_OPTIONS = [
     id: 'most',
     count: 7, // figures shown in the scale panel
     value: 4,
-    spoken: 'Is it most Zarpies?',
+    spoken: 'Most Zarpies?',
     label: 'Most Zarpies',
     audio: 'audio/scale_most.m4a',
     image: null,
@@ -219,7 +219,7 @@ export const SCALE_OPTIONS = [
     id: 'all',
     count: 9, // figures shown in the scale panel
     value: 5,
-    spoken: 'Or is it all Zarpies?', // "or" marks the last option
+    spoken: 'Or all Zarpies?', // "or" marks the last option
     label: 'All Zarpies',
     audio: 'audio/scale_all.m4a',
     image: null,

@@ -5,7 +5,7 @@ source of truth) and writes one m4a per clip to the path stimuli.js gives it
 under public/stimuli/ (audio/<id>.m4a):
   - 16 induction trials (a description clip and a question clip each) and
     the attention check
-  - 5 scale options ("Is it only one Zarpie?" ...)
+  - 5 scale options ("Only one Zarpie?" ...)
   - the induction intro and end messages
   - the child consent (assent) question
   - the task intro, adult and child wording
