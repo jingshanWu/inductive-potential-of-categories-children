@@ -41,6 +41,7 @@ const emit = defineEmits(['ended'])
 const video = ref(null)
 const blocked = ref(false) // browser refused to autoplay
 const failed = ref(false) // video file could not be loaded
+const failure = ref('') // what went wrong, shown on the Replay screen for support
 
 function play() {
   blocked.value = false
@@ -52,8 +53,13 @@ function play() {
     // Anything else (e.g. NotSupportedError) means the file cannot be
     // played -> Replay screen.
     if (err.name === 'NotAllowedError') blocked.value = true
-    else failed.value = true
+    else fail(`${err.name}: ${err.message}`)
   })
+}
+
+function fail(reason) {
+  failure.value = `${reason} (${props.src.split('/').slice(-2).join('/')})`
+  failed.value = true
 }
 
 // the <video> reported an error
@@ -63,7 +69,7 @@ function onError() {
   // as an error with code MEDIA_ERR_ABORTED (Chrome only fires `abort`).
   // Nothing is wrong with the video, so it is not a failure.
   if (!err || err.code === MediaError.MEDIA_ERR_ABORTED) return
-  failed.value = true
+  fail(`media error ${err.code}: ${err.message || 'no message'}`)
 }
 
 // load the current src and play it from the beginning
@@ -125,6 +131,7 @@ watch(
       <p class="text-lg mt-6">
         If this keeps happening, please exit the session and email discoveriesinaction@gmail.com for assistance.
       </p>
+      <p class="text-sm mt-4 text-muted-foreground">{{ failure }}</p>
     </div>
   </div>
 </template>
