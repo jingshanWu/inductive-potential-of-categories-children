@@ -1,3 +1,10 @@
+<script>
+// shared by every ChildStage on the page: how many are showing, and what the
+// page's scrolling was before the first one switched it off. (When one child
+// page follows another, the new stage can appear before the old one is gone.)
+const locks = new Map() // scrolling element -> { count, overflow }
+</script>
+
 <script setup>
 /**
  * ChildStage Component
@@ -28,11 +35,15 @@
 
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 
+// if the visible height cannot be measured (or comes out implausibly small),
+// fall back to most of the window rather than an empty page
+const MIN_HEIGHT_PX = 200
+const FALLBACK_HEIGHT = '90vh'
+
 const stage = ref(null)
-const height = ref(0)
+const height = ref(FALLBACK_HEIGHT)
 
 let scroller = null // the element that scrolls the page; null = the browser window
-let savedOverflow = ''
 let observer = null
 
 // the nearest ancestor that scrolls its content (developer mode's device
@@ -50,13 +61,16 @@ function measure() {
   if (!stage.value) return
   const top = stage.value.getBoundingClientRect().top
   const bottom = scroller ? scroller.getBoundingClientRect().top + scroller.clientHeight : window.innerHeight
-  height.value = Math.max(0, Math.floor(bottom - top))
+  const px = Math.floor(bottom - top)
+  height.value = px >= MIN_HEIGHT_PX ? `${px}px` : FALLBACK_HEIGHT
 }
 
 onMounted(() => {
   scroller = findScroller(stage.value)
   const target = scroller || document.documentElement
-  savedOverflow = target.style.overflow
+  const lock = locks.get(target) || { count: 0, overflow: target.style.overflow }
+  lock.count += 1
+  locks.set(target, lock)
   target.style.overflow = 'hidden'
   if (scroller) scroller.scrollTop = 0
   else window.scrollTo(0, 0)
@@ -72,12 +86,17 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', measure)
   if (observer) observer.disconnect()
   const target = scroller || document.documentElement
-  target.style.overflow = savedOverflow
+  const lock = locks.get(target)
+  if (!lock) return
+  lock.count -= 1
+  if (lock.count > 0) return
+  target.style.overflow = lock.overflow
+  locks.delete(target)
 })
 </script>
 
 <template>
-  <div ref="stage" class="w-full overflow-hidden" :style="{ height: `${height}px` }">
+  <div ref="stage" class="w-full overflow-hidden" :style="{ height }">
     <slot />
   </div>
 </template>

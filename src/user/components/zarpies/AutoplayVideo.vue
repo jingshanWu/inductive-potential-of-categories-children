@@ -29,7 +29,7 @@
  *   what lets the browser keep autoplaying with sound.)
  */
 
-import { onMounted, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Button } from '@/uikit/components/ui/button'
 
 const props = defineProps({
@@ -43,19 +43,37 @@ const blocked = ref(false) // browser refused to autoplay
 const failed = ref(false) // video file could not be loaded
 const failure = ref('') // what went wrong, shown on the Replay screen for support
 
+// how long after asking the video to play it is checked that it really is
+const STALL_CHECK_MS = 2500
+
+let loads = 0 // counts start() calls, to tell a play() that a newer load replaced
+let stallTimer = null
+
 function play() {
   blocked.value = false
+  const load = loads
+  // Safari does not always say that it refused to autoplay: play() can end
+  // with an AbortError, or the video is simply left paused, and the page
+  // stayed blank. So whatever play() reports, if the video is still paused a
+  // moment later, show the Play button.
+  clearTimeout(stallTimer)
+  stallTimer = setTimeout(() => {
+    if (load !== loads || failed.value || !video.value) return
+    if (video.value.paused && !video.value.ended) blocked.value = true
+  }, STALL_CHECK_MS)
   video.value.play().catch((err) => {
-    // AbortError: this play() was interrupted by a new load() (the src
-    // changed again); the newer call takes over, so it is not a block
-    if (err.name === 'AbortError') return
-    // NotAllowedError: the browser wants a click first -> Play button.
-    // Anything else (e.g. NotSupportedError) means the file cannot be
-    // played -> Replay screen.
-    if (err.name === 'NotAllowedError') blocked.value = true
+    // this play() was interrupted by a new load() (the src changed again):
+    // the newer call takes over
+    if (load !== loads) return
+    // NotAllowedError: the browser wants a click first -> Play button. So
+    // does an AbortError that no newer load explains. Anything else (e.g.
+    // NotSupportedError) means the file cannot be played -> Replay screen.
+    if (err.name === 'NotAllowedError' || err.name === 'AbortError') blocked.value = true
     else fail(`${err.name}: ${err.message}`)
   })
 }
+
+onBeforeUnmount(() => clearTimeout(stallTimer))
 
 function fail(reason) {
   failure.value = `${reason} (${props.src.split('/').slice(-2).join('/')})`
@@ -78,6 +96,7 @@ function start() {
   // is gone (unmounted); onMounted() starts the video once it exists
   if (!video.value) return
   failed.value = false
+  loads += 1
   video.value.src = props.src
   video.value.load()
   play()

@@ -29,7 +29,7 @@
  * - Set src to null for silence (e.g. after the last clip).
  */
 
-import { onMounted, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Button } from '@/uikit/components/ui/button'
 
 const props = defineProps({
@@ -42,17 +42,37 @@ const audio = ref(null)
 const blocked = ref(false) // browser refused to autoplay
 const failed = ref(false) // audio file could not be loaded
 
+// how long after asking the clip to play it is checked that it really is
+const STALL_CHECK_MS = 2500
+
+let loads = 0 // counts start() calls, to tell a play() that a newer load replaced
+let stallTimer = null
+
 function play() {
   blocked.value = false
+  const load = loads
+  // a browser does not always say that it refused to autoplay (see
+  // AutoplayVideo.vue): if the clip is still paused a moment later, show the
+  // Play button rather than leave the child waiting in silence
+  clearTimeout(stallTimer)
+  stallTimer = setTimeout(() => {
+    if (load !== loads || failed.value || !audio.value || !props.src) return
+    if (audio.value.paused && !audio.value.ended) blocked.value = true
+  }, STALL_CHECK_MS)
   audio.value.play().catch((err) => {
-    if (err && err.name === 'NotAllowedError') blocked.value = true
+    if (load !== loads) return // a newer clip took over
+    if (err && (err.name === 'NotAllowedError' || err.name === 'AbortError')) blocked.value = true
   })
 }
+
+onBeforeUnmount(() => clearTimeout(stallTimer))
 
 // load the current src and play it from the beginning (or go silent if none)
 function start() {
   blocked.value = false
   failed.value = false
+  loads += 1
+  clearTimeout(stallTimer)
   if (!props.src) {
     audio.value.pause()
     return
