@@ -48,8 +48,22 @@ function play() {
     // AbortError: this play() was interrupted by a new load() (the src
     // changed again); the newer call takes over, so it is not a block
     if (err.name === 'AbortError') return
-    blocked.value = true
+    // NotAllowedError: the browser wants a click first -> Play button.
+    // Anything else (e.g. NotSupportedError) means the file cannot be
+    // played -> Replay screen.
+    if (err.name === 'NotAllowedError') blocked.value = true
+    else failed.value = true
   })
+}
+
+// the <video> reported an error
+function onError() {
+  const err = video.value?.error
+  // Safari reports a load that was cut short by a new load() or src change
+  // as an error with code MEDIA_ERR_ABORTED (Chrome only fires `abort`).
+  // Nothing is wrong with the video, so it is not a failure.
+  if (!err || err.code === MediaError.MEDIA_ERR_ABORTED) return
+  failed.value = true
 }
 
 // load the current src and play it from the beginning
@@ -68,8 +82,18 @@ onMounted(start)
 // <video> ref is set even when src changes during the parent's first render
 // (the training view re-renders a few times while its steps are being set
 // up; with the default pre-render flush the ref was still null and start()
-// threw, which in dev mode aborted the view's update and the navigation)
-watch(() => props.src, start, { flush: 'post' })
+// threw, which in dev mode aborted the view's update and the navigation).
+// If the element already has this src (onMounted just loaded it), do not
+// load it a second time: the interrupted first load made Safari report an
+// error and stop.
+watch(
+  () => props.src,
+  (src) => {
+    if (video.value && video.value.getAttribute('src') === src) return
+    start()
+  },
+  { flush: 'post' }
+)
 </script>
 
 <template>
@@ -82,7 +106,7 @@ watch(() => props.src, start, { flush: 'post' })
       disablepictureinpicture
       @contextmenu.prevent
       @ended="emit('ended')"
-      @error="failed = true"
+      @error="onError()"
     ></video>
 
     <!-- autoplay was blocked: one click starts the video -->
