@@ -8,12 +8,13 @@
 //
 // A trial has two parts:
 //   1. describe: the premise text with a big picture of the Zarpie, while the
-//      description clip plays ("Now, look at this Zarpie. This Zarpie ...").
-//   2. question: the picture shrinks; the question text and the 5 scale
-//      choices (panels of that Zarpie, 1 / 3 / 5 / 7 / 9 times) appear while
-//      the question clip plays, then the 5 scale clips ("Is it only one
-//      Zarpie?" ...) one by one, each enlarging its choice. The choices only
-//      become clickable after the last clip.
+//      description clip plays ("Imagine you see a Zarpie ...").
+//   2. question: the picture disappears; the question text appears right
+//      below the premise and the 5 scale choices (panels of that Zarpie, 1 /
+//      3 / 5 / 7 / 9 times) fill the rest of the page while the question clip
+//      plays, then the 5 scale clips ("Is it only one Zarpie?" ...) one by
+//      one, each enlarging its choice. The choices only become clickable
+//      after the last clip.
 // The attention check skips part 1: its clip plays with the choices showing,
 // then the choices become clickable.
 //
@@ -62,7 +63,7 @@ const trial = computed(() => (section.value === 'trials' ? TRIALS[api.stepData.i
 const trialImage = computed(() => trial.value?.image ?? null)
 
 // where we are within a trial: 'describe' (big picture, description clip) ->
-// 'question' (small picture, question clip, choices showing) -> 'options'
+// 'question' (no picture, question clip, choices showing) -> 'options'
 // (scale clips one by one) -> 'respond' (choices clickable)
 const phase = ref('describe')
 const optionIndex = ref(0)
@@ -173,12 +174,9 @@ api.setAutofill(autofill)
       <template v-else>
         <p class="text-2xl font-medium mb-3">{{ api.stepData.premise }}</p>
 
-        <!-- the Zarpie for this trial: big while described, then shrinks for the
-             question (a dashed text box if no picture is listed) -->
-        <div
-          class="w-full mb-3 flex items-center justify-center transition-[height] duration-700"
-          :class="phase === 'describe' ? 'h-[60vh]' : 'h-[28vh]'"
-        >
+        <!-- the Zarpie for this trial, only while it is described (a dashed
+             text box if no picture is listed) -->
+        <div v-if="phase === 'describe'" class="w-full h-[60vh] flex items-center justify-center">
           <img
             v-if="trialImage"
             :src="stimulusUrl(trialImage)"

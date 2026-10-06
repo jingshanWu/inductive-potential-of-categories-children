@@ -20,9 +20,8 @@
  * within-category homogeneity measure in Benitez, Leshin & Rhodes (2022,
  * Cognition). The adult induction videos were text slides; they were deleted
  * on 2026-10-05 once the wording was confirmed. Differences from the adult
- * wording:
- *   - all trials:   "Imagine you see a Zarpie [doing X]." ->
- *                   "Now, look at this Zarpie. This Zarpie [does X]."
+ * wording (the premise keeps the adult frame, "Imagine you see a Zarpie
+ * [doing X]."):
  *   - all trials:   "What percentage of Zarpies" -> "How many Zarpies"
  *   - potatoes:     farming / farm -> growing / grow
  *   - maple_syrup:  chugging / chug -> drinking / drink
@@ -30,8 +29,12 @@
  *   - clap:         entering a room -> going into a room
  *   - look_left:    when spoken to -> when someone talks to them
  *   - attn_check:   "move the slider to 100%" -> "click on the very last picture"
- *   - opera:        replaced by `music` ("likes to listen to music"): the opera
- *                   item is too hard to picture for children (2026-10-05)
+ *   - opera:        replaced by `magic` ("watching a magic show" / "like to
+ *                   watch magic shows"): the opera item is too hard to picture
+ *                   for children (2026-10-06; it was `music`, "likes to listen
+ *                   to music", for one day before that)
+ *   - yellow:       replaced by `yellow_gloves` ("wearing yellow gloves"), in
+ *                   place of painting their hands yellow (2026-10-06)
  *
  * Test pictures (images/*.png) were generated with OpenAI image generation
  * from reference Zarpies (see zarpie-stimuli/tools/imagegen). The 5 scale
@@ -67,98 +70,98 @@ export const INDUCTION_FEATURES = [
   {
     id: 'cave',
     image: 'images/cave.png',
-    premise: 'Now, look at this Zarpie. This Zarpie lives in a cave.',
+    premise: 'Imagine you see a Zarpie living in a cave.',
     question: 'How many Zarpies do you think live in caves?',
   },
   {
     id: 'lion',
     image: 'images/lion.png',
-    premise: 'Now, look at this Zarpie. This Zarpie rides a lion.',
+    premise: 'Imagine you see a Zarpie riding a lion.',
     question: 'How many Zarpies do you think ride lions?',
   },
   {
     id: 'potatoes',
     image: 'images/potatoes.png',
-    premise: 'Now, look at this Zarpie. This Zarpie grows potatoes.',
+    premise: 'Imagine you see a Zarpie growing potatoes.',
     question: 'How many Zarpies do you think grow potatoes?',
   },
   {
     id: 'banjo',
     image: 'images/banjo.png',
-    premise: 'Now, look at this Zarpie. This Zarpie plays the banjo.',
+    premise: 'Imagine you see a Zarpie playing the banjo.',
     question: 'How many Zarpies do you think play banjos?',
   },
   {
     id: 'look_left',
     image: 'images/look_left.png',
-    premise: 'Now, look at this Zarpie. This Zarpie looks to their left when someone talks to them.',
+    premise: 'Imagine you see a Zarpie looking to their left when someone talks to them.',
     question: 'How many Zarpies do you think look to their left when someone talks to them?',
   },
   {
     id: 'clap',
     image: 'images/clap.png',
-    premise: 'Now, look at this Zarpie. This Zarpie claps three times before going into a room.',
+    premise: 'Imagine you see a Zarpie clapping three times before going into a room.',
     question: 'How many Zarpies do you think clap three times before going into a room?',
   },
   {
     id: 'sad',
     image: 'images/sad.png',
-    premise: "Now, look at this Zarpie. This Zarpie smiles when they're sad.",
+    premise: "Imagine you see a Zarpie smiling when they're sad.",
     question: 'How many Zarpies do you think smile when they are sad?',
   },
   {
     id: 'maple_syrup',
     image: 'images/maple_syrup.png',
-    premise: 'Now, look at this Zarpie. This Zarpie drinks maple syrup.',
+    premise: 'Imagine you see a Zarpie drinking maple syrup.',
     question: 'How many Zarpies do you think drink maple syrup?',
   },
   {
     id: 'cats',
     image: 'images/cats.png',
-    premise: 'Now, look at this Zarpie. This Zarpie yells at a cat.',
+    premise: 'Imagine you see a Zarpie yelling at a cat.',
     question: 'How many Zarpies do you think yell at cats?',
   },
   {
-    id: 'music', // replaces the adult study's `opera` item (too hard to picture for children)
-    image: 'images/music.png',
-    premise: 'Now, look at this Zarpie. This Zarpie likes to listen to music.',
-    question: 'How many Zarpies do you think like to listen to music?',
+    id: 'magic', // replaces the adult study's `opera` item (too hard to picture for children)
+    image: 'images/magic.png',
+    premise: 'Imagine you see a Zarpie watching a magic show.',
+    question: 'How many Zarpies do you think like to watch magic shows?',
   },
   {
     id: 'dance',
     image: 'images/dance.png',
-    premise: 'Now, look at this Zarpie. This Zarpie dances around a fire on their 10th birthday.',
+    premise: 'Imagine you see a Zarpie dancing around a fire on their 10th birthday.',
     question: 'How many Zarpies do you think dance around a fire on their 10th birthday?',
   },
   {
     id: 'song',
     image: 'images/song.png',
-    premise: 'Now, look at this Zarpie. This Zarpie sings a beautiful song.',
+    premise: 'Imagine you see a Zarpie singing a beautiful song.',
     question: 'How many Zarpies do you think sing beautiful songs?',
   },
   {
     id: 'window',
     image: 'images/window.png',
-    premise: 'Now, look at this Zarpie. This Zarpie screams out of a window.',
+    premise: 'Imagine you see a Zarpie screaming out of a window.',
     question: 'How many Zarpies do you think scream out of windows?',
   },
   {
     id: 'garbage',
     image: 'images/garbage.png',
-    premise: 'Now, look at this Zarpie. This Zarpie smells garbage for fun.',
+    premise: 'Imagine you see a Zarpie smelling garbage for fun.',
     question: 'How many Zarpies do you think smell garbage for fun?',
   },
   {
     id: 'pond',
     image: 'images/pond.png',
-    premise: 'Now, look at this Zarpie. This Zarpie washes their clothes in a pond.',
+    premise: 'Imagine you see a Zarpie washing their clothes in a pond.',
     question: 'How many Zarpies do you think wash their clothes in ponds?',
   },
   {
-    id: 'yellow',
-    image: 'images/yellow.png',
-    premise: 'Now, look at this Zarpie. This Zarpie paints their hands yellow.',
-    question: 'How many Zarpies do you think paint their hands yellow?',
+    id: 'yellow_gloves', // replaces the adult study's `yellow` item (painting their hands yellow)
+    image: 'images/yellow_gloves.png',
+    premise: 'Imagine you see a Zarpie wearing yellow gloves.',
+    question: 'How many Zarpies do you think wear yellow gloves?',
   },
 ]
 
@@ -222,7 +225,7 @@ export const ATTENTION_CHECK = {
   text: 'This is an attention check, kid. Please click on the very last picture.',
   audio: 'audio/attn_check.m4a',
   // TODO: a neutral Zarpie of its own; for now one of the test pictures
-  image: 'images/yellow.png',
+  image: 'images/yellow_gloves.png',
   correct: 'all', // the very last picture
 }
 
@@ -302,7 +305,7 @@ export function inductionTrials() {
     ...feature,
     text: `${feature.premise} ${feature.question}`,
     // two clips per trial: the description (premise) plays with the big
-    // picture, then the question plays as the picture shrinks and the scale
+    // picture, then the picture goes away and the question plays as the scale
     // appears.
     audio: {
       description: `audio/${feature.id}_description.m4a`,
