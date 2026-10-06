@@ -10,7 +10,7 @@
 //
 // The player and its Play / Replay fallbacks live in AutoplayVideo.vue. There
 // is no way to continue without watching each video to the end.
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import useViewAPI from '@/core/composables/useViewAPI'
 import AutoplayVideo from './AutoplayVideo.vue'
 import { stimulusUrl, trainingTrials } from './stimuli'
@@ -24,6 +24,14 @@ if (trials.length) {
   const steps = api.steps.append([{ id: 'training' }])
   steps[0].append(trials.map((trial) => ({ ...trial, condition, completed: false }))).shuffle()
 }
+
+// the current video's URL, or null until the stepper is on a video step. On
+// the view's first render the stepper can still be on the parent 'training'
+// node, whose data has no `video`; Safari then loaded ".../stimuli/undefined",
+// got a 404 and showed the "could not be played" screen (Chrome happened to
+// re-render with the real step before the request). The player is only
+// created once there is a video.
+const videoSrc = computed(() => (api.stepData?.video ? stimulusUrl(api.stepData.video) : null))
 
 function finish() {
   api.goNextView()
@@ -57,6 +65,6 @@ api.setAutofill(autofill)
 
 <template>
   <div v-if="trials.length" class="w-full h-[90vh] p-4">
-    <AutoplayVideo :src="stimulusUrl(api.stepData.video)" @ended="onEnded()" />
+    <AutoplayVideo v-if="videoSrc" :src="videoSrc" @ended="onEnded()" />
   </div>
 </template>
