@@ -6,7 +6,7 @@ under public/stimuli/ (audio/<id>.m4a):
   - 16 induction trials (a description clip and a question clip each) and
     the attention check
   - 5 scale options ("Only one Zarpie." ...)
-  - the induction intro and end messages
+  - the induction intro message
   - the task intro, adult and child wording
 
 Voice: Chirp3-HD-Callirrhoe, the voice used in the GRB recognition study. To
@@ -50,7 +50,6 @@ const clips = [
   ]),
   ...m.SCALE_OPTIONS.map((o) => ({ file: o.audio, text: o.spoken, rate: o.speakingRate })),
   { file: m.INDUCTION_INTRO.audio, text: m.INDUCTION_INTRO.text },
-  { file: m.INDUCTION_END.audio, text: m.INDUCTION_END.text },
   { file: m.TASK_INTRO.adult.audio, text: m.TASK_INTRO.adult.text },
   { file: m.TASK_INTRO.child.audio, text: m.TASK_INTRO.child.text },
 ]

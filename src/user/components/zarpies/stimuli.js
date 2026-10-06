@@ -44,8 +44,11 @@
  * 7 / 9 times (SCALE_OPTIONS.count), as in Benitez, Leshin & Rhodes (2022).
  *
  * Loudness: the training videos are the reference. scripts/tts/match_loudness.py
- * brings every spoken clip to their level and the sound check bird clip (in
- * src/builtins/cdsc_default/assets) to 2/3 of it; run it after regenerating any clip.
+ * brings every spoken clip to their level; run it after regenerating any clip.
+ *
+ * Only this study's own stimuli are listed here. The lab's standard pages
+ * (welcome, sound check, consent, ...) and their pictures and sounds are in
+ * src/builtins/cdsc_default and src/assets/cdsc_default.
  *
  * Asset paths are relative to public/stimuli/.
  */
@@ -249,23 +252,8 @@ export const INDUCTION_INTRO = {
   audio: 'audio/induction_intro.m4a',
 }
 
-// the lab's standard pages (welcome, sound check, intro, mouse instructions,
-// the "GREAT job!" page after the test) are in src/builtins/cdsc_default
-
-// spoken after the last induction trial, handing the laptop back to the parent
-// (not used now: the lab's "GREAT job!" page, cdsc_default/PreParentView.vue,
-// is shown there instead, 2026-10-06)
-export const INDUCTION_END = {
-  text: 'Great job! Kid, you are all done! Please go get your grown-up.',
-  audio: 'audio/induction_end.m4a',
-}
-
-// the adult study's intro video; no longer shown (TaskIntroView shows the
-// text below and plays its clip instead, 2026-10-06)
-// export const TASK_INTRO_VIDEO = 'misc/task_intro.mp4'
-
 // task intro text, in two versions. `adult` is the narration of the adult
-// study's intro video (task_intro.mp4), word for word; `child` is the same
+// study's intro video, word for word; `child` is the same
 // content reworded for a child. Audio paths are where generated clips go.
 // TaskIntroView picks which version the child sees and hears.
 export const TASK_INTRO = {
@@ -278,9 +266,6 @@ export const TASK_INTRO = {
     audio: 'audio/task_intro_child.m4a',
   },
 }
-
-// the sound check (bird clip and animal pictures) is the lab's default:
-// src/builtins/cdsc_default/SoundCheckView.vue
 
 /**
  * Training videos for a condition, in Qualtrics order.
