@@ -18,9 +18,9 @@ study's own views.
   consent" button in the top bar.
 
 - `fastForward.js`: the development-only fast forward switch
-  (`api.setRuntimeConfig('fastForward', true)` in design.js): clips and
-  videos count as played at once, so a study can be clicked through without
-  waiting.
+  (`api.setRuntimeConfig('fastForward', true)` in design.js): a Skip button
+  on every clip and video, so a study can be heard to the end or clicked
+  through at once.
 
 The two page frames, `ChildStage.vue` (as tall as the visible page, no
 scrolling) and `ScaleToFit.vue` (scales a page like a slide to fit), are with

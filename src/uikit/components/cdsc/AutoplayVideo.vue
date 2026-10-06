@@ -27,8 +27,9 @@
  * - To play several videos in a row, keep the component on the page and just
  *   change src: the new video starts by itself. (Reusing the same player is
  *   what lets the browser keep autoplaying with sound.)
- * - With fast forward on (fastForward.js, development only) the video is not
- *   played: @ended fires at once.
+ * - With fast forward on (fastForward.js, development only) a "Skip video"
+ *   button is shown while a video plays; it cuts the video short and fires
+ *   @ended.
  */
 
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
@@ -42,7 +43,8 @@ const props = defineProps({
 const emit = defineEmits(['ended'])
 
 const video = ref(null)
-const fastForward = isFastForward() // development only: videos count as played at once
+const fastForward = isFastForward() // development only: a Skip button on every video
+const playing = ref(false) // a video is on (for the Skip button)
 const blocked = ref(false) // browser refused to autoplay
 const failed = ref(false) // video file could not be loaded
 const failure = ref('') // what went wrong, shown on the Replay screen for support
@@ -101,13 +103,25 @@ function start() {
   if (!video.value) return
   failed.value = false
   loads += 1
-  if (fastForward) {
-    setTimeout(() => emit('ended'), 0) // as if the video had just finished
-    return
-  }
   video.value.src = props.src
   video.value.load()
+  playing.value = true
   play()
+}
+
+function onEnded() {
+  playing.value = false
+  emit('ended')
+}
+
+// fast forward (development only): the Skip button cuts the video short, as
+// if it had just finished
+function skip() {
+  loads += 1
+  clearTimeout(stallTimer)
+  video.value.pause()
+  blocked.value = false
+  onEnded()
 }
 
 onMounted(start)
@@ -138,9 +152,20 @@ watch(
       playsinline
       disablepictureinpicture
       @contextmenu.prevent
-      @ended="emit('ended')"
+      @ended="onEnded()"
       @error="onError()"
     ></video>
+
+    <!-- fast forward (development): cut the video short -->
+    <button
+      v-if="fastForward && playing"
+      type="button"
+      class="fixed bottom-3 right-3 z-[60] rounded-md bg-amber-400 px-3 py-1.5 text-sm font-semibold text-black shadow cursor-pointer"
+      id="autoplayvideo-skip"
+      @click="skip()"
+    >
+      Skip video ▶▶
+    </button>
 
     <!-- autoplay was blocked: one click starts the video -->
     <div v-if="blocked && !failed" class="absolute inset-0 flex items-center justify-center">

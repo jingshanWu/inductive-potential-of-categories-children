@@ -82,9 +82,9 @@ api.setRuntimeConfig('anonymousMode', false)
 api.setRuntimeConfig('labURL', 'https://gureckislab.org')
 api.setRuntimeConfig('brandLogoFn', 'universitylogo.png')
 
-// Fast forward, for developing and testing (development mode only): every
-// clip and video counts as played at once, so every page can be clicked
-// through without waiting. Uncomment to switch on; comment out (or delete)
+// Fast forward, for developing and testing (development mode only): a Skip
+// button on every clip and video, so every page can be heard to the end or
+// clicked through at once. Uncomment to switch on; comment out (or delete)
 // for the normal study. See src/uikit/components/cdsc/fastForward.js.
 // api.setRuntimeConfig('fastForward', true)
 

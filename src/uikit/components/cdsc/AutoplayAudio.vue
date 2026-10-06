@@ -30,8 +30,9 @@
  *   change src when @ended fires: the new clip starts by itself. (Reusing the
  *   same player is what lets the browser keep autoplaying.)
  * - Set src to null for silence (e.g. after the last clip).
- * - With fast forward on (fastForward.js, development only) the clip is not
- *   played: @ended fires at once.
+ * - With fast forward on (fastForward.js, development only) a "Skip audio"
+ *   button is shown while a clip plays; it cuts the clip short and fires
+ *   @ended, so pages can be clicked through without waiting.
  */
 
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
@@ -45,7 +46,8 @@ const props = defineProps({
 const emit = defineEmits(['ended', 'time'])
 
 const audio = ref(null)
-const fastForward = isFastForward() // development only: clips count as played at once
+const fastForward = isFastForward() // development only: a Skip button on every clip
+const playing = ref(false) // a clip is on (for the Skip button)
 const blocked = ref(false) // browser refused to autoplay
 const failed = ref(false) // audio file could not be loaded
 
@@ -82,15 +84,28 @@ function start() {
   clearTimeout(stallTimer)
   if (!props.src) {
     audio.value.pause()
-    return
-  }
-  if (fastForward) {
-    setTimeout(() => emit('ended'), 0) // as if the clip had just finished
+    playing.value = false
     return
   }
   audio.value.src = props.src
   audio.value.load()
+  playing.value = true
   play()
+}
+
+function onEnded() {
+  playing.value = false
+  emit('ended')
+}
+
+// fast forward (development only): the Skip button cuts the clip short, as
+// if it had just finished
+function skip() {
+  loads += 1
+  clearTimeout(stallTimer)
+  audio.value.pause()
+  blocked.value = false
+  onEnded()
 }
 
 onMounted(start)
@@ -102,10 +117,21 @@ watch(() => props.src, start)
     <audio
       ref="audio"
       preload="auto"
-      @ended="emit('ended')"
+      @ended="onEnded()"
       @timeupdate="emit('time', audio.currentTime)"
       @error="failed = !!src"
     ></audio>
+
+    <!-- fast forward (development): cut the clip short -->
+    <button
+      v-if="fastForward && playing"
+      type="button"
+      class="fixed bottom-3 right-3 z-[60] rounded-md bg-amber-400 px-3 py-1.5 text-sm font-semibold text-black shadow cursor-pointer"
+      id="autoplayaudio-skip"
+      @click="skip()"
+    >
+      Skip audio ▶▶
+    </button>
 
     <!-- autoplay was blocked: one click starts the clip -->
     <div v-if="blocked && !failed" class="fixed inset-0 z-50 flex items-center justify-center bg-background/80">
