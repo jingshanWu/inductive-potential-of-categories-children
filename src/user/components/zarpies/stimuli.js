@@ -12,7 +12,8 @@
  *   and a matched specific video ("This Zarpie ..."), same file name in
  *   generic/ and specific/. The baseline condition sees no training videos.
  * - INDUCTION_FEATURES: 16 novel features for the inductive potential task.
- * - ATTENTION_CHECK: the extra trial shuffled in with the 16 induction trials.
+ * - ATTENTION_CHECK: the adult study's extra trial; not shown to children
+ *   (commented out in inductionTrials(), 2026-10-06).
  *
  * The induction task is reworded for children: each trial is a spoken premise
  * and question, answered on a 5-point picture scale (SCALE_OPTIONS) instead of
@@ -305,7 +306,8 @@ export function trainingTrials(condition) {
 }
 
 /**
- * Induction task trials (16 features + attention check), in Qualtrics order.
+ * Induction task trials (16 features; the attention check is commented out),
+ * in Qualtrics order.
  * @returns {Array<{id: string, text: string, premise?: string, question?: string, audio: {description: string|null, question: string}, image: string, attentionCheck: boolean}>}
  */
 export function inductionTrials() {
@@ -321,12 +323,14 @@ export function inductionTrials() {
     },
     attentionCheck: false,
   }))
-  const attentionCheck = {
-    ...ATTENTION_CHECK,
-    audio: { description: null, question: ATTENTION_CHECK.audio }, // one clip, no description part
-    attentionCheck: true,
-  }
-  return [...features, attentionCheck]
+  // no attention check for children (2026-10-06)
+  // const attentionCheck = {
+  //   ...ATTENTION_CHECK,
+  //   audio: { description: null, question: ATTENTION_CHECK.audio }, // one clip, no description part
+  //   attentionCheck: true,
+  // }
+  // return [...features, attentionCheck]
+  return features
 }
 
 /**

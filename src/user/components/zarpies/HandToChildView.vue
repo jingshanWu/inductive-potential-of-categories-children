@@ -1,5 +1,5 @@
 <script setup>
-// Hand-over page, shown to the parent after the sound check: asks them to get
+// Hand-over page, shown to the parent after the window size page: asks them to get
 // their child in front of the screen, then help the child click Start. The
 // next view (the spoken task intro) plays automatically; the Start click is
 // also what lets the browser play the child's audio and videos with sound.

@@ -2,8 +2,9 @@
 // Induction (test) phase for the child, the child version of the adult
 // study's inductive potential task. In order:
 //   1. intro: a spoken introduction, then the first trial starts by itself
-//   2. trials: the 16 induction features plus the attention check (once),
-//      all 17 shuffled together per participant as in the adult study
+//   2. trials: the 16 induction features, shuffled per participant (the
+//      adult study's attention check is commented out in stimuli.js; the code
+//      for it below only runs if it is put back)
 //   3. end: a spoken "all done, get your grown-up", then a Continue button
 //
 // A trial has two parts:
@@ -47,7 +48,7 @@ steps[1]
       response: null, // scale option id ('one' ... 'all')
       responseValue: null, // 1-5
       rt: null, // ms from the choices becoming clickable to the click
-      trialIndex: null, // position in this participant's order (1-17)
+      trialIndex: null, // position in this participant's order (1-16)
       attentionPassed: null, // attention check only
     }))
   )

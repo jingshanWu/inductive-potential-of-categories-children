@@ -5,9 +5,9 @@
  * This file configures which phases occur in what order.
  *
  * Inductive potential of categories, child version (run on PANDA):
- *   welcome -> parent consent -> child consent -> window size -> sound check
- *   -> hand over to child -> task intro video -> training videos (generic or
- *   specific condition; baseline skips) -> induction test -> parent form
+ *   welcome -> sound check -> parent consent -> child consent -> window size
+ *   -> hand over to child -> task intro (spoken) -> training videos (generic
+ *   or specific condition; baseline skips) -> induction test -> parent form
  *   -> thanks
  *
  * The smile template's demo experiment (demographic survey, instructions quiz,
@@ -124,7 +124,7 @@ timeline.pushSeqView({
   component: AdvertisementView,
   meta: {
     prev: undefined,
-    next: 'consent',
+    next: 'soundcheck',
     allowAlways: true,
     requiresConsent: false,
   }, // override what is next
@@ -141,7 +141,7 @@ timeline.pushSeqView({
   component: AdvertisementView,
   meta: {
     prev: undefined,
-    next: 'consent',
+    next: 'soundcheck',
     allowAlways: true,
     requiresConsent: false,
   },
@@ -168,6 +168,18 @@ timeline.pushSeqView({
 //     processQuery(to.query, 'mturk')
 //   },
 // })
+
+// sound check (parent), before the consent pages so the sound is known to
+// work by the time the child assent question is read aloud. Nothing is saved
+// to the database before consent: its record is uploaded once the parent
+// consents.
+timeline.pushSeqView({
+  name: 'soundcheck',
+  component: SoundCheckView,
+  meta: {
+    requiresConsent: false,
+  },
+})
 
 // parent consent (smile's built-in consent page; text in InformedConsentText.vue)
 timeline.pushSeqView({
@@ -199,12 +211,6 @@ timeline.pushSeqView({
 timeline.pushSeqView({
   name: 'windowsizer',
   component: WindowSizerView,
-})
-
-// sound check (parent)
-timeline.pushSeqView({
-  name: 'soundcheck',
-  component: SoundCheckView,
 })
 
 // hand the laptop over to the child
