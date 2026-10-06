@@ -35,7 +35,8 @@ import { ATTENTION_CHECK, INDUCTION_END, INDUCTION_INTRO, SCALE_OPTIONS, inducti
 const CLIP_GAP_MS = 300
 
 // how long each scale choice stays enlarged, whatever the length of its clip:
-// the silence after the clip fills the rest
+// the choice's leadMs of silence (stimuli.js; most have none), the clip, then
+// silence for the rest
 const SCALE_SLOT_MS = 2300
 
 const api = useViewAPI()
@@ -77,12 +78,15 @@ const optionIndex = ref(0)
 const endSpoken = ref(false)
 let gapTimer = null
 let optionStart = 0 // when the current scale choice was enlarged
+let leadTimer = null
+const optionSpeaking = ref(false) // false during a scale choice's leadMs of silence
 
 // every new step starts from its first clip (also after a page reload)
 watch(
   () => api.stepIndex,
   () => {
     clearTimeout(gapTimer)
+    clearTimeout(leadTimer)
     phase.value = api.stepData?.attentionCheck ? 'question' : 'describe'
     optionIndex.value = 0
   },
@@ -108,7 +112,8 @@ const audioSrc = computed(() => {
   if (section.value === 'end') return endSpoken.value ? null : stimulusUrl(INDUCTION_END.audio)
   if (phase.value === 'describe') return stimulusUrl(trial.value.audio.description)
   if (phase.value === 'question') return stimulusUrl(trial.value.audio.question)
-  if (phase.value === 'options') return stimulusUrl(SCALE_OPTIONS[optionIndex.value].audio)
+  if (phase.value === 'options')
+    return optionSpeaking.value ? stimulusUrl(SCALE_OPTIONS[optionIndex.value].audio) : null
   return null
 })
 
@@ -128,10 +133,20 @@ function nextClip() {
   }
 }
 
-// a scale choice has just been enlarged: start its clock
-watch([phase, optionIndex], () => {
-  if (phase.value === 'options') optionStart = performance.now()
-})
+// a scale choice has just been enlarged: start its clock, and its clip after
+// the choice's leadMs of silence
+watch(
+  [phase, optionIndex],
+  () => {
+    clearTimeout(leadTimer)
+    if (phase.value !== 'options') return
+    optionStart = performance.now()
+    const leadMs = SCALE_OPTIONS[optionIndex.value].leadMs ?? 0
+    optionSpeaking.value = leadMs === 0
+    if (leadMs > 0) leadTimer = setTimeout(() => (optionSpeaking.value = true), leadMs)
+  },
+  { flush: 'sync' } // before the page looks up which clip to play
+)
 
 // silence after the clip that just ended: a scale clip waits out the rest of
 // its SCALE_SLOT_MS, any other clip is followed by the usual gap
@@ -147,7 +162,10 @@ function onAudioEnded() {
   gapTimer = setTimeout(nextClip, gapAfterClip())
 }
 
-onBeforeUnmount(() => clearTimeout(gapTimer))
+onBeforeUnmount(() => {
+  clearTimeout(gapTimer)
+  clearTimeout(leadTimer)
+})
 
 function onChoose({ id, rt }) {
   const option = SCALE_OPTIONS.find((o) => o.id === id)
