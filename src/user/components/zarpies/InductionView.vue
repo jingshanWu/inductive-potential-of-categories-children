@@ -34,6 +34,9 @@ import { ATTENTION_CHECK, INDUCTION_END, INDUCTION_INTRO, SCALE_OPTIONS, inducti
 // silence between two clips of a trial
 const CLIP_GAP_MS = 300
 
+// pause after the spoken intro, so the first trial does not start abruptly
+const INTRO_END_PAUSE_MS = 1000
+
 // how long each scale choice stays enlarged, whatever the length of its clip:
 // the choice's leadMs of silence (stimuli.js; most have none), the clip, then
 // silence for the rest
@@ -149,8 +152,10 @@ watch(
 )
 
 // silence after the clip that just ended: a scale clip waits out the rest of
-// its SCALE_SLOT_MS, any other clip is followed by the usual gap
+// its SCALE_SLOT_MS, the intro is followed by its own pause, any other clip
+// by the usual gap
 function gapAfterClip() {
+  if (section.value === 'intro') return INTRO_END_PAUSE_MS
   if (section.value === 'trials' && phase.value === 'options') {
     return Math.max(0, SCALE_SLOT_MS - (performance.now() - optionStart))
   }
