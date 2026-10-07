@@ -193,6 +193,7 @@ export const SCALE_OPTIONS = [
     spoken: 'Only one Zarpie.',
     label: 'Only one Zarpie',
     audio: 'audio/scale_one.m4a',
+    speakingRate: 0.85, // all 5 scale clips at this rate, so they match
     image: null,
   },
   {
@@ -202,6 +203,7 @@ export const SCALE_OPTIONS = [
     spoken: 'A few Zarpies.',
     label: 'A few Zarpies',
     audio: 'audio/scale_few.m4a',
+    speakingRate: 0.85, // all 5 scale clips at this rate, so they match
     image: null,
   },
   {
@@ -212,7 +214,7 @@ export const SCALE_OPTIONS = [
     label: 'Some Zarpies',
     audio: 'audio/scale_some.m4a',
     leadMs: 300, // silence between the choice enlarging and its clip
-    speakingRate: 0.75, // two short words: at the normal rate it sounds rushed next to the others
+    speakingRate: 0.85, // all 5 scale clips at this rate, so they match
     image: null,
   },
   {
@@ -223,7 +225,7 @@ export const SCALE_OPTIONS = [
     label: 'Most Zarpies',
     audio: 'audio/scale_most.m4a',
     leadMs: 300, // silence between the choice enlarging and its clip
-    speakingRate: 0.75, // two short words: at the normal rate it sounds rushed next to the others
+    speakingRate: 0.85, // all 5 scale clips at this rate, so they match
     image: null,
   },
   {
@@ -233,6 +235,7 @@ export const SCALE_OPTIONS = [
     spoken: 'Or all Zarpies.', // "or" marks the last option
     label: 'All Zarpies',
     audio: 'audio/scale_all.m4a',
+    speakingRate: 0.85, // all 5 scale clips at this rate, so they match
     image: null,
   },
 ]
