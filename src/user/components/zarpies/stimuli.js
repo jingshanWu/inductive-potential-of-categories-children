@@ -43,6 +43,11 @@
  * choices are panels built from the trial's own picture, repeated 1 / 3 / 5 /
  * 7 / 9 times (SCALE_OPTIONS.count), as in Benitez, Leshin & Rhodes (2022).
  *
+ * Pace: the question clips were regenerated on 2026-10-07 to one pace (about
+ * 0.20-0.22 s per syllable, that of song_question); cave, magic, potatoes,
+ * yellow_gloves and sad are takes at speaking rate 0.9, the rest at the normal
+ * rate. generate_stimuli.py makes clips at the normal rate only.
+ *
  * Loudness: the training videos are the reference. scripts/tts/match_loudness.py
  * brings every spoken clip to their level; run it after regenerating any clip.
  *
