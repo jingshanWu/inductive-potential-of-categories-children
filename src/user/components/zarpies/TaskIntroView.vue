@@ -6,11 +6,11 @@
 //
 // The sound and its Play / Replay fallbacks live in AutoplayAudio.vue. There
 // is no way to continue without hearing the clip to the end.
-import { onBeforeUnmount } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import useViewAPI from '@/core/composables/useViewAPI'
 import AutoplayAudio from '@/uikit/components/cdsc/AutoplayAudio.vue'
 import ChildStage from '@/uikit/layouts/ChildStage.vue'
-import { TASK_INTRO, stimulusUrl } from './stimuli'
+import { TASK_INTRO, inductionAssetUrls, stimulusUrl } from './stimuli'
 
 // which wording is shown and read: 'child' or 'adult'
 const INTRO = TASK_INTRO.child
@@ -32,6 +32,13 @@ function onAudioEnded() {
 }
 
 onBeforeUnmount(() => clearTimeout(endTimer))
+
+// fetch the test's clips and pictures now, while the intro and the training
+// videos play, so that no test clip has to wait for the network (see
+// inductionAssetUrls in stimuli.js)
+onMounted(() => {
+  for (const url of inductionAssetUrls()) fetch(url).catch(() => {})
+})
 
 api.setAutofill(() => finish(false))
 </script>

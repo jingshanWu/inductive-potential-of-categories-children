@@ -317,6 +317,21 @@ export function inductionTrials() {
 }
 
 /**
+ * Every sound and picture of the induction task, as URLs, to fetch ahead of
+ * time. On the live site a clip is only downloaded when it is about to play,
+ * and the first scale clip once stalled a trial for several seconds on a slow
+ * connection; fetching them early puts them in the browser's cache.
+ * @returns {string[]}
+ */
+export function inductionAssetUrls() {
+  const paths = [INDUCTION_INTRO.audio, ...SCALE_OPTIONS.map((o) => o.audio)]
+  for (const trial of inductionTrials()) {
+    paths.push(trial.image, trial.audio.description, trial.audio.question)
+  }
+  return paths.filter(Boolean).map(stimulusUrl)
+}
+
+/**
  * Public URL for a stimulus asset path (video or image).
  * @param {string} path - path relative to public/stimuli/
  * @returns {string}
