@@ -203,7 +203,7 @@ export const SCALE_OPTIONS = [
     spoken: 'A few Zarpies.',
     label: 'A few Zarpies',
     audio: 'audio/scale_few.m4a',
-    speakingRate: 0.95, // all 5 scale clips at this rate, so they match
+    speakingRate: 0.9, // a little slower than 0.95: a take that starts lower and holds 'few'
     image: null,
   },
   {
