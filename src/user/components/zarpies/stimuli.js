@@ -214,7 +214,7 @@ export const SCALE_OPTIONS = [
     label: 'Some Zarpies',
     audio: 'audio/scale_some.m4a',
     leadMs: 300, // silence between the choice enlarging and its clip
-    // this clip is edited: 'Some' from a 0.85 take, 0.1 s of silence, 'Zarpies' from a 0.9 take
+    // this clip is edited: 'Some' from a 0.85 take, 0.2 s of silence, 'Zarpies' from another 0.85 take
     // (the one take where the word is one smooth piece); regenerating it loses that
     speakingRate: 0.85,
     image: null,
