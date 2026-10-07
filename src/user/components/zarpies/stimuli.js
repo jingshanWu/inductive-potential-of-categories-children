@@ -222,7 +222,8 @@ export const SCALE_OPTIONS = [
     label: 'Some Zarpies',
     audio: 'audio/scale_some.m4a',
     leadMs: 300, // silence between the choice enlarging and its clip
-    speakingRate: 0.9, // close to the other clips' 0.95, so it sounds like the same speaker
+    // made with the promptable model (gemini-2.5-flash-tts, same voice name), asked for a
+    // brief statement with a slight stress on 'some'; generate_stimuli.py cannot remake it
     image: null,
   },
   {
