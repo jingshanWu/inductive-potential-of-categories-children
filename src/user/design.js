@@ -112,8 +112,11 @@ api.setAppComponent('informed_consent_text', ConsentText)
 // study: generic (hears "Zarpies ..." training videos), specific (hears
 // "This Zarpie ..." training videos) or baseline (no training videos).
 // TrainingView reads this as api.getConditionByName('condition').
+// TEMPORARY (2026-10-07): everyone gets the generic condition, to show the lab
+// the whole study. Put the equal weights back before running participants.
 api.randomAssignCondition({
-  condition: CONDITIONS, // ['generic', 'specific', 'baseline'], equal weights
+  condition: CONDITIONS, // ['generic', 'specific', 'baseline']
+  weights: [1, 0, 0], // normally equal weights (no `weights` line)
 })
 
 // // template example: set a between-subjects condition with weights
