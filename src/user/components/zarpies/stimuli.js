@@ -214,7 +214,7 @@ export const SCALE_OPTIONS = [
     label: 'Some Zarpies',
     audio: 'audio/scale_some.m4a',
     leadMs: 300, // silence between the choice enlarging and its clip
-    speakingRate: 0.85, // slower than the others: at 0.95 the two words ran together or 'Zarpies' lifted
+    speakingRate: 0.9, // the take with 'Zarpies' in one unbroken piece (no stop between 'Zar' and 'pies')
     image: null,
   },
   {
