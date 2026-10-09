@@ -6,9 +6,9 @@
  *
  * Inductive potential of categories, child version (run on PANDA):
  *   welcome -> sound check -> window size -> intro -> parent consent
- *   -> child consent -> hand over to child -> task intro (spoken) -> training
- *   videos (generic or specific condition; baseline skips) -> induction test
- *   -> "GREAT job!" hand-back page -> parent form -> data upload and the lab's closing page
+ *   -> child consent -> hand over to child -> scale training -> task intro
+ *   (spoken) -> training videos (generic or specific condition; baseline
+ *   skips) -> "dots = Zarpies" page -> induction test -> scale end check -> "GREAT job!" hand-back page -> parent form -> data upload and the lab's closing page
  *
  * The smile template's demo experiment (demographic survey, instructions quiz,
  * Stroop, favorite number/color, MTurk page, device survey, debrief) is
@@ -58,8 +58,11 @@ import PreParentView from '@/builtins/cdsc_default/PreParentView.vue'
 import TaskIntroView from '@/user/components/zarpies/TaskIntroView.vue'
 import TrainingView from '@/user/components/zarpies/TrainingView.vue'
 import InductionView from '@/user/components/zarpies/InductionView.vue'
+import ScaleTrainingView from '@/user/components/zarpies/ScaleTrainingView.vue'
+// import ScaleBridgeView from '@/user/components/zarpies/ScaleBridgeView.vue' // folded into TaskIntroView (page 2)
+import EndCheckView from '@/user/components/zarpies/EndCheckView.vue'
 import ParentFormView from '@/builtins/cdsc_default/ParentFormView.vue'
-import { CONDITIONS } from '@/user/components/zarpies/stimuli'
+import { CONDITIONS, SCALE_DIRECTIONS } from '@/user/components/zarpies/stimuli'
 
 // #3. Import smile API and timeline
 import useAPI from '@/core/composables/useAPI'
@@ -112,11 +115,18 @@ api.setAppComponent('informed_consent_text', ConsentText)
 // study: generic (hears "Zarpies ..." training videos), specific (hears
 // "This Zarpie ..." training videos) or baseline (no training videos).
 // TrainingView reads this as api.getConditionByName('condition').
-// TEMPORARY (2026-10-07): everyone gets the generic condition, to show the lab
-// the whole study. Put the equal weights back before running participants.
+// Equal weights. To show the lab the whole study, uncomment the `weights`
+// line (everyone then gets the generic condition).
 api.randomAssignCondition({
   condition: CONDITIONS, // ['generic', 'specific', 'baseline']
-  weights: [1, 0, 0], // normally equal weights (no `weights` line)
+  // weights: [1, 0, 0],
+})
+
+// the direction of the 5-point scale on screen (only one -> all, or all ->
+// only one), counterbalanced; used by the scale training, the test and the
+// end check
+api.randomAssignCondition({
+  scaleDirection: SCALE_DIRECTIONS, // ['oneToAll', 'allToOne'], equal weights
 })
 
 // // template example: set a between-subjects condition with weights
@@ -250,7 +260,16 @@ timeline.pushSeqView({
   component: MouseInstructionsView,
 })
 
-// task intro video (child)
+// scale training (child): the 5 dot cards and 5 practice questions, the first
+// thing after "Let's get started!" (before Zarpies are introduced)
+timeline.pushSeqView({
+  name: 'scaletraining',
+  component: ScaleTrainingView,
+})
+
+// task intro (child): page 1 "we will ask you some questions about Zarpies",
+// page 2 "the pictures will show Zarpies instead of dots" (dot cards above
+// the Zarpie panels)
 timeline.pushSeqView({
   name: 'taskintro',
   component: TaskIntroView,
@@ -271,14 +290,28 @@ timeline.pushConditionalNode({
   },
 })
 
+// The "dots = Zarpies" page used to be its own view here, right before the
+// test; it is now page 2 of the task intro (TaskIntroView). Kept for now in
+// case we want it back as a separate view; may be deleted later.
+// timeline.pushSeqView({
+//   name: 'scalebridge',
+//   component: ScaleBridgeView,
+// })
+
 // induction test (child), ending with the hand-back-to-parent message
 timeline.pushSeqView({
   name: 'induction',
   component: InductionView,
 })
 
+// two check questions on the scale, right after the last test trial
+timeline.pushSeqView({
+  name: 'endcheck',
+  component: EndCheckView,
+})
+
 // the lab's "GREAT job!" page, shown as soon as the child answers the last
-// test trial: hands the laptop back to the parent
+// check question: hands the laptop back to the parent
 timeline.pushSeqView({
   name: 'preparent',
   component: PreParentView,

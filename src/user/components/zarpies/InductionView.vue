@@ -31,7 +31,7 @@ import AutoplayAudio from '@/uikit/components/cdsc/AutoplayAudio.vue'
 import ChildStage from '@/uikit/layouts/ChildStage.vue'
 import HotSpots from '@/uikit/components/cdsc/HotSpots.vue'
 import { isFastForward } from '@/uikit/components/cdsc/fastForward'
-import { ATTENTION_CHECK, INDUCTION_INTRO, SCALE_OPTIONS, inductionTrials, stimulusUrl } from './stimuli'
+import { ATTENTION_CHECK, INDUCTION_INTRO, inductionTrials, scaleOptions, stimulusUrl } from './stimuli'
 
 // silence between two clips of a trial
 const CLIP_GAP_MS = 300
@@ -46,6 +46,11 @@ const SCALE_SLOT_MS = 2300
 
 const api = useViewAPI()
 const fastForward = isFastForward() // development only: no pauses, no scale slots
+
+// the 5 scale options in the child's counterbalanced order (scaleDirection,
+// drawn in design.js): shown, read and enlarged in this order
+const direction = api.getConditionByName('scaleDirection')
+const SCALE_OPTIONS = scaleOptions(direction)
 
 const steps = api.steps.append([{ id: 'intro' }, { id: 'trials' }])
 steps[1]
@@ -178,6 +183,7 @@ function onChoose({ id, rt }) {
   api.stepData.responseValue = option.value
   api.stepData.rt = rt
   api.stepData.trialIndex = api.blockIndex + 1
+  api.stepData.scaleDirection = direction
   if (api.stepData.attentionCheck) api.stepData.attentionPassed = id === ATTENTION_CHECK.correct
   api.recordStep()
   // the last trial: on to the next view (the hand-back page) by itself

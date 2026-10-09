@@ -12,6 +12,10 @@
  *   and a matched specific video ("This Zarpie ..."), same file name in
  *   generic/ and specific/. The baseline condition sees no training videos.
  * - INDUCTION_FEATURES: 16 novel features for the inductive potential task.
+ * - SCALE_TRAINING / SCALE_BRIDGE / END_CHECK: the scale warm-up before the
+ *   task, the "dots = Zarpies" page before the test, and the two check
+ *   questions after it (Rhodes & Liebenson, 2015); SCALE_DIRECTIONS: the
+ *   counterbalanced direction of the scale.
  * - ATTENTION_CHECK: the adult study's extra trial; not shown to children
  *   (commented out in inductionTrials(), 2026-10-06).
  *
@@ -201,6 +205,8 @@ export const SCALE_OPTIONS = [
     spoken: 'Only one Zarpie.',
     label: 'Only one Zarpie',
     audio: 'audio/scale_one.m4a',
+    // when the scale runs all -> one, this is the last option: "or" marks it
+    last: { spoken: 'Or only one Zarpie.', audio: 'audio/scale_one_last.m4a' },
     speakingRate: 0.95, // all 5 scale clips at this rate, so they match
     image: null,
   },
@@ -244,6 +250,8 @@ export const SCALE_OPTIONS = [
     spoken: 'Or all Zarpies.', // "or" marks the last option
     label: 'All Zarpies',
     audio: 'audio/scale_all.m4a',
+    // when the scale runs all -> one, this is the first option: no "or"
+    first: { spoken: 'All Zarpies.', audio: 'audio/scale_all_first.m4a' },
     speakingRate: 0.95, // all 5 scale clips at this rate, so they match
     image: null,
   },
@@ -258,9 +266,271 @@ export const ATTENTION_CHECK = {
   correct: 'all', // the very last picture
 }
 
+// The direction of the scale on screen, counterbalanced across children (as
+// in Rhodes & Liebenson, 2015): 'oneToAll' shows "only one" on the left and
+// "all" on the right, 'allToOne' the reverse. It is drawn once per child
+// (design.js) and used everywhere the scale appears: the scale training, the
+// test and the end check.
+export const SCALE_DIRECTIONS = ['oneToAll', 'allToOne']
+
+/**
+ * The scale options in the order they are shown and read for a direction,
+ * with the clip to read for each ("or" marks the last option in either
+ * direction).
+ * @param {string} direction - 'oneToAll' or 'allToOne'
+ * @returns {Array<object>} SCALE_OPTIONS entries with `audio` resolved
+ */
+export function scaleOptions(direction) {
+  const options = direction === 'allToOne' ? [...SCALE_OPTIONS].reverse() : [...SCALE_OPTIONS]
+  return options.map((option, i) => {
+    const alt = i === 0 ? option.first : i === options.length - 1 ? option.last : null
+    return alt ? { ...option, spoken: alt.spoken, audio: alt.audio } : option
+  })
+}
+
+// Scale training, the first thing the child does (as in Rhodes & Liebenson,
+// 2015, where it came before the category was introduced): the lab's warm-up script (Rhodes &
+// Liebenson, 2015, Study 1 "Warm Up Scripts", with the one-to-all scale of
+// Diversity Study 2 "Creation3_ScaleTraining"), adapted for the screen: the
+// child clicks a card instead of pointing, and the voice does what the
+// experimenter did. The cards show dots (1 / 3 / 5 / 7 / 9), as in the lab;
+// the practice questions are about kids, so nothing is taught about Zarpies.
+// Order of the practice items as in the lab script: only one, all, some,
+// most, a few. A wrong click gets the lab's gentle correction and the child
+// clicks the right card to go on.
+export const SCALE_TRAINING = {
+  speakingRate: 0.85, // all its clips: a little slower than the voice's normal pace, for children
+  dot: 'images/dot.png',
+  intro: {
+    text: "Let's first practice how to respond to questions.",
+    audio: 'audio/training_intro2.m4a',
+  },
+  // one clip per card, read in the order of the scale on screen, each as its
+  // card enlarges
+  cards: {
+    one: {
+      text: "See how this picture has just one dot? This picture means 'only one'.",
+      audio: 'audio/training_card_one.m4a',
+    },
+    few: {
+      text: "See how this picture has only a few dots? This picture means 'a few'.",
+      audio: 'audio/training_card_few.m4a',
+    },
+    some: {
+      text: "See how this picture has some dots? This picture means 'some'.",
+      audio: 'audio/training_card_some.m4a',
+    },
+    most: {
+      text: "See how this picture is mostly full of dots? This picture means 'most'.",
+      audio: 'audio/training_card_most.m4a',
+    },
+    all: {
+      text: "See how this picture is all full of dots? This picture means 'all'.",
+      audio: 'audio/training_card_all.m4a',
+    },
+  },
+  // after each practice question the cards are read in one clip, in the order
+  // of the scale on screen (periods, so the voice pauses between them), each
+  // card enlarging as its word comes (`cues`:
+  // seconds into the clip at which each word starts, measured from the clip
+  // by scripts/tts/scale_cues.py; run it after regenerating these clips)
+  options: {
+    oneToAll: {
+      text: 'Only one. A few. Some. Most. Or all.',
+      audio: 'audio/training_options_one_to_all.m4a',
+      cues: [0.04, 1.16, 2.33, 3.47, 4.74],
+    },
+    allToOne: {
+      text: 'All. Most. Some. A few. Or only one.',
+      audio: 'audio/training_options_all_to_one.m4a',
+      cues: [0.08, 1.08, 2.34, 3.25, 4.37],
+    },
+  },
+  practiceIntro: {
+    text: "Let's practice using these cards. For each question, click on the card that shows your answer.",
+    audio: 'audio/training_practice_intro.m4a',
+  },
+  // After a wrong click: the `youThink` clip for the card the child clicked
+  // ("You think most kids like to go swimming?"), then `wrongGood` ("That's a
+  // good answer."), then `wrongRest`; the right card then enlarges.
+  items: [
+    {
+      id: 'fingers',
+      correct: 'one',
+      image: 'images/hand_one_finger.png',
+      question: {
+        text: 'Look at this hand. How many fingers is it holding up?',
+        audio: 'audio/training_q_fingers.m4a',
+      },
+      right: {
+        text: "That's right! Just one. So this card with just one dot means only one.",
+        audio: 'audio/training_right_fingers.m4a',
+      },
+      youThink: {
+        one: { text: "You think it's holding up only one finger?", audio: 'audio/training_youthink_fingers_one.m4a' },
+        few: { text: "You think it's holding up a few fingers?", audio: 'audio/training_youthink_fingers_few.m4a' },
+        some: { text: "You think it's holding up some fingers?", audio: 'audio/training_youthink_fingers_some.m4a' },
+        most: {
+          text: "You think it's holding up most of its fingers?",
+          audio: 'audio/training_youthink_fingers_most.m4a',
+        },
+        all: {
+          text: "You think it's holding up all of its fingers?",
+          audio: 'audio/training_youthink_fingers_all.m4a',
+        },
+      },
+      wrongRest: {
+        text: 'But you know what, this hand is holding up just one finger. So can you click the card that has just one dot?',
+        audio: 'audio/training_wrong_fingers.m4a',
+      },
+    },
+    {
+      id: 'birthdays',
+      correct: 'all',
+      image: 'images/birthday_cake.png',
+      question: { text: 'How many kids have a birthday?', audio: 'audio/training_q_birthdays.m4a' },
+      right: {
+        text: "Yes, that's right, all kids have a birthday! So this card that's all filled up with dots means all.",
+        audio: 'audio/training_right_birthdays.m4a',
+      },
+      youThink: {
+        one: { text: 'You think only one kid has a birthday?', audio: 'audio/training_youthink_birthdays_one.m4a' },
+        few: { text: 'You think a few kids have a birthday?', audio: 'audio/training_youthink_birthdays_few.m4a' },
+        some: { text: 'You think some kids have a birthday?', audio: 'audio/training_youthink_birthdays_some.m4a' },
+        most: { text: 'You think most kids have a birthday?', audio: 'audio/training_youthink_birthdays_most.m4a' },
+        all: { text: 'You think all kids have a birthday?', audio: 'audio/training_youthink_birthdays_all.m4a' },
+      },
+      wrongRest: {
+        text: 'But you know what, all kids have a birthday. So can you click the card that is all filled up with dots?',
+        audio: 'audio/training_wrong_birthdays.m4a',
+      },
+    },
+    {
+      id: 'girls',
+      correct: 'some',
+      image: 'images/kids_group.png',
+      question: { text: 'How many kids are girls?', audio: 'audio/training_q_girls.m4a' },
+      right: {
+        text: "That's right, some kids are girls and some are boys. So this card means some.",
+        audio: 'audio/training_right_girls.m4a',
+      },
+      youThink: {
+        one: { text: 'You think only one kid is a girl?', audio: 'audio/training_youthink_girls_one.m4a' },
+        few: { text: 'You think a few kids are girls?', audio: 'audio/training_youthink_girls_few.m4a' },
+        some: { text: 'You think some kids are girls?', audio: 'audio/training_youthink_girls_some.m4a' },
+        most: { text: 'You think most kids are girls?', audio: 'audio/training_youthink_girls_most.m4a' },
+        all: { text: 'You think all kids are girls?', audio: 'audio/training_youthink_girls_all.m4a' },
+      },
+      wrongRest: {
+        text: 'But you know what, some kids are girls and some are boys. So can you click the card that shows some?',
+        audio: 'audio/training_wrong_girls.m4a',
+      },
+    },
+    {
+      id: 'swimming',
+      correct: 'most',
+      image: 'images/swimming.png',
+      question: { text: 'How many kids like to go swimming?', audio: 'audio/training_q_swimming.m4a' },
+      right: {
+        text: "That's right, most kids like to go swimming, but a few kids might not. So this card means most.",
+        audio: 'audio/training_right_swimming.m4a',
+      },
+      youThink: {
+        one: {
+          text: 'You think only one kid likes to go swimming?',
+          audio: 'audio/training_youthink_swimming_one.m4a',
+        },
+        few: { text: 'You think a few kids like to go swimming?', audio: 'audio/training_youthink_swimming_few.m4a' },
+        some: { text: 'You think some kids like to go swimming?', audio: 'audio/training_youthink_swimming_some.m4a' },
+        most: { text: 'You think most kids like to go swimming?', audio: 'audio/training_youthink_swimming_most.m4a' },
+        all: { text: 'You think all kids like to go swimming?', audio: 'audio/training_youthink_swimming_all.m4a' },
+      },
+      wrongRest: {
+        text: 'But you know what, I think most kids like to go swimming. So can you click the card that shows most?',
+        audio: 'audio/training_wrong_swimming.m4a',
+      },
+    },
+    {
+      id: 'brothers',
+      correct: 'few',
+      image: 'images/baby_brother.png',
+      question: { text: 'How many kids have a baby brother?', audio: 'audio/training_q_brothers.m4a' },
+      right: {
+        text: "That's right! Kids can have an older brother, an older sister, a baby sister, or a baby brother. So only a few kids have a baby brother. This card means a few.",
+        audio: 'audio/training_right_brothers.m4a',
+      },
+      youThink: {
+        one: { text: 'You think only one kid has a baby brother?', audio: 'audio/training_youthink_brothers_one.m4a' },
+        few: { text: 'You think a few kids have a baby brother?', audio: 'audio/training_youthink_brothers_few.m4a' },
+        some: { text: 'You think some kids have a baby brother?', audio: 'audio/training_youthink_brothers_some.m4a' },
+        most: { text: 'You think most kids have a baby brother?', audio: 'audio/training_youthink_brothers_most.m4a' },
+        all: { text: 'You think all kids have a baby brother?', audio: 'audio/training_youthink_brothers_all.m4a' },
+      },
+      wrongRest: {
+        text: 'But you know what, only a few kids have a baby brother. So can you click the card that shows a few?',
+        audio: 'audio/training_wrong_brothers.m4a',
+      },
+    },
+  ],
+  wrongGood: { text: "That's a good answer.", audio: 'audio/training_wrong_good.m4a' },
+  end: { text: "Great! Now let's begin.", audio: 'audio/training_end.m4a' },
+}
+
+// Page 2 of the task intro (TaskIntroView.vue): the Zarpie pictures of the
+// test mean the same thing as the dot cards of the scale training. One line,
+// over the dot cards and the Zarpie panels. (Was its own view,
+// ScaleBridgeView.vue, that also named the five panels one by one; that view
+// is commented out in design.js and may be deleted later.)
+export const SCALE_BRIDGE = {
+  speakingRate: 0.85, // as the scale training
+
+  image: 'images/neutral.png', // a Zarpie with no special feature, for the 5 panels
+  intro: {
+    text: 'In the questions, the cards will show Zarpies instead of dots, but they mean the same thing.',
+    audio: 'audio/training_bridge_intro2.m4a',
+  },
+}
+
+// Two check questions after the last test trial, to show the child can use
+// the scale: the control questions of Rhodes & Liebenson (2015) with Zarpies
+// in place of birds, one that should land at the low end and one higher up.
+// On the Zarpie panels, no feedback, answers recorded.
+export const END_CHECK = {
+  speakingRate: 0.85, // as the scale training
+  intro: { text: 'Now, two more questions.', audio: 'audio/endcheck_intro.m4a' },
+  image: 'images/neutral.png', // the Zarpie shown with each question, and in the 5 panels
+  // the questions are told about a boy, Steve (third person), rather than by
+  // the voice about itself
+  narrator: { name: 'Steve', image: 'images/steve.png' },
+  items: [
+    {
+      id: 'met_one',
+      expected: 'one',
+      question: {
+        text: 'This is Steve. And here is a Zarpie. Steve met this Zarpie yesterday. Steve only met this one Zarpie. Now tell me your best guess: of all the Zarpies in the world, how many Zarpies did Steve meet yesterday?',
+        audio: 'audio/endcheck_q_met_one.m4a',
+        // Steve is on screen from the start; the Zarpie appears when the
+        // voice gets to "And here is a Zarpie": seconds into the clip, the
+        // end of the pause after "This is Steve." (measured from the clip the
+        // way scripts/tts/scale_cues.py measures the scale words; re-measure
+        // if the clip is regenerated)
+        zarpieAt: 2.1,
+      },
+    },
+    {
+      id: 'girls',
+      expected: null, // some or most; no single right answer
+      question: {
+        text: 'Here is a Zarpie. This Zarpie is a girl. Now tell me your best guess: of all the Zarpies in the world, how many Zarpies are girls?',
+        audio: 'audio/endcheck_q_girls.m4a',
+      },
+    },
+  ],
+}
+
 // spoken before the first induction trial
 export const INDUCTION_INTRO = {
-  text: 'Now I have some questions about Zarpies. For each one, click on the picture that shows how many Zarpies you think do it. There are no right or wrong answers!',
+  text: 'For each question, click on the picture that shows how many Zarpies you think do it. There are no right or wrong answers!',
   audio: 'audio/induction_intro.m4a',
 }
 
@@ -274,7 +544,7 @@ export const TASK_INTRO = {
     audio: 'audio/task_intro_adult.m4a',
   },
   child: {
-    text: "Imagine there is a group of people called Zarpies. I'm going to tell you some things about Zarpies, and then ask you some questions about them.",
+    text: "Imagine there is a group of people called Zarpies. Zarpies live in a place far, far away. I'm going to tell you some things about Zarpies, and ask you some questions about them.",
     audio: 'audio/task_intro_child.m4a',
   },
 }
@@ -318,14 +588,36 @@ export function inductionTrials() {
 }
 
 /**
- * Every sound and picture of the induction task, as URLs, to fetch ahead of
- * time. On the live site a clip is only downloaded when it is about to play,
+ * Every sound and picture of the scale training, the induction task and the
+ * end check, as URLs, to fetch ahead of time. On the live site a clip is only downloaded when it is about to play,
  * and the first scale clip once stalled a trial for several seconds on a slow
  * connection; fetching them early puts them in the browser's cache.
  * @returns {string[]}
  */
 export function inductionAssetUrls() {
-  const paths = [INDUCTION_INTRO.audio, ...SCALE_OPTIONS.map((o) => o.audio)]
+  const paths = [INDUCTION_INTRO.audio, ...SCALE_OPTIONS.flatMap((o) => [o.audio, o.first?.audio, o.last?.audio])]
+  const T = SCALE_TRAINING
+  paths.push(
+    T.dot,
+    T.intro.audio,
+    T.practiceIntro.audio,
+    T.wrongGood.audio,
+    SCALE_BRIDGE.image,
+    SCALE_BRIDGE.intro.audio,
+    T.end.audio
+  )
+  paths.push(...Object.values(T.cards).map((c) => c.audio))
+  paths.push(...Object.values(T.options).map((c) => c.audio))
+  for (const it of T.items) {
+    paths.push(it.image, it.question.audio, it.right.audio, it.wrongRest.audio)
+    paths.push(...Object.values(it.youThink).map((c) => c.audio))
+  }
+  paths.push(
+    END_CHECK.intro.audio,
+    END_CHECK.image,
+    END_CHECK.narrator.image,
+    ...END_CHECK.items.map((it) => it.question.audio)
+  )
   for (const trial of inductionTrials()) {
     paths.push(trial.image, trial.audio.description, trial.audio.question)
   }
