@@ -10,6 +10,12 @@
  *
  * Use it in design.js for the welcome_anonymous / welcome_referred views:
  *   import WelcomeView from '@/builtins/cdsc_default/WelcomeView.vue'
+ *
+ * Media in public/ (not in src/user/assets) is not covered by Smile's
+ * preloading. Give the page a `preload` prop, a function returning the urls
+ * to fetch, and they are fetched as soon as the page is shown, so that they
+ * are in the browser's cache by the time the child needs them:
+ *   timeline.pushSeqView({ ..., component: WelcomeView, props: { preload: () => urls } })
  */
 
 // import Vue functions
@@ -25,6 +31,10 @@ import CdscBox from '@/uikit/layouts/CdscBox.vue'
 
 // animation library
 import { animate } from 'motion'
+
+const props = defineProps({
+  preload: { type: Function, default: null }, // returns the urls to fetch ahead of time
+})
 
 let timer // waits before doing animation
 let clicked = false // has the button been clicked?
@@ -46,6 +56,7 @@ function wiggle() {
  * Lifecycle hook: Sets up the initial wiggle timer when component mounts
  */
 onMounted(() => {
+  if (props.preload) for (const url of props.preload()) fetch(url).catch(() => {})
   timer = setTimeout(wiggle, 3000)
 })
 

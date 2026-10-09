@@ -588,6 +588,23 @@ export function inductionTrials() {
 }
 
 /**
+ * Everything the child will hear and see, from the scale training to the end
+ * check, to fetch ahead of time: the browser then serves each clip, picture
+ * and video from its cache when its page needs it (on the live site a scale
+ * clip once took ~7 s to arrive in the middle of a trial). About 25 MB for
+ * one condition. Called from the welcome page (design.js), so the whole
+ * parent part is available for the download; the scale training and task
+ * intro call inductionAssetUrls() again as a safety net (cached: cheap).
+ * @param {string} condition - 'generic', 'specific' or 'baseline' (the
+ *   training videos of that condition are included)
+ * @returns {Array<string>} urls
+ */
+export function studyAssetUrls(condition) {
+  const videos = trainingTrials(condition).map((t) => stimulusUrl(t.video))
+  return [stimulusUrl(TASK_INTRO.child.audio), ...videos, ...inductionAssetUrls()]
+}
+
+/**
  * Every sound and picture of the scale training, the induction task and the
  * end check, as URLs, to fetch ahead of time. On the live site a clip is only downloaded when it is about to play,
  * and the first scale clip once stalled a trial for several seconds on a slow

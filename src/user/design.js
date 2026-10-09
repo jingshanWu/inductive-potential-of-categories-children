@@ -62,7 +62,7 @@ import ScaleTrainingView from '@/user/components/zarpies/ScaleTrainingView.vue'
 // import ScaleBridgeView from '@/user/components/zarpies/ScaleBridgeView.vue' // folded into TaskIntroView (page 2)
 import EndCheckView from '@/user/components/zarpies/EndCheckView.vue'
 import ParentFormView from '@/builtins/cdsc_default/ParentFormView.vue'
-import { CONDITIONS, SCALE_DIRECTIONS } from '@/user/components/zarpies/stimuli'
+import { CONDITIONS, SCALE_DIRECTIONS, studyAssetUrls } from '@/user/components/zarpies/stimuli'
 
 // #3. Import smile API and timeline
 import useAPI from '@/core/composables/useAPI'
@@ -147,11 +147,16 @@ api.randomAssignCondition({
 // IMPORTANT: A least one route needs to be called 'welcome_anonymous'
 // to handle the landing case for someone not coming from a recruitment service
 
+// the welcome page fetches everything the child will hear and see, so it is
+// in the browser's cache before the child part starts (see studyAssetUrls)
+const preloadStudyAssets = () => studyAssetUrls(api.getConditionByName('condition'))
+
 // First welcome screen for non-referral (dev / anonymous entry)
 timeline.pushSeqView({
   path: '/welcome',
   name: 'welcome_anonymous',
   component: WelcomeView,
+  props: { preload: preloadStudyAssets },
   meta: {
     prev: undefined,
     next: 'soundcheck',
@@ -169,6 +174,7 @@ timeline.pushSeqView({
   path: '/welcome/:service',
   name: 'welcome_referred',
   component: WelcomeView,
+  props: { preload: preloadStudyAssets },
   meta: {
     prev: undefined,
     next: 'soundcheck',
