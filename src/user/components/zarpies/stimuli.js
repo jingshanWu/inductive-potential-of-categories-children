@@ -295,8 +295,8 @@ export function scaleOptions(direction) {
 // child clicks a card instead of pointing, and the voice does what the
 // experimenter did. The cards show dots (1 / 3 / 5 / 7 / 9), as in the lab;
 // the practice questions are about kids, so nothing is taught about Zarpies.
-// Order of the practice items as in the lab script: only one, all, some,
-// most, a few. A wrong click gets the lab's gentle correction and the child
+// Order of the practice items as in the lab script: only one (gold medal, in
+// place of the script's fingers), all, some, most, a few. A wrong click gets the lab's gentle correction and the child
 // clicks the right card to go on.
 export const SCALE_TRAINING = {
   speakingRate: 0.85, // all its clips: a little slower than the voice's normal pace, for children
@@ -355,35 +355,58 @@ export const SCALE_TRAINING = {
   // good answer."), then `wrongRest`; the right card then enlarges.
   items: [
     {
-      id: 'fingers',
+      id: 'medal',
       correct: 'one',
-      image: 'images/hand_one_finger.png',
-      question: {
-        text: 'Look at this hand. How many fingers is it holding up?',
-        audio: 'audio/training_q_fingers.m4a',
-      },
+      image: 'images/gold_medal.png',
+      question: { text: 'In a race, how many kids get the gold medal?', audio: 'audio/training_q_medal.m4a' },
       right: {
-        text: "That's right! Just one. So this card with just one dot means only one.",
-        audio: 'audio/training_right_fingers.m4a',
+        text: "That's right! Only one kid gets the gold medal. So this card with just one dot means only one.",
+        audio: 'audio/training_right_medal.m4a',
       },
       youThink: {
-        one: { text: "You think it's holding up only one finger?", audio: 'audio/training_youthink_fingers_one.m4a' },
-        few: { text: "You think it's holding up a few fingers?", audio: 'audio/training_youthink_fingers_few.m4a' },
-        some: { text: "You think it's holding up some fingers?", audio: 'audio/training_youthink_fingers_some.m4a' },
-        most: {
-          text: "You think it's holding up most of its fingers?",
-          audio: 'audio/training_youthink_fingers_most.m4a',
-        },
-        all: {
-          text: "You think it's holding up all of its fingers?",
-          audio: 'audio/training_youthink_fingers_all.m4a',
-        },
+        one: { text: 'You think only one kid gets the gold medal?', audio: 'audio/training_youthink_medal_one.m4a' },
+        few: { text: 'You think a few kids get the gold medal?', audio: 'audio/training_youthink_medal_few.m4a' },
+        some: { text: 'You think some kids get the gold medal?', audio: 'audio/training_youthink_medal_some.m4a' },
+        most: { text: 'You think most kids get the gold medal?', audio: 'audio/training_youthink_medal_most.m4a' },
+        all: { text: 'You think all kids get the gold medal?', audio: 'audio/training_youthink_medal_all.m4a' },
       },
       wrongRest: {
-        text: 'But you know what, this hand is holding up just one finger. So can you click the card that has just one dot?',
-        audio: 'audio/training_wrong_fingers.m4a',
+        text: 'But you know what, only one kid gets the gold medal. So can you click the card that has just one dot?',
+        audio: 'audio/training_wrong_medal.m4a',
       },
     },
+    // the 'only one' item of the lab's script (fingers held up), replaced by
+    // the gold medal so that all five items are "how many kids" questions
+    // {
+    //   id: 'fingers',
+    //   correct: 'one',
+    //   image: 'images/hand_one_finger.png',
+    //   question: {
+    //     text: 'Look at this hand. How many fingers is it holding up?',
+    //     audio: 'audio/training_q_fingers.m4a',
+    //   },
+    //   right: {
+    //     text: "That's right! Just one. So this card with just one dot means only one.",
+    //     audio: 'audio/training_right_fingers.m4a',
+    //   },
+    //   youThink: {
+    //     one: { text: "You think it's holding up only one finger?", audio: 'audio/training_youthink_fingers_one.m4a' },
+    //     few: { text: "You think it's holding up a few fingers?", audio: 'audio/training_youthink_fingers_few.m4a' },
+    //     some: { text: "You think it's holding up some fingers?", audio: 'audio/training_youthink_fingers_some.m4a' },
+    //     most: {
+    //       text: "You think it's holding up most of its fingers?",
+    //       audio: 'audio/training_youthink_fingers_most.m4a',
+    //     },
+    //     all: {
+    //       text: "You think it's holding up all of its fingers?",
+    //       audio: 'audio/training_youthink_fingers_all.m4a',
+    //     },
+    //   },
+    //   wrongRest: {
+    //     text: 'But you know what, this hand is holding up just one finger. So can you click the card that has just one dot?',
+    //     audio: 'audio/training_wrong_fingers.m4a',
+    //   },
+    // },
     {
       id: 'birthdays',
       correct: 'all',
