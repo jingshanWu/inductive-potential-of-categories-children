@@ -45,6 +45,8 @@
  * - highlight: the id of one choice to enlarge, e.g. highlight="dog". Default
  *   is none. Change it to enlarge the choices one at a time; set it back to
  *   null to stop.
+ * - dimOthers: with a highlight, also fade the other choices (as after a
+ *   click), to point at the enlarged one more clearly. Default false.
  * - Optional sizes: margin (px between a choice and the edge of its square,
  *   default 24), gap (px between squares, default 24), columns (choices per
  *   row; default picks whatever makes the pictures biggest), labelLines (lines
@@ -60,6 +62,7 @@ const props = defineProps({
   options: { type: Array, required: true },
   disabled: { type: Boolean, default: false },
   highlight: { type: String, default: null },
+  dimOthers: { type: Boolean, default: false },
   margin: { type: Number, default: 24 },
   gap: { type: Number, default: 24 },
   columns: { type: Number, default: 0 },
@@ -231,7 +234,9 @@ onBeforeUnmount(() => clearTimeout(feedbackTimer))
           :class="{
             'cursor-pointer': active,
             'scale-105': chosen === option.id,
-            'opacity-30': chosen !== null && chosen !== option.id,
+            'opacity-30':
+              (chosen !== null && chosen !== option.id) ||
+              (dimOthers && chosen === null && highlight !== null && highlight !== option.id),
             'scale-[1.15] z-10': chosen === null && highlight === option.id,
           }"
           :style="zoneStyle(option)"

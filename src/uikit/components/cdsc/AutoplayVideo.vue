@@ -79,7 +79,17 @@ function play() {
   })
 }
 
-onBeforeUnmount(() => clearTimeout(stallTimer))
+// leaving the page: stop the video at once (a removed <video> would play on
+// until the browser gets rid of it)
+onBeforeUnmount(() => {
+  clearTimeout(stallTimer)
+  loads += 1
+  if (video.value) {
+    video.value.pause()
+    video.value.removeAttribute('src')
+    video.value.load()
+  }
+})
 
 function fail(reason) {
   failure.value = `${reason} (${props.src.split('/').slice(-2).join('/')})`

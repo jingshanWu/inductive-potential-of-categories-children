@@ -74,7 +74,17 @@ function play() {
   })
 }
 
-onBeforeUnmount(() => clearTimeout(stallTimer))
+// leaving the page: stop the sound at once (a removed <audio> would play on
+// until the browser gets rid of it)
+onBeforeUnmount(() => {
+  clearTimeout(stallTimer)
+  loads += 1
+  if (audio.value) {
+    audio.value.pause()
+    audio.value.removeAttribute('src')
+    audio.value.load()
+  }
+})
 
 // load the current src and play it from the beginning (or go silent if none)
 function start() {
@@ -118,7 +128,7 @@ watch(() => props.src, start)
       ref="audio"
       preload="auto"
       @ended="onEnded()"
-      @timeupdate="emit('time', audio.currentTime)"
+      @timeupdate="audio && emit('time', audio.currentTime)"
       @error="failed = !!src"
     ></audio>
 
