@@ -138,39 +138,46 @@ api.setAutofill(() => {
   <ChildStage class="flex flex-col items-center p-4 text-center">
     <AutoplayAudio :src="audioSrc" @ended="onAudioEnded()" @time="onAudioTime" />
 
-    <p class="text-2xl font-medium mb-3">{{ section === 'intro' ? C.intro.text : item.question.text }}</p>
-
-    <!-- the Zarpie the question is about (with Steve, for the question about him) -->
-    <div v-if="section !== 'intro'" class="h-[24vh] mb-2 flex items-center justify-center gap-12">
-      <img
-        v-if="item.id === 'met_one'"
-        :src="stimulusUrl(C.narrator.image)"
-        alt="Steve"
-        draggable="false"
-        class="max-h-full select-none"
-      />
-      <!-- kept in the layout while hidden, so Steve does not move when the Zarpie appears -->
-      <img
-        :src="stimulusUrl(C.image)"
-        alt=""
-        draggable="false"
-        class="max-h-full select-none"
-        :class="{ invisible: !zarpieShown }"
-      />
+    <!-- page 1: just the intro line, in the middle -->
+    <div v-if="section === 'intro'" class="flex flex-1 items-center justify-center">
+      <p class="text-3xl font-medium">{{ C.intro.text }}</p>
     </div>
 
-    <div class="w-full flex-1 min-h-0 px-4 pt-4 pb-8">
-      <HotSpots
-        :key="api.stepIndex"
-        :options="cards"
-        :columns="5"
-        :labelLines="2"
-        :margin="12"
-        :gap="12"
-        :disabled="!clickable"
-        :highlight="highlighted"
-        @choose="onChoose"
-      />
-    </div>
+    <template v-else>
+      <p class="text-2xl font-medium mb-3">{{ item.question.text }}</p>
+
+      <!-- the Zarpie the question is about (with Steve, for the question about him) -->
+      <div class="h-[24vh] mb-2 flex items-center justify-center gap-12">
+        <img
+          v-if="item.id === 'met_one'"
+          :src="stimulusUrl(C.narrator.image)"
+          alt="Steve"
+          draggable="false"
+          class="max-h-full select-none"
+        />
+        <!-- kept in the layout while hidden, so Steve does not move when the Zarpie appears -->
+        <img
+          :src="stimulusUrl(C.image)"
+          alt=""
+          draggable="false"
+          class="max-h-full select-none"
+          :class="{ invisible: !zarpieShown }"
+        />
+      </div>
+
+      <div class="w-full flex-1 min-h-0 px-4 pt-4 pb-8">
+        <HotSpots
+          :key="api.stepIndex"
+          :options="cards"
+          :columns="5"
+          :labelLines="2"
+          :margin="12"
+          :gap="12"
+          :disabled="!clickable"
+          :highlight="highlighted"
+          @choose="onChoose"
+        />
+      </div>
+    </template>
   </ChildStage>
 </template>
