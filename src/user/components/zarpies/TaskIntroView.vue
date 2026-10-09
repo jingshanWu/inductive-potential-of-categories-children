@@ -1,14 +1,15 @@
 <script setup>
-// Task intro for the child, two pages read aloud by the study's voice (the
-// adult Qualtrics study used a video here; its narration is TASK_INTRO.adult
-// in stimuli.js):
+// Task intro for the child, read aloud by the study's voice (the adult
+// Qualtrics study used a video here; its narration is TASK_INTRO.adult in
+// stimuli.js):
 //   1. 'intro'  — one line: there are people called Zarpies, we will tell you
 //                 some things about them and ask you some questions
-//   2. 'bridge' — one line: the cards of the questions show Zarpies instead
-//                 of dots, but mean the same thing (SCALE_BRIDGE in
-//                 stimuli.js); the 5 dot cards of the scale training are
-//                 shown above the 5 Zarpie panels of the test (a neutral
-//                 Zarpie), both in the child's scale order
+//   2. 'bridge' — only with the `bridge` prop (design.js); off for now. One
+//                 line: the cards of the questions show Zarpies instead of
+//                 dots, but mean the same thing (SCALE_BRIDGE in stimuli.js);
+//                 the 5 dot cards of the scale training are shown above the 5
+//                 Zarpie panels of the test (a neutral Zarpie), both in the
+//                 child's scale order
 // Each clip plays automatically and the page moves on by itself when it ends.
 // The sound and its Play / Replay fallbacks live in AutoplayAudio.vue. There
 // is no way to continue without hearing the clips to the end.
@@ -29,8 +30,12 @@ const api = useViewAPI()
 const direction = api.getConditionByName('scaleDirection')
 const OPTIONS = scaleOptions(direction)
 
-// the two pages as steps
-api.steps.append([{ id: 'intro' }, { id: 'bridge' }])
+const props = defineProps({
+  bridge: { type: Boolean, default: false }, // show the "dots = Zarpies" page after the intro
+})
+
+// the pages as steps
+api.steps.append(props.bridge ? [{ id: 'intro' }, { id: 'bridge' }] : [{ id: 'intro' }])
 api.updateStepper()
 const page = computed(() => api.path[0]) // 'intro' | 'bridge'
 
@@ -54,7 +59,7 @@ const audioSrc = computed(() => stimulusUrl(page.value === 'intro' ? INTRO.audio
 function onAudioEnded() {
   clearTimeout(timer)
   timer = setTimeout(() => {
-    if (page.value === 'intro') {
+    if (page.value === 'intro' && props.bridge) {
       api.stepData.completed = true
       api.recordStep()
       api.goNextStep()

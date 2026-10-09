@@ -273,12 +273,15 @@ timeline.pushSeqView({
   component: ScaleTrainingView,
 })
 
-// task intro (child): page 1 "we will ask you some questions about Zarpies",
-// page 2 "the pictures will show Zarpies instead of dots" (dot cards above
-// the Zarpie panels)
+// task intro (child): "we will ask you some questions about Zarpies".
+// TaskIntroView also has a second page, "the cards will show Zarpies instead
+// of dots" (dot cards above the Zarpie panels), not used for now: the child
+// has just used the dot cards. To bring it back, pass `bridge: true`:
+//   props: { bridge: true },
 timeline.pushSeqView({
   name: 'taskintro',
   component: TaskIntroView,
+  // props: { bridge: true },
 })
 
 // training videos: only for the generic and specific conditions. Baseline
@@ -297,8 +300,8 @@ timeline.pushConditionalNode({
 })
 
 // The "dots = Zarpies" page used to be its own view here, right before the
-// test; it is now page 2 of the task intro (TaskIntroView). Kept for now in
-// case we want it back as a separate view; may be deleted later.
+// test; it is now the (unused) second page of the task intro, see above.
+// Kept for now in case we want it back as a separate view; may be deleted.
 // timeline.pushSeqView({
 //   name: 'scalebridge',
 //   component: ScaleBridgeView,
