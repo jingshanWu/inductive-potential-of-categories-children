@@ -5,7 +5,10 @@ source of truth) and writes one m4a per clip to the path stimuli.js gives it
 under public/stimuli/ (audio/<id>.m4a):
   - 16 induction trials (a description clip and a question clip each) and
     the attention check
-  - 5 scale options ("Only one Zarpie." ...)
+  - 5 scale options ("Only one Zarpie." ...), plus the first / last variants
+    for the reversed scale ("All Zarpies.", "Or only one Zarpie.")
+  - the scale training (intro, one clip per card, 5 practice items with their
+    right / wrong feedback) and the 2 end-check questions
   - the induction intro message
   - the task intro, adult and child wording
 
@@ -49,9 +52,29 @@ const clips = [
     { file: t.audio.question, text: t.attentionCheck ? t.text : t.question },
   ]),
   ...m.SCALE_OPTIONS.map((o) => ({ file: o.audio, text: o.spoken, rate: o.speakingRate })),
-  { file: m.INDUCTION_INTRO.audio, text: m.INDUCTION_INTRO.text },
+  ...m.SCALE_OPTIONS.flatMap((o) => [o.first, o.last].filter(Boolean).map((c) => ({ file: c.audio, text: c.spoken, rate: o.speakingRate }))),
+  { file: m.INDUCTION_INTRO.audio, text: m.INDUCTION_INTRO.text, rate: 0.85 }, // a little slower, for children
   { file: m.TASK_INTRO.adult.audio, text: m.TASK_INTRO.adult.text },
   { file: m.TASK_INTRO.child.audio, text: m.TASK_INTRO.child.text },
+  // scale training and end check (Rhodes & Liebenson, 2015 warm-up), at their own speaking rate
+  ...[
+    { file: m.SCALE_TRAINING.intro.audio, text: m.SCALE_TRAINING.intro.text },
+    ...Object.values(m.SCALE_TRAINING.cards).map((c) => ({ file: c.audio, text: c.text })),
+    ...Object.values(m.SCALE_TRAINING.options).map((c) => ({ file: c.audio, text: c.text })),
+    { file: m.SCALE_TRAINING.practiceIntro.audio, text: m.SCALE_TRAINING.practiceIntro.text },
+    ...m.SCALE_TRAINING.items.flatMap((it) =>
+      [it.question, it.right, it.wrongRest, ...Object.values(it.youThink)].map((c) => ({ file: c.audio, text: c.text }))
+    ),
+    { file: m.SCALE_TRAINING.wrongGood.audio, text: m.SCALE_TRAINING.wrongGood.text },
+    { file: m.SCALE_TRAINING.end.audio, text: m.SCALE_TRAINING.end.text },
+  ].map((c) => ({ ...c, rate: m.SCALE_TRAINING.speakingRate })),
+  ...[
+    { file: m.SCALE_BRIDGE.intro.audio, text: m.SCALE_BRIDGE.intro.text },
+  ].map((c) => ({ ...c, rate: m.SCALE_BRIDGE.speakingRate })),
+  ...[
+    { file: m.END_CHECK.intro.audio, text: m.END_CHECK.intro.text },
+    ...m.END_CHECK.items.map((it) => ({ file: it.question.audio, text: it.question.text })),
+  ].map((c) => ({ ...c, rate: m.END_CHECK.speakingRate })),
 ]
 console.log(JSON.stringify(clips))
 """
