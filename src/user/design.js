@@ -85,11 +85,18 @@ api.setRuntimeConfig('anonymousMode', false)
 api.setRuntimeConfig('labURL', 'https://gureckislab.org')
 api.setRuntimeConfig('brandLogoFn', 'universitylogo.png')
 
-// Fast forward, for developing and testing (development mode only): a Skip
-// button on every clip and video, so every page can be heard to the end or
-// clicked through at once. Uncomment to switch on; comment out (or delete)
-// for the normal study. See src/uikit/components/cdsc/fastForward.js.
+// Fast forward, for developing and testing (development and presentation
+// mode only): a Skip button on every clip and video, so every page can be
+// heard to the end or clicked through at once. Uncomment to switch on while
+// developing; comment out (or delete) for the normal study. See
+// src/uikit/components/cdsc/fastForward.js.
 // api.setRuntimeConfig('fastForward', true)
+//
+// On the demo site (the `presentation` branch, deployed to its own link:
+// https://nyucdsc.dreamhosters.com/e/dealer-understood-reality/) it is always
+// on, so the lab can click through the whole study. The live study is a
+// production build, where this line does nothing.
+if (api.config.mode === 'presentation') api.setRuntimeConfig('fastForward', true)
 
 api.setRuntimeConfig('maxWrites', 1000)
 api.setRuntimeConfig('minWriteInterval', 2000)

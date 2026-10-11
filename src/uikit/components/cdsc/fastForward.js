@@ -12,9 +12,11 @@
  * data upload bar do not hold things up. Delete the line and the study is
  * back to normal.
  *
- * It only works in development mode: on the live site the line is ignored
- * (and a warning is logged), so a forgotten line cannot change what a
- * participant sees.
+ * It only works in development and presentation mode: on the live site the
+ * line is ignored (and a warning is logged), so a forgotten line cannot
+ * change what a participant sees. (Presentation mode is Smile's demo site,
+ * deployed from a branch named `presentation` to its own link, with its own
+ * data: the place to show the lab the whole study at speed.)
  */
 
 import useAPI from '@/core/composables/useAPI'
@@ -22,8 +24,8 @@ import useAPI from '@/core/composables/useAPI'
 export function isFastForward() {
   const api = useAPI()
   const wanted = !!api.store.config.runtime?.fastForward
-  if (wanted && api.config.mode !== 'development') {
-    api.log.warn('fastForward is set but only works in development mode; ignored')
+  if (wanted && api.config.mode !== 'development' && api.config.mode !== 'presentation') {
+    api.log.warn('fastForward is set but only works in development or presentation mode; ignored')
     return false
   }
   return wanted
