@@ -301,8 +301,10 @@ export function scaleOptions(direction) {
 export const SCALE_TRAINING = {
   speakingRate: 0.85, // all its clips: a little slower than the voice's normal pace, for children
   dot: 'images/dot.png',
+  // the clip is a hand-picked take at rate 0.95 (the 0.85 takes sounded flat);
+  // the exclamation mark is what makes the voice bright
   intro: {
-    text: "Let's first practice how to respond to questions.",
+    text: "Let's first practice how to respond to questions!",
     audio: 'audio/training_intro2.m4a',
   },
   // one clip per card, read in the order of the scale on screen, each as its
