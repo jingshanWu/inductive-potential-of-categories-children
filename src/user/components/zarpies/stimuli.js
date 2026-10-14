@@ -206,6 +206,8 @@ export const SCALE_OPTIONS = [
     label: 'Only one Zarpie',
     audio: 'audio/scale_one.m4a',
     // when the scale runs all -> one, this is the last option: "or" marks it
+    // (the clip is a hand-picked take, like scale_all_first: the first one
+    // cut the ending short)
     last: { spoken: 'Or only one Zarpie.', audio: 'audio/scale_one_last.m4a' },
     speakingRate: 0.95, // all 5 scale clips at this rate, so they match
     image: null,
