@@ -350,9 +350,11 @@ export const SCALE_TRAINING = {
     text: "Let's practice using these cards. For each question, click on the card that shows your answer.",
     audio: 'audio/training_practice_intro.m4a',
   },
-  // After a wrong click: the `youThink` clip for the card the child clicked
-  // ("You think most kids like to go swimming?"), then `wrongGood` ("That's a
-  // good answer."), then `wrongRest`; the right card then enlarges.
+  // After a wrong click: the `youSaid` clip for the card the child clicked
+  // ("Okay, you said most kids have a baby brother."), then `wrongGood`
+  // ("That's an okay answer."), then `wrongRest` ("But you know what,
+  // actually ..."); the right card then enlarges. Said gently: a wrong click
+  // must not feel like a mistake.
   items: [
     {
       id: 'medal',
@@ -363,50 +365,21 @@ export const SCALE_TRAINING = {
         text: "That's right! Only one kid gets the gold medal. So this card with just one dot means only one.",
         audio: 'audio/training_right_medal.m4a',
       },
-      youThink: {
-        one: { text: 'You think only one kid gets the gold medal?', audio: 'audio/training_youthink_medal_one.m4a' },
-        few: { text: 'You think a few kids get the gold medal?', audio: 'audio/training_youthink_medal_few.m4a' },
-        some: { text: 'You think some kids get the gold medal?', audio: 'audio/training_youthink_medal_some.m4a' },
-        most: { text: 'You think most kids get the gold medal?', audio: 'audio/training_youthink_medal_most.m4a' },
-        all: { text: 'You think all kids get the gold medal?', audio: 'audio/training_youthink_medal_all.m4a' },
+      youSaid: {
+        one: {
+          text: 'Okay, you said only one kid gets the gold medal.',
+          audio: 'audio/training_yousaid_medal_one.m4a',
+        },
+        few: { text: 'Okay, you said a few kids get the gold medal.', audio: 'audio/training_yousaid_medal_few.m4a' },
+        some: { text: 'Okay, you said some kids get the gold medal.', audio: 'audio/training_yousaid_medal_some.m4a' },
+        most: { text: 'Okay, you said most kids get the gold medal.', audio: 'audio/training_yousaid_medal_most.m4a' },
+        all: { text: 'Okay, you said all kids get the gold medal.', audio: 'audio/training_yousaid_medal_all.m4a' },
       },
       wrongRest: {
-        text: 'But you know what, only one kid gets the gold medal. So can you click the card that has just one dot?',
+        text: 'But you know what, actually only one kid gets the gold medal. So can you click the card that has just one dot?',
         audio: 'audio/training_wrong_medal.m4a',
       },
     },
-    // the 'only one' item of the lab's script (fingers held up), replaced by
-    // the gold medal so that all five items are "how many kids" questions
-    // {
-    //   id: 'fingers',
-    //   correct: 'one',
-    //   image: 'images/hand_one_finger.png',
-    //   question: {
-    //     text: 'Look at this hand. How many fingers is it holding up?',
-    //     audio: 'audio/training_q_fingers.m4a',
-    //   },
-    //   right: {
-    //     text: "That's right! Just one. So this card with just one dot means only one.",
-    //     audio: 'audio/training_right_fingers.m4a',
-    //   },
-    //   youThink: {
-    //     one: { text: "You think it's holding up only one finger?", audio: 'audio/training_youthink_fingers_one.m4a' },
-    //     few: { text: "You think it's holding up a few fingers?", audio: 'audio/training_youthink_fingers_few.m4a' },
-    //     some: { text: "You think it's holding up some fingers?", audio: 'audio/training_youthink_fingers_some.m4a' },
-    //     most: {
-    //       text: "You think it's holding up most of its fingers?",
-    //       audio: 'audio/training_youthink_fingers_most.m4a',
-    //     },
-    //     all: {
-    //       text: "You think it's holding up all of its fingers?",
-    //       audio: 'audio/training_youthink_fingers_all.m4a',
-    //     },
-    //   },
-    //   wrongRest: {
-    //     text: 'But you know what, this hand is holding up just one finger. So can you click the card that has just one dot?',
-    //     audio: 'audio/training_wrong_fingers.m4a',
-    //   },
-    // },
     {
       id: 'birthdays',
       correct: 'all',
@@ -416,15 +389,15 @@ export const SCALE_TRAINING = {
         text: "Yes, that's right, all kids have a birthday! So this card that's all filled up with dots means all.",
         audio: 'audio/training_right_birthdays.m4a',
       },
-      youThink: {
-        one: { text: 'You think only one kid has a birthday?', audio: 'audio/training_youthink_birthdays_one.m4a' },
-        few: { text: 'You think a few kids have a birthday?', audio: 'audio/training_youthink_birthdays_few.m4a' },
-        some: { text: 'You think some kids have a birthday?', audio: 'audio/training_youthink_birthdays_some.m4a' },
-        most: { text: 'You think most kids have a birthday?', audio: 'audio/training_youthink_birthdays_most.m4a' },
-        all: { text: 'You think all kids have a birthday?', audio: 'audio/training_youthink_birthdays_all.m4a' },
+      youSaid: {
+        one: { text: 'Okay, you said only one kid has a birthday.', audio: 'audio/training_yousaid_birthdays_one.m4a' },
+        few: { text: 'Okay, you said a few kids have a birthday.', audio: 'audio/training_yousaid_birthdays_few.m4a' },
+        some: { text: 'Okay, you said some kids have a birthday.', audio: 'audio/training_yousaid_birthdays_some.m4a' },
+        most: { text: 'Okay, you said most kids have a birthday.', audio: 'audio/training_yousaid_birthdays_most.m4a' },
+        all: { text: 'Okay, you said all kids have a birthday.', audio: 'audio/training_yousaid_birthdays_all.m4a' },
       },
       wrongRest: {
-        text: 'But you know what, all kids have a birthday. So can you click the card that is all filled up with dots?',
+        text: 'But you know what, actually all kids have a birthday. So can you click the card that is all filled up with dots?',
         audio: 'audio/training_wrong_birthdays.m4a',
       },
     },
@@ -437,40 +410,64 @@ export const SCALE_TRAINING = {
         text: "That's right, some kids are girls and some are boys. So this card means some.",
         audio: 'audio/training_right_girls.m4a',
       },
-      youThink: {
-        one: { text: 'You think only one kid is a girl?', audio: 'audio/training_youthink_girls_one.m4a' },
-        few: { text: 'You think a few kids are girls?', audio: 'audio/training_youthink_girls_few.m4a' },
-        some: { text: 'You think some kids are girls?', audio: 'audio/training_youthink_girls_some.m4a' },
-        most: { text: 'You think most kids are girls?', audio: 'audio/training_youthink_girls_most.m4a' },
-        all: { text: 'You think all kids are girls?', audio: 'audio/training_youthink_girls_all.m4a' },
+      youSaid: {
+        one: { text: 'Okay, you said only one kid is a girl.', audio: 'audio/training_yousaid_girls_one.m4a' },
+        few: { text: 'Okay, you said a few kids are girls.', audio: 'audio/training_yousaid_girls_few.m4a' },
+        some: { text: 'Okay, you said some kids are girls.', audio: 'audio/training_yousaid_girls_some.m4a' },
+        most: { text: 'Okay, you said most kids are girls.', audio: 'audio/training_yousaid_girls_most.m4a' },
+        all: { text: 'Okay, you said all kids are girls.', audio: 'audio/training_yousaid_girls_all.m4a' },
       },
       wrongRest: {
-        text: 'But you know what, some kids are girls and some are boys. So can you click the card that shows some?',
+        text: 'But you know what, actually some kids are girls and some are boys. So can you click the card that shows some?',
         audio: 'audio/training_wrong_girls.m4a',
       },
     },
+    // the old 'most' item (swimming), replaced by juice; may be deleted
+    // {
+    //   id: 'swimming',
+    //   correct: 'most',
+    //   image: 'images/swimming.png',
+    //   question: { text: 'How many kids like to go swimming?', audio: 'audio/training_q_swimming.m4a' },
+    //   right: {
+    //     text: "That's right, most kids like to go swimming, but a few kids might not. So this card means most.",
+    //     audio: 'audio/training_right_swimming.m4a',
+    //   },
+    //   youThink: {
+    //     one: {
+    //       text: 'You think only one kid likes to go swimming?',
+    //       audio: 'audio/training_youthink_swimming_one.m4a',
+    //     },
+    //     few: { text: 'You think a few kids like to go swimming?', audio: 'audio/training_youthink_swimming_few.m4a' },
+    //     some: { text: 'You think some kids like to go swimming?', audio: 'audio/training_youthink_swimming_some.m4a' },
+    //     most: { text: 'You think most kids like to go swimming?', audio: 'audio/training_youthink_swimming_most.m4a' },
+    //     all: { text: 'You think all kids like to go swimming?', audio: 'audio/training_youthink_swimming_all.m4a' },
+    //   },
+    //   wrongRest: {
+    //     text: 'But you know what, I think most kids like to go swimming. So can you click the card that shows most?',
+    //     audio: 'audio/training_wrong_swimming.m4a',
+    //   },
+    // },
+    // the 'most' item: juice, in place of swimming (lab feedback: many kids cannot swim, so 'some' felt right)
     {
-      id: 'swimming',
+      id: 'juice',
       correct: 'most',
-      image: 'images/swimming.png',
-      question: { text: 'How many kids like to go swimming?', audio: 'audio/training_q_swimming.m4a' },
+      image: 'images/juice.png',
+      // the question clip is a hand-picked take (the first one paused between "many" and "kids")
+      question: { text: 'How many kids like juice?', audio: 'audio/training_q_juice.m4a' },
       right: {
-        text: "That's right, most kids like to go swimming, but a few kids might not. So this card means most.",
-        audio: 'audio/training_right_swimming.m4a',
+        text: "That's right, most kids like juice, but a few kids might not. So this card means most.",
+        audio: 'audio/training_right_juice.m4a',
       },
-      youThink: {
-        one: {
-          text: 'You think only one kid likes to go swimming?',
-          audio: 'audio/training_youthink_swimming_one.m4a',
-        },
-        few: { text: 'You think a few kids like to go swimming?', audio: 'audio/training_youthink_swimming_few.m4a' },
-        some: { text: 'You think some kids like to go swimming?', audio: 'audio/training_youthink_swimming_some.m4a' },
-        most: { text: 'You think most kids like to go swimming?', audio: 'audio/training_youthink_swimming_most.m4a' },
-        all: { text: 'You think all kids like to go swimming?', audio: 'audio/training_youthink_swimming_all.m4a' },
+      youSaid: {
+        one: { text: 'Okay, you said only one kid likes juice.', audio: 'audio/training_yousaid_juice_one.m4a' },
+        few: { text: 'Okay, you said a few kids like juice.', audio: 'audio/training_yousaid_juice_few.m4a' },
+        some: { text: 'Okay, you said some kids like juice.', audio: 'audio/training_yousaid_juice_some.m4a' },
+        most: { text: 'Okay, you said most kids like juice.', audio: 'audio/training_yousaid_juice_most.m4a' },
+        all: { text: 'Okay, you said all kids like juice.', audio: 'audio/training_yousaid_juice_all.m4a' },
       },
       wrongRest: {
-        text: 'But you know what, I think most kids like to go swimming. So can you click the card that shows most?',
-        audio: 'audio/training_wrong_swimming.m4a',
+        text: 'But you know what, actually most kids like juice. So can you click the card that shows most?',
+        audio: 'audio/training_wrong_juice.m4a',
       },
     },
     {
@@ -482,20 +479,32 @@ export const SCALE_TRAINING = {
         text: "That's right! Kids can have an older brother, an older sister, a baby sister, or a baby brother. So only a few kids have a baby brother. This card means a few.",
         audio: 'audio/training_right_brothers.m4a',
       },
-      youThink: {
-        one: { text: 'You think only one kid has a baby brother?', audio: 'audio/training_youthink_brothers_one.m4a' },
-        few: { text: 'You think a few kids have a baby brother?', audio: 'audio/training_youthink_brothers_few.m4a' },
-        some: { text: 'You think some kids have a baby brother?', audio: 'audio/training_youthink_brothers_some.m4a' },
-        most: { text: 'You think most kids have a baby brother?', audio: 'audio/training_youthink_brothers_most.m4a' },
-        all: { text: 'You think all kids have a baby brother?', audio: 'audio/training_youthink_brothers_all.m4a' },
+      youSaid: {
+        one: {
+          text: 'Okay, you said only one kid has a baby brother.',
+          audio: 'audio/training_yousaid_brothers_one.m4a',
+        },
+        few: {
+          text: 'Okay, you said a few kids have a baby brother.',
+          audio: 'audio/training_yousaid_brothers_few.m4a',
+        },
+        some: {
+          text: 'Okay, you said some kids have a baby brother.',
+          audio: 'audio/training_yousaid_brothers_some.m4a',
+        },
+        most: {
+          text: 'Okay, you said most kids have a baby brother.',
+          audio: 'audio/training_yousaid_brothers_most.m4a',
+        },
+        all: { text: 'Okay, you said all kids have a baby brother.', audio: 'audio/training_yousaid_brothers_all.m4a' },
       },
       wrongRest: {
-        text: 'But you know what, only a few kids have a baby brother. So can you click the card that shows a few?',
+        text: 'But you know what, actually only a few kids have a baby brother. So can you click the card that shows a few?',
         audio: 'audio/training_wrong_brothers.m4a',
       },
     },
   ],
-  wrongGood: { text: "That's a good answer.", audio: 'audio/training_wrong_good.m4a' },
+  wrongGood: { text: "That's an okay answer.", audio: 'audio/training_wrong_good.m4a' },
   end: { text: "Great! Now let's begin.", audio: 'audio/training_end.m4a' },
 }
 
@@ -650,7 +659,7 @@ export function inductionAssetUrls() {
   paths.push(...Object.values(T.options).map((c) => c.audio))
   for (const it of T.items) {
     paths.push(it.image, it.question.audio, it.right.audio, it.wrongRest.audio)
-    paths.push(...Object.values(it.youThink).map((c) => c.audio))
+    paths.push(...Object.values(it.youSaid).map((c) => c.audio))
   }
   paths.push(
     END_CHECK.intro.audio,

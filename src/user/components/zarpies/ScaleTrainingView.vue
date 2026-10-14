@@ -184,7 +184,7 @@ function onChoose({ id, rt }) {
     // the lab's correction: acknowledge, then say what is right and ask for
     // that card; the right card enlarges while it is named, then goes back to
     // its size, and the child clicks
-    play([item.value.youThink[id].audio, T.wrongGood.audio], () => {
+    play([item.value.youSaid[id].audio, T.wrongGood.audio], () => {
       highlight.value = item.value.correct
       play([item.value.wrongRest.audio], () => {
         highlight.value = null

@@ -63,7 +63,7 @@ const clips = [
     ...Object.values(m.SCALE_TRAINING.options).map((c) => ({ file: c.audio, text: c.text })),
     { file: m.SCALE_TRAINING.practiceIntro.audio, text: m.SCALE_TRAINING.practiceIntro.text },
     ...m.SCALE_TRAINING.items.flatMap((it) =>
-      [it.question, it.right, it.wrongRest, ...Object.values(it.youThink)].map((c) => ({ file: c.audio, text: c.text }))
+      [it.question, it.right, it.wrongRest, ...Object.values(it.youSaid)].map((c) => ({ file: c.audio, text: c.text }))
     ),
     { file: m.SCALE_TRAINING.wrongGood.audio, text: m.SCALE_TRAINING.wrongGood.text },
     { file: m.SCALE_TRAINING.end.audio, text: m.SCALE_TRAINING.end.text },
