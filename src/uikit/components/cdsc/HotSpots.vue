@@ -262,10 +262,12 @@ onBeforeUnmount(() => clearTimeout(feedbackTimer))
             </span>
           </template>
 
-          <!-- panel: `count` copies of one picture on a 3 x 3 grid, with optional text under it -->
+          <!-- panel: `count` copies of one picture on a 3 x 3 grid, with optional
+               text under it. The thick dark edge and shadow show the child
+               where the card is (lab feedback: a thin edge was not clear) -->
           <template v-else-if="option.panel">
             <span
-              class="grid flex-1 min-h-0 w-full grid-cols-3 grid-rows-3 gap-1 p-2 overflow-hidden rounded-md border border-border bg-white shadow-md"
+              class="grid flex-1 min-h-0 w-full grid-cols-3 grid-rows-3 gap-1 p-2 overflow-hidden rounded-md border-[3px] border-gray-800 bg-white shadow-lg shadow-black/40"
             >
               <!-- each copy sits absolutely inside its grid cell, so the pictures'
                    natural size can never stretch the panel into the text below -->
