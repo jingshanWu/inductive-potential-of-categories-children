@@ -10,11 +10,11 @@
 //      the cards are read in one breath ("Only one. A few. Some. Most. Or
 //      all."), each enlarging as its word comes. The child may click a card
 //      as soon as the question is asked: a click cuts the voice short
-//      (lab's wish: no waiting for the read-out). Right: the voice confirms while the card keeps its clicked look
-//      (popped, the others faded), then the next question. Wrong: the lab's
-//      gentle correction ("You think most kids like to go swimming? That's a
-//      good answer. But you know what, ... so can you click the card that
-//      shows ...?"); the right card enlarges while it is named, goes back to
+//      (lab's wish: no waiting for the read-out). Right: the voice confirms
+//      while the card keeps its clicked look (popped, the others faded), then
+//      the next question. Wrong: a gentle correction ("Emmm, that's not quite
+//      right. Actually, most kids like juice. So can you click the card that
+//      shows most?"); the right card enlarges while it is named, goes back to
 //      its size, and the child clicks again until they click the right one.
 //      Every click is recorded.
 //   3. end: "Great! Now let's begin." and on to the next view by itself.
@@ -192,10 +192,10 @@ function onChoose({ id, rt }) {
     })
   } else {
     clicks.value += 1 // rebuild the cards: the wrong click's faded look goes
-    // the lab's correction: acknowledge, then say what is right and ask for
+    // the correction: "not quite right", then what is right and the ask for
     // that card; the right card enlarges while it is named, then goes back to
     // its size, and the child clicks
-    play([item.value.youSaid[id].audio, T.wrongGood.audio], () => {
+    play([T.wrongStart.audio], () => {
       highlight.value = item.value.correct
       play([item.value.wrongRest.audio], () => {
         highlight.value = null
