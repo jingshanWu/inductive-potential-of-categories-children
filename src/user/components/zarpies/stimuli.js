@@ -155,10 +155,10 @@ export const INDUCTION_FEATURES = [
     question: 'How many Zarpies do you think dance around a fire on their 10th birthday?',
   },
   {
-    id: 'song',
-    image: 'images/song.png',
-    premise: 'Imagine you see a Zarpie singing a beautiful song.',
-    question: 'How many Zarpies do you think sing beautiful songs?',
+    id: 'stories', // replaces the adult study's `song` item (sings beautiful songs; the training has "like to sing")
+    image: 'images/stories.png',
+    premise: 'Imagine you see a Zarpie telling a funny story.',
+    question: 'How many Zarpies do you think tell funny stories?',
   },
   {
     id: 'window',
