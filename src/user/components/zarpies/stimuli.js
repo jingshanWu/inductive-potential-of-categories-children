@@ -47,13 +47,14 @@
  * choices are panels built from the trial's own picture, repeated 1 / 3 / 5 /
  * 7 / 9 times (SCALE_OPTIONS.count), as in Benitez, Leshin & Rhodes (2022).
  *
- * Pace: on 2026-10-07 the clips were brought to one pace within each group
- * (questions about 0.19-0.23 s per syllable, that of song_question; premises a
- * little quicker, about 0.15-0.19), with no pauses inside a sentence and a
- * falling ending, by picking among several takes. Some are takes at a slower
- * speaking rate (questions: cave, magic, potatoes, yellow_gloves, sad at 0.9;
- * premises: magic at 0.9, cave at 0.85). generate_stimuli.py makes clips at
- * the normal rate only, so a regenerated clip may need re-picking.
+ * Pace: the clips are at one pace within each group (questions about
+ * 0.19-0.23 s per syllable; premises a little quicker, about 0.15-0.19),
+ * with a falling ending, picked among several takes (the voice's takes
+ * vary). The 16 questions were re-picked on 2026-10-15, when "Of all the
+ * Zarpies in the world" was put in front of them (the pause after "world"
+ * is the comma). Some premises are takes at a slower speaking rate (magic
+ * at 0.9, cave at 0.85). generate_stimuli.py makes clips at the normal rate
+ * only, so a regenerated clip may need re-picking.
  *
  * Loudness: the training videos are the reference. scripts/tts/match_loudness.py
  * brings every spoken clip to their level; run it after regenerating any clip.
@@ -87,102 +88,104 @@ export const TRAINING_FEATURES = [
 ]
 
 // premise + question are read aloud together in one audio clip per trial
+// (every question opens with "Of all the Zarpies in the world", like the end
+// check's, so the questions are asked the same way throughout)
 export const INDUCTION_FEATURES = [
   {
     id: 'cave',
     image: 'images/cave.png',
     premise: 'Imagine you see a Zarpie living in a cave.',
-    question: 'How many Zarpies do you think live in caves?',
+    question: 'Of all the Zarpies in the world, how many Zarpies do you think live in caves?',
   },
   {
     id: 'lion',
     image: 'images/lion.png',
     premise: 'Imagine you see a Zarpie riding a lion.',
-    question: 'How many Zarpies do you think ride lions?',
+    question: 'Of all the Zarpies in the world, how many Zarpies do you think ride lions?',
   },
   {
     id: 'potatoes',
     image: 'images/potatoes.png',
     premise: 'Imagine you see a Zarpie growing potatoes.',
-    question: 'How many Zarpies do you think grow potatoes?',
+    question: 'Of all the Zarpies in the world, how many Zarpies do you think grow potatoes?',
   },
   {
     id: 'banjo',
     image: 'images/banjo.png',
     premise: 'Imagine you see a Zarpie playing the banjo.',
-    question: 'How many Zarpies do you think play banjos?',
+    question: 'Of all the Zarpies in the world, how many Zarpies do you think play banjos?',
   },
   {
     id: 'look_left',
     image: 'images/look_left.png',
     premise: 'Imagine you see a Zarpie looking to their left when someone talks to them.',
-    question: 'How many Zarpies do you think look to their left when someone talks to them?',
+    question: 'Of all the Zarpies in the world, how many Zarpies do you think look to their left when someone talks to them?',
   },
   {
     id: 'clap',
     image: 'images/clap.png',
     premise: 'Imagine you see a Zarpie clapping three times before going into a room.',
-    question: 'How many Zarpies do you think clap three times before going into a room?',
+    question: 'Of all the Zarpies in the world, how many Zarpies do you think clap three times before going into a room?',
   },
   {
     id: 'sad',
     image: 'images/sad.png',
     premise: "Imagine you see a Zarpie smiling when they're sad.",
-    question: 'How many Zarpies do you think smile when they are sad?',
+    question: 'Of all the Zarpies in the world, how many Zarpies do you think smile when they are sad?',
   },
   {
     id: 'maple_syrup',
     image: 'images/maple_syrup.png',
     premise: 'Imagine you see a Zarpie drinking maple syrup.',
-    question: 'How many Zarpies do you think drink maple syrup?',
+    question: 'Of all the Zarpies in the world, how many Zarpies do you think drink maple syrup?',
   },
   {
     id: 'cats',
     image: 'images/cats.png',
     premise: 'Imagine you see a Zarpie yelling at a cat.',
-    question: 'How many Zarpies do you think yell at cats?',
+    question: 'Of all the Zarpies in the world, how many Zarpies do you think yell at cats?',
   },
   {
     id: 'magic', // replaces the adult study's `opera` item (too hard to picture for children)
     image: 'images/magic.png',
     premise: 'Imagine you see a Zarpie going to the magic show.',
-    question: 'How many Zarpies do you think go to the magic show?',
+    question: 'Of all the Zarpies in the world, how many Zarpies do you think go to the magic show?',
   },
   {
     id: 'dance',
     image: 'images/dance.png',
     premise: 'Imagine you see a Zarpie dancing around a fire on their 10th birthday.',
-    question: 'How many Zarpies do you think dance around a fire on their 10th birthday?',
+    question: 'Of all the Zarpies in the world, how many Zarpies do you think dance around a fire on their 10th birthday?',
   },
   {
     id: 'stories', // replaces the adult study's `song` item (sings beautiful songs; the training has "like to sing")
     image: 'images/stories.png',
     premise: 'Imagine you see a Zarpie telling a funny story.',
-    question: 'How many Zarpies do you think tell funny stories?',
+    question: 'Of all the Zarpies in the world, how many Zarpies do you think tell funny stories?',
   },
   {
     id: 'window',
     image: 'images/window.png',
     premise: 'Imagine you see a Zarpie screaming out of a window.',
-    question: 'How many Zarpies do you think scream out of windows?',
+    question: 'Of all the Zarpies in the world, how many Zarpies do you think scream out of windows?',
   },
   {
     id: 'garbage',
     image: 'images/garbage.png',
     premise: 'Imagine you see a Zarpie smelling garbage for fun.',
-    question: 'How many Zarpies do you think smell garbage for fun?',
+    question: 'Of all the Zarpies in the world, how many Zarpies do you think smell garbage for fun?',
   },
   {
     id: 'pond',
     image: 'images/pond.png',
     premise: 'Imagine you see a Zarpie washing their clothes in a pond.',
-    question: 'How many Zarpies do you think wash their clothes in ponds?',
+    question: 'Of all the Zarpies in the world, how many Zarpies do you think wash their clothes in ponds?',
   },
   {
     id: 'yellow_gloves', // replaces the adult study's `yellow` item (painting their hands yellow)
     image: 'images/yellow_gloves.png',
     premise: 'Imagine you see a Zarpie wearing yellow gloves.',
-    question: 'How many Zarpies do you think wear yellow gloves?',
+    question: 'Of all the Zarpies in the world, how many Zarpies do you think wear yellow gloves?',
   },
 ]
 
