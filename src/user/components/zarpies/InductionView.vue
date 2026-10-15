@@ -16,10 +16,11 @@
 //      below the premise and the 5 scale choices (panels of that Zarpie, 1 /
 //      3 / 5 / 7 / 9 times) fill the rest of the page while the question clip
 //      plays, then the 5 scale clips ("Only one Zarpie." ...) one by
-//      one, each enlarging its choice. The choices only become clickable
-//      after the last clip.
-// The attention check skips part 1: its clip plays with the choices showing,
-// then the choices become clickable.
+//      one, each enlarging its choice. The choices are clickable from the
+//      question on: a click cuts the voice short (lab's wish: no waiting
+//      for the read-out).
+// The attention check skips part 1: its clip plays with the choices showing
+// and clickable.
 //
 // All text, audio paths and the scale come from stimuli.js. The choices are
 // hot spots (HotSpots.vue); the sound and its Play / Replay fallbacks are in
@@ -65,7 +66,8 @@ steps[1]
       image: trial.image ?? null,
       response: null, // scale option id ('one' ... 'all')
       responseValue: null, // 1-5
-      rt: null, // ms from the choices becoming clickable to the click
+      rt: null, // ms from the question starting (the choices become clickable) to the click
+      respondedDuring: null, // what was playing at the click: 'question' | 'options' | 'respond' (silence)
       trialIndex: null, // position in this participant's order (1-16)
       attentionPassed: null, // attention check only
     }))
@@ -82,8 +84,8 @@ const trial = computed(() => (section.value === 'trials' ? TRIALS[api.stepData.i
 const trialImage = computed(() => trial.value?.image ?? null)
 
 // where we are within a trial: 'describe' (big picture, description clip) ->
-// 'question' (no picture, question clip, choices showing) -> 'options'
-// (scale clips one by one) -> 'respond' (choices clickable)
+// 'question' (no picture, question clip, choices showing and clickable) ->
+// 'options' (scale clips one by one) -> 'respond' (silence)
 const phase = ref('describe')
 const optionIndex = ref(0)
 let gapTimer = null
@@ -178,10 +180,15 @@ onBeforeUnmount(() => {
 })
 
 function onChoose({ id, rt }) {
+  // a click while the voice is still going: cut it short (the next step's
+  // clip, or the next view, replaces it)
+  clearTimeout(gapTimer)
+  clearTimeout(leadTimer)
   const option = SCALE_OPTIONS.find((o) => o.id === id)
   api.stepData.response = id
   api.stepData.responseValue = option.value
   api.stepData.rt = rt
+  api.stepData.respondedDuring = phase.value
   api.stepData.trialIndex = api.blockIndex + 1
   api.stepData.scaleDirection = direction
   if (api.stepData.attentionCheck) api.stepData.attentionPassed = id === ATTENTION_CHECK.correct
@@ -263,7 +270,7 @@ api.setAutofill(autofill)
           :labelLines="2"
           :margin="12"
           :gap="12"
-          :disabled="phase !== 'respond'"
+          :disabled="phase === 'describe'"
           :highlight="highlighted"
           @choose="onChoose"
         />
