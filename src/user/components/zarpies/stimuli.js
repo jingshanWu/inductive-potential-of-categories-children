@@ -505,11 +505,13 @@ export const END_CHECK = {
       },
     },
     {
-      id: 'girls',
-      expected: null, // some or most; no single right answer
+      // replaces the "girls" question ("This Zarpie is a girl ... how many
+      // Zarpies are girls?", no single right answer): eating food is true of all
+      id: 'eat_food',
+      expected: 'all',
       question: {
-        text: 'Here is a Zarpie. This Zarpie is a girl. Now tell me your best guess: of all the Zarpies in the world, how many Zarpies are girls?',
-        audio: 'audio/endcheck_q_girls.m4a',
+        text: 'Here is a Zarpie. This Zarpie eats food. Now tell me your best guess: of all the Zarpies in the world, how many Zarpies eat food?',
+        audio: 'audio/endcheck_q_eat_food.m4a',
       },
     },
   ],
