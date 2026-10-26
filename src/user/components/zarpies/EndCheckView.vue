@@ -5,7 +5,9 @@
 // the scale. The Zarpie panels of the test with a neutral Zarpie (END_CHECK
 // in stimuli.js), no feedback. Each question is read aloud, the
 // child clicks a card, and the next question comes; after the second the
-// study moves on by itself. The scale's direction is the child's
+// study moves on by itself. As in the test, the cards are clickable from the
+// moment the question starts (lab feedback): a click cuts the voice short,
+// and what was playing at the click is recorded (respondedDuring). The scale's direction is the child's
 // counterbalanced one (scaleDirection). Steps (Smile): 'intro', then one
 // step per question, each recorded like a test trial. For the question about
 // Steve, Steve is shown first and the Zarpie appears when the voice gets to it
@@ -38,7 +40,8 @@ steps[1].append(
     expected: it.expected,
     response: null, // scale option id
     responseValue: null, // 1-5
-    rt: null,
+    rt: null, // ms from the start of the question's clip
+    respondedDuring: null, // 'ask' | 'options' | 'respond': what was playing at the click
     scaleDirection: direction,
   }))
 )
@@ -49,7 +52,9 @@ const ITEMS = Object.fromEntries(C.items.map((it) => [it.id, it]))
 const item = computed(() => (section.value === 'questions' ? ITEMS[api.stepData.id] : null))
 
 // within a question: 'ask' (the clip) -> 'options' (the 5 panels read one by
-// one, each enlarging, with the test's clips) -> 'respond' (clickable)
+// one, each enlarging, with the test's clips) -> 'respond' (the voice is
+// done). The cards are clickable throughout; `clickable` guards against a
+// second click in the same question.
 const phase = ref('ask')
 const optionIndex = ref(0)
 const clickable = ref(false)
@@ -66,7 +71,7 @@ watch(
     clearTimeout(gapTimer)
     phase.value = 'ask'
     optionIndex.value = 0
-    clickable.value = false
+    clickable.value = true
     zarpieShown.value = !(item.value && item.value.question.zarpieAt)
   },
   { immediate: true }
@@ -93,10 +98,7 @@ function onAudioEnded() {
       zarpieShown.value = true // in case the clip was skipped (fast forward)
       phase.value = 'options'
     } else if (phase.value === 'options' && optionIndex.value < OPTIONS.length - 1) optionIndex.value += 1
-    else {
-      phase.value = 'respond'
-      clickable.value = true
-    }
+    else phase.value = 'respond'
   }, CLIP_GAP_MS)
 }
 
@@ -106,6 +108,9 @@ function onChoose({ id, rt }) {
   api.stepData.response = id
   api.stepData.responseValue = OPTIONS.find((o) => o.id === id).value
   api.stepData.rt = rt
+  clearTimeout(gapTimer)
+  api.stepData.respondedDuring = phase.value
+  phase.value = 'respond' // stops the voice (no clip in this phase)
   api.recordStep()
   if (api.isLastStep()) finish()
   else api.goNextStep()
@@ -173,7 +178,6 @@ api.setAutofill(() => {
           :labelLines="2"
           :margin="12"
           :gap="12"
-          :disabled="!clickable"
           :highlight="highlighted"
           @choose="onChoose"
         />
