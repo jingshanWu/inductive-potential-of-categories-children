@@ -357,7 +357,7 @@ export const SCALE_TRAINING = {
     text: "Let's practice using these cards. For each question, click on the card that shows your answer.",
     audio: 'audio/training_practice_intro.m4a',
   },
-  // After a wrong click: `wrongStart` ("Emmm, that's not quite right."),
+  // After a wrong click: `wrongStart` ("Hmm... that's not quite right."),
   // then the item's `wrongRest` ("Actually, only one kid gets the gold
   // medal. So can you click the card that has just one dot?") while the
   // right card enlarges. Said gently: a wrong click must not feel like a
@@ -462,7 +462,9 @@ export const SCALE_TRAINING = {
       },
     },
   ],
-  wrongStart: { text: "Emmm, that's not quite right.", audio: 'audio/training_wrong_start.m4a' },
+  // "Hmm..." is spelled so the voice says a sound ("Emmm" was read as
+  // letters); hand-picked take (hmm_dots_take1, 2026-10-25)
+  wrongStart: { text: "Hmm... that's not quite right.", audio: 'audio/training_wrong_start.m4a' },
   end: { text: "Great! Now let's begin.", audio: 'audio/training_end.m4a' },
 }
 

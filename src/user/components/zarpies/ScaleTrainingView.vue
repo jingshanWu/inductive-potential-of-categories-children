@@ -12,7 +12,7 @@
 //      as soon as the question is asked: a click cuts the voice short
 //      (lab's wish: no waiting for the read-out). Right: the voice confirms
 //      while the card keeps its clicked look (popped, the others faded), then
-//      the next question. Wrong: a gentle correction ("Emmm, that's not quite
+//      the next question. Wrong: a gentle correction ("Hmm... that's not quite
 //      right. Actually, most kids like juice. So can you click the card that
 //      shows most?"); the right card enlarges while it is named, goes back to
 //      its size, and the child clicks again until they click the right one.
