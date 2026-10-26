@@ -3,12 +3,13 @@
 // consent: the last of the lab's consent slides (PANDA consent and assent
 // slides, version of 2024-12-17), rebuilt in code so it can be edited.
 //
-// The lab's narration for kids (20 s) is played as sound, then the child
-// answers by clicking the big YES or NO (hot spots, see HotSpots.vue), which
-// only become clickable once the narration has finished. YES moves on to the
-// study. NO ends the study here, as in the lab's Qualtrics version: a closing
-// screen tells the family they can exit, and there is no way back. The answer
-// is recorded.
+// The lab's narration for kids (20 s) is played as sound, and the child
+// answers by clicking the big YES or NO (hot spots, see HotSpots.vue). The
+// buttons are clickable from the start (lab feedback: a child who already
+// knows the answer should not have to wait); a click stops the narration,
+// and whether it was still playing is recorded with the answer. YES moves on
+// to the study. NO ends the study here, as in the lab's Qualtrics version: a
+// closing screen tells the family they can exit, and there is no way back.
 //
 // The page is scaled, like a slide, to fit the window: all of it is on screen
 // at once and the page cannot be scrolled (ChildStage.vue, ScaleToFit.vue).
@@ -41,7 +42,10 @@ if (!api.persist.isDefined('assentResponses')) {
 }
 
 function answer({ id, rt }) {
-  api.persist.assentResponses = [...api.persist.assentResponses, { response: id, rt }]
+  // clickedDuring: 'narration' if the child clicked before it had ended
+  const clickedDuring = spoken.value ? 'after' : 'narration'
+  spoken.value = true // stops the narration (unloads the clip)
+  api.persist.assentResponses = [...api.persist.assentResponses, { response: id, rt, clickedDuring }]
   api.recordPageData({ assent: id, responses: api.persist.assentResponses })
   if (id === 'yes') {
     api.goNextView()
@@ -87,9 +91,9 @@ api.setAutofill(autofill)
           <img :src="questionMark" alt="" draggable="false" class="h-[44px] rotate-12" />
         </div>
 
-        <!-- YES / NO become clickable once the narration has finished -->
+        <!-- YES / NO, clickable from the start (rt counts from the page start) -->
         <div class="w-full h-[190px]">
-          <HotSpots :options="options" :columns="2" :margin="14" :disabled="!spoken" @choose="answer" />
+          <HotSpots :options="options" :columns="2" :margin="14" @choose="answer" />
         </div>
 
         <p class="text-xs max-w-[760px] mx-auto">
