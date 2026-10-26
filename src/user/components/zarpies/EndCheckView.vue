@@ -25,13 +25,6 @@ const api = useViewAPI()
 
 const direction = api.getConditionByName('scaleDirection')
 const OPTIONS = scaleOptions(direction)
-const cards = computed(() =>
-  OPTIONS.map((o) => ({
-    id: o.id,
-    label: o.label,
-    panel: { image: stimulusUrl(C.image), count: o.count },
-  }))
-)
 
 const steps = api.steps.append([{ id: 'intro' }, { id: 'questions' }])
 steps[1].append(
@@ -50,6 +43,16 @@ api.updateStepper()
 const section = computed(() => api.path[0]) // 'intro' | 'questions'
 const ITEMS = Object.fromEntries(C.items.map((it) => [it.id, it]))
 const item = computed(() => (section.value === 'questions' ? ITEMS[api.stepData.id] : null))
+
+// the question's own Zarpie (e.g. eating), or the neutral one
+const image = computed(() => stimulusUrl((item.value && item.value.image) || C.image))
+const cards = computed(() =>
+  OPTIONS.map((o) => ({
+    id: o.id,
+    label: o.label,
+    panel: { image: image.value, count: o.count },
+  }))
+)
 
 // within a question: 'ask' (the clip) -> 'options' (the 5 panels read one by
 // one, each enlarging, with the test's clips) -> 'respond' (the voice is
@@ -105,12 +108,12 @@ function onAudioEnded() {
 function onChoose({ id, rt }) {
   if (!clickable.value) return
   clickable.value = false
-  api.stepData.response = id
-  api.stepData.responseValue = OPTIONS.find((o) => o.id === id).value
-  api.stepData.rt = rt
   clearTimeout(gapTimer)
   api.stepData.respondedDuring = phase.value
   phase.value = 'respond' // stops the voice (no clip in this phase)
+  api.stepData.response = id
+  api.stepData.responseValue = OPTIONS.find((o) => o.id === id).value
+  api.stepData.rt = rt
   api.recordStep()
   if (api.isLastStep()) finish()
   else api.goNextStep()
@@ -162,7 +165,7 @@ api.setAutofill(() => {
         />
         <!-- kept in the layout while hidden, so Steve does not move when the Zarpie appears -->
         <img
-          :src="stimulusUrl(C.image)"
+          :src="image"
           alt=""
           draggable="false"
           class="max-h-full select-none"

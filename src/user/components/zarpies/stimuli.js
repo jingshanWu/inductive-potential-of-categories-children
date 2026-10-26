@@ -490,7 +490,7 @@ export const SCALE_BRIDGE = {
 export const END_CHECK = {
   speakingRate: 0.85, // as the scale training
   intro: { text: 'Now, two more questions.', audio: 'audio/endcheck_intro.m4a' },
-  image: 'images/neutral.png', // the Zarpie shown with each question, and in the 5 panels
+  image: 'images/neutral.png', // the Zarpie shown with a question and in its 5 panels, unless the question has its own `image`
   // the questions are told about a boy, Steve (third person), rather than by
   // the voice about itself
   narrator: { name: 'Steve', image: 'images/steve.png' },
@@ -514,6 +514,7 @@ export const END_CHECK = {
       // Zarpies are girls?", no single right answer): eating food is true of all
       id: 'eat_food',
       expected: 'all',
+      image: 'images/eat_food.png', // this Zarpie eating (sandwich and apple), above the cards and in the panels
       question: {
         text: 'Here is a Zarpie. This Zarpie eats food. Now tell me your best guess: of all the Zarpies in the world, how many Zarpies eat food?',
         audio: 'audio/endcheck_q_eat_food.m4a',
@@ -626,7 +627,8 @@ export function inductionAssetUrls() {
     END_CHECK.intro.audio,
     END_CHECK.image,
     END_CHECK.narrator.image,
-    ...END_CHECK.items.map((it) => it.question.audio)
+    ...END_CHECK.items.map((it) => it.question.audio),
+    ...END_CHECK.items.map((it) => it.image).filter(Boolean)
   )
   for (const trial of inductionTrials()) {
     paths.push(trial.image, trial.audio.description, trial.audio.question)
