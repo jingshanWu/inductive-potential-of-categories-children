@@ -1,14 +1,16 @@
 <script setup>
 // The landing page of the demo site (presentation mode: the `presentation`
 // branch, deployed to its own link). It is for the lab, to click through the
-// study: every clip and video has a Skip button there (fast forward, see
-// design.js), and the parts of the study can be jumped to from here or from
-// the menu at the top. Its data go to a record of their own, apart from the
+// study: every clip and video has a Skip button there when fast forward is
+// on (see design.js; off for now), and the parts of the study can be jumped
+// to from here or from the menu at the top. Its data go to a record of their own, apart from the
 // study's.
 import { Button } from '@/uikit/components/ui/button'
 import { Separator } from '@/uikit/components/ui/separator'
 import useAPI from '@/core/composables/useAPI'
+import { isFastForward } from '@/uikit/components/cdsc/fastForward'
 const api = useAPI()
+const fastForward = isFastForward()
 
 const title = 'Inductive potential of categories (children)'
 const subtitle = 'Demo of the child study, for the lab. Not the link for participants.'
@@ -82,10 +84,14 @@ const parts = [
     <!-- Main Content -->
     <main class="w-2/3 mx-auto px-6 py-12">
       <div class="prose prose-gray max-w-none mb-12">
-        <p class="text-lg text-muted-foreground leading-relaxed mb-4">
+        <p v-if="fastForward" class="text-lg text-muted-foreground leading-relaxed mb-4">
           This is the child study as the participants see it, with one difference: every clip and video has a
           <strong>Skip audio / Skip video</strong> button at the bottom right of the page, so the whole study can be
           clicked through in a few minutes. Leave the button alone to hear a page as a child would.
+        </p>
+        <p v-else class="text-lg text-muted-foreground leading-relaxed mb-4">
+          This is the child study as the participants see it: every clip and video plays in full, as a child would
+          hear it (the Skip buttons are off at the moment).
         </p>
         <p class="text-lg text-muted-foreground leading-relaxed mb-4">
           The study remembers where you were: reloading a page or coming back later continues from there. To start

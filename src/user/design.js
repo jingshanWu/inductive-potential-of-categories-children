@@ -93,10 +93,12 @@ api.setRuntimeConfig('brandLogoFn', 'universitylogo.png')
 // api.setRuntimeConfig('fastForward', true)
 //
 // On the demo site (the `presentation` branch, deployed to its own link:
-// https://nyucdsc.dreamhosters.com/e/dealer-understood-reality/) it is always
-// on, so the lab can click through the whole study. The live study is a
-// production build, where this line does nothing.
-if (api.config.mode === 'presentation') api.setRuntimeConfig('fastForward', true)
+// https://nyucdsc.dreamhosters.com/e/dealer-understood-reality/) the line
+// below switches it on, so the lab can click through the whole study.
+// Commented out for now, to test the demo site as a child would see it
+// (no Skip buttons); uncomment to bring the Skip buttons back. The live
+// study is a production build, where this line does nothing.
+// if (api.config.mode === 'presentation') api.setRuntimeConfig('fastForward', true)
 
 api.setRuntimeConfig('maxWrites', 1000)
 api.setRuntimeConfig('minWriteInterval', 2000)
