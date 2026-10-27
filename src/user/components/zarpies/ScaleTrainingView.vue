@@ -8,16 +8,19 @@
 //      order of the scale on screen (the counterbalanced scaleDirection).
 //   2. practice: 5 questions about kids, one per card. After each question
 //      the cards are read in one breath ("Only one. A few. Some. Most. Or
-//      all."), each enlarging as its word comes. The cards can be clicked
-//      only once the voice is fully done (unlike the test, where a click may
-//      cut the read-out short); until then they are shown greyed. Right: the
-//      voice confirms
+//      all."), each enlarging as its word comes, the one being named in
+//      full colour and the others grey. The cards can be clicked only once
+//      the voice is fully done (unlike the test, where a click may cut the
+//      read-out short); then all five are in full colour. Right: the voice
+//      confirms
 //      while the card keeps its clicked look (popped, the others faded), then
 //      the next question. Wrong: a gentle correction ("Hmm... that's not quite
 //      right. Actually, most kids like juice. So can you click the card that
-//      shows most?"); the right card enlarges while it is named, goes back to
-//      its size, and the child clicks again until they click the right one.
-//      Every click is recorded.
+//      shows most?"); the right card enlarges while it is named and goes back
+//      to its size; from the wrong click on, the four wrong cards are grey and
+//      only the right one is in full colour, all five still clickable, and
+//      the child clicks again until they click the right one. Every click is
+//      recorded.
 //   3. end: "Great! Now let's begin." and on to the next view by itself.
 // Steps (Smile): 'intro', 'practice' with one step per item, 'end'; after a
 // reload the page starts its current step again. Cards are hot spots
@@ -67,6 +70,8 @@ const phase = ref('intro')
 const cardIndex = ref(0) // which card is being introduced
 const highlight = ref(null) // the enlarged card
 const clickable = ref(false) // once the voice is done; off while feedback plays
+// after a wrong click: the wrong cards are grey until the next item
+const greyed = ref([])
 const clicks = ref(0) // wrong clicks on the current item, for rebuilding the cards
 
 // the cards are rebuilt after a wrong click, so that the
@@ -111,6 +116,7 @@ watch(
     then = null
     highlight.value = null
     clickable.value = false
+    greyed.value = []
     clicks.value = 0
     if (section.value === 'intro') startIntro()
     else if (section.value === 'practice') ask()
@@ -193,6 +199,7 @@ function onChoose({ id, rt }) {
     })
   } else {
     clicks.value += 1 // rebuild the cards: the wrong click's faded look goes
+    greyed.value = OPTIONS.map((o) => o.id).filter((id) => id !== item.value.correct)
     // the correction: "not quite right", then what is right and the ask for
     // that card; the right card enlarges while it is named, then goes back to
     // its size, and the child clicks
@@ -271,6 +278,7 @@ api.setAutofill(() => {
         :disabled="!clickable"
         :highlight="highlight"
         :dimOthers="phase === 'cards'"
+        :greyed="greyed"
         @choose="onChoose"
       />
     </div>

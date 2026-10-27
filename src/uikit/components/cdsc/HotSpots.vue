@@ -16,8 +16,11 @@
  *   further clicks are ignored.
  * - While the choices cannot be clicked yet (disabled, before any click),
  *   they are shown a bit grey and faded, and come to full colour the moment
- *   they can be clicked, so the child can see when to answer. (Not while a
- *   choice is highlighted: the enlarging already shows what is going on.)
+ *   they can be clicked, so the child can see when to answer. A highlighted
+ *   choice is in full colour even then (e.g. the one being named in a
+ *   read-out, the others grey).
+ * - Choices can also be greyed from outside (greyed), e.g. the wrong ones
+ *   after a wrong click in a practice, whether or not they are clickable.
  * - A choice can be enlarged from outside to point at it (e.g. while a voice
  *   reads the choices one by one).
  * - Named after the Qualtrics "Hot Spot" question, but the squares are made
@@ -50,7 +53,10 @@
  *   is none. Change it to enlarge the choices one at a time; set it back to
  *   null to stop.
  * - dimOthers: with a highlight, also fade the other choices (as after a
- *   click), to point at the enlarged one more clearly. Default false.
+ *   click), to point at the enlarged one more clearly. Default false. (While
+ *   disabled the others are grey anyway, see above.)
+ * - greyed: ids of choices to show grey and faded, e.g. greyed="['few',
+ *   'some']". Default none.
  * - Optional sizes: margin (px between a choice and the edge of its square,
  *   default 24), gap (px between squares, default 24), columns (choices per
  *   row; default picks whatever makes the pictures biggest), labelLines (lines
@@ -67,6 +73,7 @@ const props = defineProps({
   disabled: { type: Boolean, default: false },
   highlight: { type: String, default: null },
   dimOthers: { type: Boolean, default: false },
+  greyed: { type: Array, default: () => [] },
   margin: { type: Number, default: 24 },
   gap: { type: Number, default: 24 },
   columns: { type: Number, default: 0 },
@@ -240,9 +247,10 @@ onBeforeUnmount(() => clearTimeout(feedbackTimer))
             'scale-105': chosen === option.id,
             'opacity-30':
               (chosen !== null && chosen !== option.id) ||
-              (dimOthers && chosen === null && highlight !== null && highlight !== option.id),
+              (dimOthers && active && highlight !== null && highlight !== option.id),
             'scale-[1.15] z-10': chosen === null && highlight === option.id,
-            'opacity-50 grayscale-[60%]': !active && chosen === null && highlight === null,
+            'opacity-50 grayscale-[60%]':
+              greyed.includes(option.id) || (!active && chosen === null && highlight !== option.id),
           }"
           :style="zoneStyle(option)"
           :disabled="!active"
