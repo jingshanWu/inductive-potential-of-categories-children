@@ -16,11 +16,12 @@
 //      below the premise and the 5 scale choices (panels of that Zarpie, 1 /
 //      3 / 5 / 7 / 9 times) fill the rest of the page while the question clip
 //      plays, then the 5 scale clips ("Only one Zarpie." ...) one by
-//      one, each enlarging its choice. The choices are clickable from the
-//      question on: a click cuts the voice short (lab's wish: no waiting
-//      for the read-out).
-// The attention check skips part 1: its clip plays with the choices showing
-// and clickable.
+//      one, each enlarging its choice. The choices become clickable once
+//      the question has been asked (not before: the child must hear the
+//      whole question); from then on a click cuts the read-out short (lab's
+//      wish: no waiting for it).
+// The attention check skips part 1: its clip plays with the choices showing,
+// clickable once it has ended.
 //
 // All text, audio paths and the scale come from stimuli.js. The choices are
 // hot spots (HotSpots.vue); the sound and its Play / Replay fallbacks are in
@@ -66,8 +67,8 @@ steps[1]
       image: trial.image ?? null,
       response: null, // scale option id ('one' ... 'all')
       responseValue: null, // 1-5
-      rt: null, // ms from the question starting (the choices become clickable) to the click
-      respondedDuring: null, // what was playing at the click: 'question' | 'options' | 'respond' (silence)
+      rt: null, // ms from the end of the question (the choices become clickable) to the click
+      respondedDuring: null, // what was playing at the click: 'options' | 'respond' (silence)
       trialIndex: null, // position in this participant's order (1-16)
       attentionPassed: null, // attention check only
     }))
@@ -84,8 +85,8 @@ const trial = computed(() => (section.value === 'trials' ? TRIALS[api.stepData.i
 const trialImage = computed(() => trial.value?.image ?? null)
 
 // where we are within a trial: 'describe' (big picture, description clip) ->
-// 'question' (no picture, question clip, choices showing and clickable) ->
-// 'options' (scale clips one by one) -> 'respond' (silence)
+// 'question' (no picture, question clip, choices showing, not yet clickable) ->
+// 'options' (scale clips one by one, clickable) -> 'respond' (silence)
 const phase = ref('describe')
 const optionIndex = ref(0)
 let gapTimer = null
@@ -270,7 +271,7 @@ api.setAutofill(autofill)
           :labelLines="2"
           :margin="12"
           :gap="12"
-          :disabled="phase === 'describe'"
+          :disabled="phase === 'describe' || phase === 'question'"
           :highlight="highlighted"
           @choose="onChoose"
         />

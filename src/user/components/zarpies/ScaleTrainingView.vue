@@ -9,8 +9,8 @@
 //   2. practice: 5 questions about kids, one per card. After each question
 //      the cards are read in one breath ("Only one. A few. Some. Most. Or
 //      all."), each enlarging as its word comes. The child may click a card
-//      as soon as the question is asked: a click cuts the voice short
-//      (lab's wish: no waiting for the read-out). Right: the voice confirms
+//      once the question has been asked (not during it): a click cuts the
+//      read-out short (lab's wish: no waiting for it). Right: the voice confirms
 //      while the card keeps its clicked look (popped, the others faded), then
 //      the next question. Wrong: a gentle correction ("Hmm... that's not quite
 //      right. Actually, most kids like juice. So can you click the card that
@@ -47,8 +47,8 @@ steps[1].append(
     correct: it.correct,
     clicks: [], // the cards clicked, in order (the last one is the right one)
     firstTry: null, // was the first click right?
-    rt: null, // ms from the question starting (the cards become clickable) to the first click
-    clickedDuring: null, // what was playing at the first click: 'ask' | 'options' | 'respond' (silence)
+    rt: null, // ms from the end of the question (the cards become clickable) to the first click
+    clickedDuring: null, // what was playing at the first click: 'options' | 'respond' (silence)
     scaleDirection: direction,
   }))
 )
@@ -66,7 +66,7 @@ const item = computed(() => (section.value === 'practice' ? ITEMS[api.stepData.i
 const phase = ref('intro')
 const cardIndex = ref(0) // which card is being introduced
 const highlight = ref(null) // the enlarged card
-const clickable = ref(false) // from the question on; off while feedback plays
+const clickable = ref(false) // once the question has been asked; off while feedback plays
 const clicks = ref(0) // wrong clicks on the current item, for rebuilding the cards
 
 // the cards are rebuilt after a wrong click, so that the
@@ -143,17 +143,18 @@ function introduceCard() {
   })
 }
 
-// 2. practice: one step per item. The cards can be clicked from the question
-// on; a click stops whatever the voice is saying
+// 2. practice: one step per item. The cards can be clicked once the question
+// has been asked; a click then stops whatever the voice is saying
 function ask() {
   phase.value = 'ask'
   highlight.value = null
-  clickable.value = true
+  clickable.value = false
   play([item.value.question.audio], readOptions)
 }
 // the cards are read in one clip; each enlarges as its word comes (onAudioTime)
 function readOptions() {
   phase.value = 'options'
+  clickable.value = true
   highlight.value = OPTIONS[0].id
   play([OPTIONS_CLIP.audio], () => {
     highlight.value = null
