@@ -18,7 +18,9 @@
 //      plays, then the 5 scale clips ("Only one Zarpie." ...) one by
 //      one, each enlarging its choice. The choices become clickable once
 //      the question has been asked (not before: the child must hear the
-//      whole question); from then on a click cuts the read-out short (lab's
+//      whole question), and the read-out starts only after a pause
+//      (ANSWER_PAUSE_MS), so a child who knows the answer can click
+//      undistracted; from then on a click cuts the read-out short (lab's
 //      wish: no waiting for it).
 // The attention check skips part 1: its clip plays with the choices showing,
 // clickable once it has ended.
@@ -37,6 +39,9 @@ import { ATTENTION_CHECK, INDUCTION_INTRO, inductionTrials, scaleOptions, stimul
 
 // silence between two clips of a trial
 const CLIP_GAP_MS = 300
+// silence between the question and the read-out of the choices, with the
+// choices already clickable (lab's wish)
+const ANSWER_PAUSE_MS = 3000
 
 // pause after the spoken intro, so the first trial does not start abruptly
 const INTRO_END_PAUSE_MS = 1000
@@ -68,7 +73,7 @@ steps[1]
       response: null, // scale option id ('one' ... 'all')
       responseValue: null, // 1-5
       rt: null, // ms from the end of the question (the choices become clickable) to the click
-      respondedDuring: null, // what was playing at the click: 'options' | 'respond' (silence)
+      respondedDuring: null, // at the click: 'pause' (after the question) | 'options' (read-out) | 'respond' (silence after it)
       trialIndex: null, // position in this participant's order (1-16)
       attentionPassed: null, // attention check only
     }))
@@ -86,7 +91,8 @@ const trialImage = computed(() => trial.value?.image ?? null)
 
 // where we are within a trial: 'describe' (big picture, description clip) ->
 // 'question' (no picture, question clip, choices showing, not yet clickable) ->
-// 'options' (scale clips one by one, clickable) -> 'respond' (silence)
+// 'pause' (silence, clickable) -> 'options' (scale clips one by one) ->
+// 'respond' (silence)
 const phase = ref('describe')
 const optionIndex = ref(0)
 let gapTimer = null
@@ -136,6 +142,8 @@ function nextClip() {
   } else if (phase.value === 'describe') {
     phase.value = 'question'
   } else if (phase.value === 'question') {
+    phase.value = 'pause'
+  } else if (phase.value === 'pause') {
     phase.value = api.stepData.attentionCheck ? 'respond' : 'options'
   } else if (phase.value === 'options') {
     if (optionIndex.value < SCALE_OPTIONS.length - 1) optionIndex.value += 1
@@ -174,6 +182,13 @@ function onAudioEnded() {
   clearTimeout(gapTimer)
   gapTimer = setTimeout(nextClip, gapAfterClip())
 }
+
+// the pause has no clip, so its end is timed here
+watch(phase, (p) => {
+  if (p !== 'pause') return
+  clearTimeout(gapTimer)
+  gapTimer = setTimeout(nextClip, fastForward ? 0 : ANSWER_PAUSE_MS)
+})
 
 onBeforeUnmount(() => {
   clearTimeout(gapTimer)

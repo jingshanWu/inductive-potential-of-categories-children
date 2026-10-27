@@ -6,8 +6,9 @@
 // in stimuli.js), no feedback. Each question is read aloud, the
 // child clicks a card, and the next question comes; after the second the
 // study moves on by itself. As in the test, the cards become clickable once
-// the question has been asked (lab feedback): a click then cuts the read-out
-// short, and what was playing at the click is recorded (respondedDuring). The scale's direction is the child's
+// the question has been asked, the read-out of the cards starts only after
+// a pause (ANSWER_PAUSE_MS), and a click cuts the read-out short (lab
+// feedback); what was playing at the click is recorded (respondedDuring). The scale's direction is the child's
 // counterbalanced one (scaleDirection). Steps (Smile): 'intro', then one
 // step per question, each recorded like a test trial. For the question about
 // Steve, Steve is shown first and the Zarpie appears when the voice gets to it
@@ -20,6 +21,9 @@ import ChildStage from '@/uikit/layouts/ChildStage.vue'
 import { END_CHECK as C, scaleOptions, stimulusUrl } from './stimuli'
 
 const CLIP_GAP_MS = 300
+// silence between the question and the read-out of the cards, with the cards
+// already clickable
+const ANSWER_PAUSE_MS = 3000
 
 const api = useViewAPI()
 
@@ -34,7 +38,7 @@ steps[1].append(
     response: null, // scale option id
     responseValue: null, // 1-5
     rt: null, // ms from the end of the question's clip (the cards become clickable)
-    respondedDuring: null, // 'options' | 'respond': what was playing at the click
+    respondedDuring: null, // at the click: 'pause' (after the question) | 'options' (read-out) | 'respond' (silence after it)
     scaleDirection: direction,
   }))
 )
@@ -54,10 +58,10 @@ const cards = computed(() =>
   }))
 )
 
-// within a question: 'ask' (the clip) -> 'options' (the 5 panels read one by
-// one, each enlarging, with the test's clips) -> 'respond' (the voice is
-// done). The cards are clickable from 'options' on; `clickable` also guards
-// against a second click in the same question.
+// within a question: 'ask' (the clip) -> 'pause' (silence) -> 'options' (the
+// 5 panels read one by one, each enlarging, with the test's clips) ->
+// 'respond' (the voice is done). The cards are clickable from 'pause' on;
+// `clickable` also guards against a second click in the same question.
 const phase = ref('ask')
 const optionIndex = ref(0)
 const clickable = ref(false)
@@ -99,8 +103,9 @@ function onAudioEnded() {
     if (section.value === 'intro') api.goNextStep()
     else if (phase.value === 'ask') {
       zarpieShown.value = true // in case the clip was skipped (fast forward)
-      phase.value = 'options'
+      phase.value = 'pause'
       clickable.value = true
+      gapTimer = setTimeout(() => (phase.value = 'options'), ANSWER_PAUSE_MS)
     } else if (phase.value === 'options' && optionIndex.value < OPTIONS.length - 1) optionIndex.value += 1
     else phase.value = 'respond'
   }, CLIP_GAP_MS)
