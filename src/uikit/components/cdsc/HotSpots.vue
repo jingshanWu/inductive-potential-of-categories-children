@@ -21,6 +21,8 @@
  *   read-out, the others grey).
  * - Choices can also be greyed from outside (greyed), e.g. the wrong ones
  *   after a wrong click in a practice, whether or not they are clickable.
+ *   While that list is given it says it all: the rest stay in full colour,
+ *   clickable or not.
  * - A choice can be enlarged from outside to point at it (e.g. while a voice
  *   reads the choices one by one).
  * - Named after the Qualtrics "Hot Spot" question, but the squares are made
@@ -249,8 +251,9 @@ onBeforeUnmount(() => clearTimeout(feedbackTimer))
               (chosen !== null && chosen !== option.id) ||
               (dimOthers && active && highlight !== null && highlight !== option.id),
             'scale-[1.15] z-10': chosen === null && highlight === option.id,
-            'opacity-50 grayscale-[60%]':
-              greyed.includes(option.id) || (!active && chosen === null && highlight !== option.id),
+            'opacity-50 grayscale-[60%]': greyed.length
+              ? greyed.includes(option.id)
+              : !active && chosen === null && highlight !== option.id,
           }"
           :style="zoneStyle(option)"
           :disabled="!active"
