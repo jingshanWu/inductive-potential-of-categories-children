@@ -35,7 +35,7 @@ import { SCALE_TRAINING as T, inductionAssetUrls, scaleOptions, stimulusUrl } fr
 const CLIP_GAP_MS = 300
 // silence between the question and the read-out of the cards, with the cards
 // already clickable (lab's wish)
-const ANSWER_PAUSE_MS = 3000
+const ANSWER_PAUSE_MS = 1500
 // after a correction: the right card has shrunk back for this long before the child may click
 const POINT_BACK_MS = 400
 

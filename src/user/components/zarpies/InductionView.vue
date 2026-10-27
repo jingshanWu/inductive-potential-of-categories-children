@@ -41,7 +41,7 @@ import { ATTENTION_CHECK, INDUCTION_INTRO, inductionTrials, scaleOptions, stimul
 const CLIP_GAP_MS = 300
 // silence between the question and the read-out of the choices, with the
 // choices already clickable (lab's wish)
-const ANSWER_PAUSE_MS = 3000
+const ANSWER_PAUSE_MS = 1500
 
 // pause after the spoken intro, so the first trial does not start abruptly
 const INTRO_END_PAUSE_MS = 1000

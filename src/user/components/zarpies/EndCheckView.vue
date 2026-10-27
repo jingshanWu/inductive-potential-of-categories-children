@@ -23,7 +23,7 @@ import { END_CHECK as C, scaleOptions, stimulusUrl } from './stimuli'
 const CLIP_GAP_MS = 300
 // silence between the question and the read-out of the cards, with the cards
 // already clickable
-const ANSWER_PAUSE_MS = 3000
+const ANSWER_PAUSE_MS = 1500
 
 const api = useViewAPI()
 
