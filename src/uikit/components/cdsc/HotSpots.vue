@@ -14,6 +14,10 @@
  * - Choices are scaled up to fill the space the component is given.
  * - The first click is final: the picked choice pops, the rest fade, and
  *   further clicks are ignored.
+ * - While the choices cannot be clicked yet (disabled, before any click),
+ *   they are shown a bit grey and faded, and come to full colour the moment
+ *   they can be clicked, so the child can see when to answer. (Not while a
+ *   choice is highlighted: the enlarging already shows what is going on.)
  * - A choice can be enlarged from outside to point at it (e.g. while a voice
  *   reads the choices one by one).
  * - Named after the Qualtrics "Hot Spot" question, but the squares are made
@@ -238,6 +242,7 @@ onBeforeUnmount(() => clearTimeout(feedbackTimer))
               (chosen !== null && chosen !== option.id) ||
               (dimOthers && chosen === null && highlight !== null && highlight !== option.id),
             'scale-[1.15] z-10': chosen === null && highlight === option.id,
+            'opacity-50 grayscale-[60%]': !active && chosen === null && highlight === null,
           }"
           :style="zoneStyle(option)"
           :disabled="!active"
