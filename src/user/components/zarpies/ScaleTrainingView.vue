@@ -9,10 +9,9 @@
 //   2. practice: 5 questions about kids, one per card. After each question
 //      the cards are read in one breath ("Only one. A few. Some. Most. Or
 //      all."), each enlarging as its word comes. The child may click a card
-//      once the question has been asked (not during it); the read-out starts
-//      only after a pause (ANSWER_PAUSE_MS), so a child who knows the answer
-//      can click undistracted, and a click cuts the read-out short (lab's
-//      wish: no waiting for it). Right: the voice confirms
+//      once the question has been asked (not during it): a click cuts the
+//      read-out short (lab's wish: no waiting for it). Unlike the test, there
+//      is no pause before the read-out. Right: the voice confirms
 //      while the card keeps its clicked look (popped, the others faded), then
 //      the next question. Wrong: a gentle correction ("Hmm... that's not quite
 //      right. Actually, most kids like juice. So can you click the card that
@@ -33,9 +32,6 @@ import { SCALE_TRAINING as T, inductionAssetUrls, scaleOptions, stimulusUrl } fr
 
 // silence between two clips
 const CLIP_GAP_MS = 300
-// silence between the question and the read-out of the cards, with the cards
-// already clickable (lab's wish)
-const ANSWER_PAUSE_MS = 1500
 // after a correction: the right card has shrunk back for this long before the child may click
 const POINT_BACK_MS = 400
 
@@ -53,7 +49,7 @@ steps[1].append(
     clicks: [], // the cards clicked, in order (the last one is the right one)
     firstTry: null, // was the first click right?
     rt: null, // ms from the end of the question (the cards become clickable) to the first click
-    clickedDuring: null, // at the first click: 'pause' (after the question) | 'options' (read-out) | 'respond' (silence after it)
+    clickedDuring: null, // at the first click: 'options' (read-out) | 'respond' (silence after it)
     scaleDirection: direction,
   }))
 )
@@ -154,11 +150,7 @@ function ask() {
   phase.value = 'ask'
   highlight.value = null
   clickable.value = false
-  play([item.value.question.audio], () => {
-    phase.value = 'pause'
-    clickable.value = true
-    gapTimer = setTimeout(readOptions, ANSWER_PAUSE_MS)
-  })
+  play([item.value.question.audio], readOptions)
 }
 // the cards are read in one clip; each enlarges as its word comes (onAudioTime)
 function readOptions() {
