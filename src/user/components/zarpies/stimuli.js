@@ -148,6 +148,7 @@ export const INDUCTION_FEATURES = [
   },
   {
     id: 'magic', // replaces the adult study's `opera` item (too hard to picture for children)
+    // both clips are hand-picked takes (2026-10-28; premise at rate 0.9)
     image: 'images/magic.png',
     premise: 'Imagine you see a Zarpie going to a magic show.',
     question: 'Of all the Zarpies in the world, how many Zarpies do you think go to magic shows?',
