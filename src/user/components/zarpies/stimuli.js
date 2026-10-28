@@ -35,8 +35,9 @@
  *   - look_left:    when spoken to -> when someone talks to them
  *   - attn_check:   "move the slider to 100%" -> "click on the very last picture"
  *   - opera:        replaced by `magic`, the adult phrase with "the opera" ->
- *                   "the magic show" ("going to the magic show" / "go to the
- *                   magic show"): the opera item is too hard to picture for
+ *                   "a magic show" ("going to a magic show" / "go to magic
+ *                   shows"; not "the", which sounds like one particular
+ *                   show): the opera item is too hard to picture for
  *                   children (2026-10-06; it was `music`, "likes to listen to
  *                   music", for one day before that)
  *   - yellow:       replaced by `yellow_gloves` ("wearing yellow gloves"), in
@@ -148,8 +149,8 @@ export const INDUCTION_FEATURES = [
   {
     id: 'magic', // replaces the adult study's `opera` item (too hard to picture for children)
     image: 'images/magic.png',
-    premise: 'Imagine you see a Zarpie going to the magic show.',
-    question: 'Of all the Zarpies in the world, how many Zarpies do you think go to the magic show?',
+    premise: 'Imagine you see a Zarpie going to a magic show.',
+    question: 'Of all the Zarpies in the world, how many Zarpies do you think go to magic shows?',
   },
   {
     id: 'dance',
