@@ -395,7 +395,7 @@ export const SCALE_TRAINING = {
     {
       id: 'girls',
       correct: 'some',
-      image: 'images/kids_group.png',
+      image: 'images/kids_group.png', // 3 girls and 3 boys: read as "how many of these kids", the answer is still some
       question: { text: 'How many kids are girls?', audio: 'audio/training_q_girls.m4a' },
       right: {
         text: "That's right, some kids are girls and some are boys. So this card means some.",
