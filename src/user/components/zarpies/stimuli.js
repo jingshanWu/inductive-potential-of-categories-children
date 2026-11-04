@@ -408,31 +408,6 @@ export const SCALE_TRAINING = {
         audio: 'audio/training_wrong_girls.m4a',
       },
     },
-    // the old 'most' item (swimming), replaced by juice; may be deleted
-    // {
-    //   id: 'swimming',
-    //   correct: 'most',
-    //   image: 'images/swimming.png',
-    //   question: { text: 'How many kids like to go swimming?', audio: 'audio/training_q_swimming.m4a' },
-    //   right: {
-    //     text: "That's right, most kids like to go swimming, but a few kids might not. So this card means most.",
-    //     audio: 'audio/training_right_swimming.m4a',
-    //   },
-    //   youThink: {
-    //     one: {
-    //       text: 'You think only one kid likes to go swimming?',
-    //       audio: 'audio/training_youthink_swimming_one.m4a',
-    //     },
-    //     few: { text: 'You think a few kids like to go swimming?', audio: 'audio/training_youthink_swimming_few.m4a' },
-    //     some: { text: 'You think some kids like to go swimming?', audio: 'audio/training_youthink_swimming_some.m4a' },
-    //     most: { text: 'You think most kids like to go swimming?', audio: 'audio/training_youthink_swimming_most.m4a' },
-    //     all: { text: 'You think all kids like to go swimming?', audio: 'audio/training_youthink_swimming_all.m4a' },
-    //   },
-    //   wrongRest: {
-    //     text: 'But you know what, I think most kids like to go swimming. So can you click the card that shows most?',
-    //     audio: 'audio/training_wrong_swimming.m4a',
-    //   },
-    // },
     // the 'most' item: juice, in place of swimming (lab feedback: many kids cannot swim, so 'some' felt right)
     {
       id: 'juice',
