@@ -483,14 +483,14 @@ export const END_CHECK = {
       id: 'met_one',
       expected: 'one',
       question: {
-        text: 'This is Steve. And here is a Zarpie. Steve met this Zarpie yesterday. Steve only met this one Zarpie. Now tell me your best guess: of all the Zarpies in the world, how many Zarpies did Steve meet yesterday?',
+        text: 'This is Steve, and here is a Zarpie. Steve met this Zarpie yesterday, and Steve only met this one Zarpie. Of all the Zarpies in the world, how many Zarpies did Steve meet yesterday?',
         audio: 'audio/endcheck_q_met_one.m4a',
         // Steve is on screen from the start; the Zarpie appears when the
-        // voice gets to "And here is a Zarpie": seconds into the clip, the
-        // end of the pause after "This is Steve." (measured from the clip the
+        // voice gets to "and here is a Zarpie": seconds into the clip, the
+        // end of the short pause after "This is Steve," (measured from the clip the
         // way scripts/tts/scale_cues.py measures the scale words; re-measure
         // if the clip is regenerated)
-        zarpieAt: 2.1,
+        zarpieAt: 1.2,
       },
     },
     {
@@ -500,7 +500,7 @@ export const END_CHECK = {
       expected: 'all',
       image: 'images/eat_food.png', // this Zarpie eating (sandwich and apple), above the cards and in the panels
       question: {
-        text: 'Here is a Zarpie. This Zarpie eats food. Now tell me your best guess: of all the Zarpies in the world, how many Zarpies eat food?',
+        text: 'Here is a Zarpie, and this Zarpie eats food. Of all the Zarpies in the world, how many Zarpies eat food?',
         audio: 'audio/endcheck_q_eat_food.m4a',
       },
     },
