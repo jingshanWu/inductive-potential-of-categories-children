@@ -424,18 +424,25 @@ export const SCALE_TRAINING = {
         audio: 'audio/training_wrong_juice.m4a',
       },
     },
+    // the 'a few' item: a picture the child can count (3 of 9 balls, as the
+    // 'a few' card has 3 of 9 dots), in place of "How many kids have a baby
+    // brother?" (lab feedback: no answer the child can check). The picture is
+    // drawn by scripts/images/balls_basket.py.
     {
-      id: 'brothers',
+      id: 'balls',
       correct: 'few',
-      image: 'images/baby_brother.png',
-      question: { text: 'How many kids have a baby brother?', audio: 'audio/training_q_brothers.m4a' },
+      image: 'images/balls_basket.png',
+      question: {
+        text: 'Look at all these balls. How many balls are in the basket?',
+        audio: 'audio/training_q_balls.m4a',
+      },
       right: {
-        text: "That's right! Kids can have an older brother, an older sister, a baby sister, or a baby brother. So only a few kids have a baby brother. This card means a few.",
-        audio: 'audio/training_right_brothers.m4a',
+        text: "That's right! Only a few balls are in the basket. So this card means a few.",
+        audio: 'audio/training_right_balls.m4a',
       },
       wrongRest: {
-        text: 'Actually, only a few kids have a baby brother. So can you click the card that shows a few?',
-        audio: 'audio/training_wrong_brothers.m4a',
+        text: 'Actually, only a few balls are in the basket. So can you click the card that shows a few?',
+        audio: 'audio/training_wrong_balls.m4a',
       },
     },
   ],
