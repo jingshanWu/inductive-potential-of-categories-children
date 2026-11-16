@@ -98,8 +98,10 @@ onMounted(() => {
   <!-- 1. uploading the data -->
   <ChildStage v-if="isUploading" class="flex flex-col items-center justify-center p-6">
     <div class="w-4/5 max-w-md text-center">
-      <h1 class="text-3xl font-bold mb-4">Uploading Your Data</h1>
-      <p class="text-lg text-muted-foreground mb-8">Do not close your browser window yet!</p>
+      <h1 class="text-3xl font-bold mb-2">Uploading Your Data</h1>
+      <!-- the bar is for the data only: the video is uploaded afterwards, on PANDA -->
+      <p class="text-lg text-muted-foreground mb-4">(Your video is not uploaded yet — that comes next!)</p>
+      <p class="text-lg text-muted-foreground mb-8">Do not close your browser window!</p>
       <Progress :model-value="uploadProgress" class="h-3 mb-4" />
       <p class="text-sm text-muted-foreground">{{ uploadProgress }}%</p>
     </div>

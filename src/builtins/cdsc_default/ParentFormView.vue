@@ -142,6 +142,12 @@ function finish() {
           <p class="text-md font-light text-muted-foreground">
             This form collects your video privacy settings and a little information about your family.
           </p>
+          <!-- the data and the video go up in two separate steps: say so before the parent submits -->
+          <p class="text-md font-light text-muted-foreground mt-4">
+            Your data and your video will need to be uploaded separately. By clicking
+            <b class="font-bold">Submit and Continue</b> on the lower right of this form, we will upload your data
+            first!
+          </p>
         </div>
       </template>
 
