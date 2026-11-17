@@ -433,7 +433,7 @@ export const SCALE_TRAINING = {
       correct: 'few',
       image: 'images/balls_basket.png',
       question: {
-        text: 'Look at all these balls. How many balls are in the basket?',
+        text: 'How many balls are in the basket?',
         audio: 'audio/training_q_balls.m4a',
       },
       right: {
