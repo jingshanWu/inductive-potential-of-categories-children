@@ -496,15 +496,15 @@ export const END_CHECK = {
     {
       // replaces the "girls" question ("This Zarpie is a girl ... how many
       // Zarpies are girls?", no single right answer): eating food is true of all.
-      // The premise is about all Zarpies ("Every Zarpie eats food."), not one
-      // ("Here is a Zarpie, and this Zarpie eats food.", until 2026-11-25): a
-      // statement about one Zarpie could draw children away from "all"
-      // (Marianna). "do you think" as in the test questions.
+      // "Every Zarpie eats food." comes first (2026-11-25): with only the
+      // statement about one Zarpie ("Here is a Zarpie, and this Zarpie eats
+      // food."), children could be drawn away from "all" (Marianna). "do you
+      // think" as in the test questions.
       id: 'eat_food',
       expected: 'all',
       image: 'images/eat_food.png', // this Zarpie eating (sandwich and apple), above the cards and in the panels
       question: {
-        text: 'Every Zarpie eats food. Of all the Zarpies in the world, how many Zarpies do you think eat food?',
+        text: 'Every Zarpie eats food. Here is a Zarpie, and this Zarpie eats food. Of all the Zarpies in the world, how many Zarpies do you think eat food?',
         audio: 'audio/endcheck_q_eat_food.m4a',
       },
     },
